@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# VenkatVerse - Premium Developer Portfolio
+
+A world-class futuristic personal portfolio website built with Next.js, Three.js, and modern web technologies.
+
+## Features
+
+- **Cinematic Loading Screen** - Futuristic holographic boot sequence
+- **3D Interactive Environment** - React Three Fiber globe, cubes, skill sphere
+- **Glassmorphism UI** - Cyberpunk + Apple-inspired design
+- **AI Assistant** - Floating chatbot with portfolio knowledge
+- **Command Palette** - Press `Ctrl+K` for quick navigation
+- **Theme Switcher** - Dark/Light mode support
+- **Animated Sections** - Hero, About, Skills, Experience, Projects, Certificates, Blog, Contact
+- **Performance Optimized** - Lazy loading, code splitting, dynamic imports
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS v4
+- **3D:** Three.js, React Three Fiber, Drei
+- **Animation:** Framer Motion, GSAP
+- **Icons:** Lucide React
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the portfolio.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create a `.env.local` file for production features:
 
-## Learn More
+```env
+# Optional: OpenAI API for AI assistant
+OPENAI_API_KEY=your_key_here
 
-To learn more about Next.js, take a look at the following resources:
+# Optional: Google Gemini API
+GEMINI_API_KEY=your_key_here
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Optional: Contact form email
+CONTACT_EMAIL=your@email.com
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deployment
 
-## Deploy on Vercel
+Deploy to Vercel, Netlify, or any Node.js hosting:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run build
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Customization
+
+Edit `src/data/portfolio.ts` to update:
+- Personal information
+- Skills and experience
+- Projects and certificates
+- Blog posts and social links
+
+## License
+
+MIT
