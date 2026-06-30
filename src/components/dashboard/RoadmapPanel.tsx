@@ -13,8 +13,8 @@ export function RoadmapPanel() {
       <div className="panel-header">
         <p className="panel-title">Future Development Roadmap</p>
       </div>
-      <div className="panel-body overflow-x-auto">
-        <div className="flex min-w-[600px] gap-4">
+      <div className="panel-body">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {roadmapPhases.map((phase) => {
             const cfg = statusConfig[phase.status];
             const Icon = cfg.icon;

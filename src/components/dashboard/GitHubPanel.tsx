@@ -46,8 +46,8 @@ export function GitHubPanel() {
       </div>
       <div className="panel-body">
         <div className="grid gap-4 lg:grid-cols-2">
-          <div className="overflow-x-auto">
-            <div className="flex gap-[3px]">
+          <div className="overflow-x-auto pb-1 -mx-1 px-1">
+            <div className="flex w-max gap-[3px]">
               {contributions.map((week, wi) => (
                 <div key={wi} className="flex flex-col gap-[3px]">
                   {week.map((level, di) => (

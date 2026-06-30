@@ -5,11 +5,11 @@ import { Globe } from "lucide-react";
 export function MetricsRow() {
   return (
     <section className="dashboard-grid xl:grid-cols-[1fr_280px]">
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5 lg:gap-4">
+      <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-3 lg:grid-cols-5 lg:gap-4">
         {analyticsMetrics.map((metric) => (
-          <div key={metric.label} className="metric-card">
-            <p className="text-[11px] font-medium text-muted">{metric.label}</p>
-            <p className="mt-1 text-xl font-bold tracking-tight md:text-2xl">{metric.value}</p>
+          <div key={metric.label} className="metric-card min-w-0">
+            <p className="truncate text-[11px] font-medium text-muted">{metric.label}</p>
+            <p className="mt-1 text-lg font-bold tracking-tight sm:text-xl md:text-2xl">{metric.value}</p>
             {metric.sublabel && (
               <p className="text-[10px] text-muted">{metric.sublabel}</p>
             )}

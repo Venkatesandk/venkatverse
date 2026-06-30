@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import type { LucideIcon } from "lucide-react";
+import { useEffect } from "react";
 import {
   Home,
   User,
@@ -14,7 +14,6 @@ import {
   BookOpen,
   Mail,
   X,
-  Menu,
 } from "lucide-react";
 import { navLinks } from "@/data/portfolio";
 
@@ -31,8 +30,17 @@ const iconMap: Record<string, LucideIcon> = {
   mail: Mail,
 };
 
-export function DashboardSidebar() {
-  const [open, setOpen] = useState(false);
+interface DashboardSidebarProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export function DashboardSidebar({ open, onOpenChange }: DashboardSidebarProps) {
+  useEffect(() => {
+    if (!open) return;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
 
   const NavContent = () => (
     <>
@@ -51,7 +59,7 @@ export function DashboardSidebar() {
             <a
               key={link.href}
               href={link.href}
-              onClick={() => setOpen(false)}
+              onClick={() => onOpenChange(false)}
               className="sidebar-link"
             >
               <Icon size={18} />
@@ -70,26 +78,17 @@ export function DashboardSidebar() {
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="fixed left-4 top-3.5 z-50 flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-surface lg:hidden"
-        aria-label="Open menu"
-      >
-        <Menu size={20} />
-      </button>
-
       <aside className="dashboard-sidebar hidden lg:flex lg:flex-col">
         <NavContent />
       </aside>
 
       {open && (
         <div className="fixed inset-0 z-[60] lg:hidden">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setOpen(false)} />
-          <aside className="absolute left-0 top-0 flex h-full w-[var(--sidebar-width)] flex-col bg-surface shadow-xl">
+          <div className="absolute inset-0 bg-black/40" onClick={() => onOpenChange(false)} />
+          <aside className="absolute left-0 top-0 flex h-full w-[min(85vw,var(--sidebar-width))] max-w-full flex-col bg-surface shadow-xl">
             <button
               type="button"
-              onClick={() => setOpen(false)}
+              onClick={() => onOpenChange(false)}
               className="absolute right-3 top-3.5 rounded-lg p-1.5 hover:bg-surface-2"
               aria-label="Close menu"
             >

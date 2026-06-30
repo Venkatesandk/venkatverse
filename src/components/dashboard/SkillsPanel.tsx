@@ -82,9 +82,15 @@ export function SkillsPanel() {
       </div>
       <div className="panel-body">
         <div className="grid gap-6 md:grid-cols-[1fr_auto_1fr]">
-          <SkillList items={left} />
-          <SkillRadar />
-          <SkillList items={right} />
+          <div className="order-2 md:order-1">
+            <SkillList items={left} />
+          </div>
+          <div className="order-1 flex justify-center md:order-2">
+            <SkillRadar />
+          </div>
+          <div className="order-3">
+            <SkillList items={right} />
+          </div>
         </div>
       </div>
     </section>

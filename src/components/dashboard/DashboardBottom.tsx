@@ -92,8 +92,8 @@ function ContactPanel() {
   return (
     <section id="contact" className="panel overflow-hidden">
       <div className="grid lg:grid-cols-2">
-        <div className="border-b border-border p-6 lg:border-b-0 lg:border-r">
-          <h2 className="mb-2 text-2xl font-bold">Let&apos;s Work Together</h2>
+        <div className="border-b border-border p-4 sm:p-6 lg:border-b-0 lg:border-r">
+          <h2 className="mb-2 text-xl font-bold sm:text-2xl">Let&apos;s Work Together</h2>
           <p className="mb-5 text-sm text-foreground-muted">
             Have a project in mind? I&apos;d love to hear about it. Reach out and let&apos;s build something great.
           </p>
@@ -107,8 +107,8 @@ function ContactPanel() {
           </div>
           <SocialLinks size="md" />
           <div className="mt-4 space-y-1 text-sm text-muted">
-            <p className="flex items-center gap-2"><Mail size={14} /> {developer.email}</p>
-            <p className="flex items-center gap-2"><Phone size={14} /> {developer.phone}</p>
+            <p className="flex items-center gap-2 break-all"><Mail size={14} className="shrink-0" /> {developer.email}</p>
+            <p className="flex items-center gap-2"><Phone size={14} className="shrink-0" /> {developer.phone}</p>
           </div>
         </div>
 
@@ -123,7 +123,7 @@ function ContactPanel() {
             </div>
           }
         >
-          <form onSubmit={handleSubmit} className="p-6">
+          <form onSubmit={handleSubmit} className="p-4 sm:p-6">
             <div className="mb-3">
               <label htmlFor="dash-name" className="mb-1 block text-xs font-medium">Name</label>
               <input

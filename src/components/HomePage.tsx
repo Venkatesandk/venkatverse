@@ -17,8 +17,12 @@ import { AISuiteProvider } from "@/components/dashboard/AISuiteProvider";
 import { MobileActionBar } from "@/components/sections/MobileActionBar";
 import { AIAssistant } from "@/components/sections/AIAssistant";
 import { CommandPalette } from "@/components/sections/CommandPalette";
+import { ClientOnly } from "@/components/ui/ClientOnly";
+import { ResumeDownloadModal } from "@/components/sections/ResumeDownloadModal";
 import { BackToTop } from "@/components/sections/BackToTop";
 import { developer, navLinks } from "@/data/portfolio";
+
+const CURRENT_YEAR = 2026;
 
 export function HomePage() {
   return (
@@ -47,7 +51,7 @@ export function HomePage() {
         </div>
 
         <footer className="mt-8 border-t border-border py-6 text-center text-xs text-muted">
-          <p>© {new Date().getFullYear()} {developer.name}. All rights reserved.</p>
+          <p suppressHydrationWarning>© {CURRENT_YEAR} {developer.name}. All rights reserved.</p>
           <div className="mt-2 flex flex-wrap justify-center gap-3">
             {navLinks.slice(0, 6).map((l) => (
               <a key={l.href} href={l.href} className="hover:text-primary">{l.label}</a>
@@ -60,6 +64,9 @@ export function HomePage() {
       <AISuiteProvider />
       <AIAssistant />
       <CommandPalette />
+      <ClientOnly>
+        <ResumeDownloadModal />
+      </ClientOnly>
       <BackToTop />
     </>
   );

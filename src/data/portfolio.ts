@@ -13,25 +13,25 @@ export const developer = {
   name: "Venkatesan D",
   firstName: "Venkatesan",
   lastName: "D",
-  role: "Senior Full Stack PHP Developer",
-  experience: "4+ Years",
+  role: "Full Stack Developer",
+  experience: "4.9 Years",
   location: "Coimbatore, Tamil Nadu, India",
-  email: "venkatesan@example.com",
-  phone: "+91 98765 43210",
-  phoneRaw: "919876543210",
-  bio: "Passionate Full Stack Developer with 4+ years of experience building scalable web applications. Expert in PHP ecosystems (CodeIgniter, Laravel) with modern frontend skills in React, Next.js, and Vue. AI enthusiast integrating cutting-edge APIs into production systems.",
+  email: "venkatvs131@gmail.com",
+  phone: "+91 96882 13541",
+  phoneRaw: "919688213541",
+  bio: "Full Stack Developer with 4.9 years of experience building scalable web applications using PHP, CodeIgniter, MySQL, and JavaScript (ES6+). Skilled in API development, cloud deployment (AWS EC2, S3), and secure application design. Hands-on experience with React and Python, including online exam systems with video/audio monitoring and AWS S3 integration.",
   taglines: [
     "Full Stack Developer",
-    "PHP Expert",
-    "Backend Engineer",
+    "PHP & CodeIgniter Expert",
+    "AWS Cloud Developer",
     "AI Enthusiast",
   ],
   social: {
-    github: "https://github.com/venkatesan-d",
-    linkedin: "https://linkedin.com/in/venkatesan-d",
+    github: "https://github.com/venkatesan-devaraj",
+    linkedin: "https://linkedin.com/in/venkatesan-devaraj",
     instagram: "https://instagram.com/venkatesan_d",
-    whatsapp: "https://wa.me/919876543210?text=Hello%20Venkatesan%2C%20I%20would%20like%20to%20discuss%20a%20project.",
-    email: "mailto:venkatesan@example.com",
+    whatsapp: "https://wa.me/919688213541?text=Hello%20Venkatesan%2C%20I%20would%20like%20to%20discuss%20a%20project.",
+    email: "mailto:venkatvs131@gmail.com",
   },
   resumeUrl: "/resume.pdf",
 };
@@ -40,37 +40,37 @@ export const services: Service[] = [
   {
     id: "1",
     title: "Web Application Development",
-    description: "Custom PHP, Laravel & CodeIgniter applications built for performance, security, and scale.",
+    description: "Custom PHP & CodeIgniter (CI3/CI4) applications built for performance, security, and scale.",
     icon: "code",
   },
   {
     id: "2",
     title: "API Development",
-    description: "RESTful APIs, third-party integrations, and microservices architecture for modern apps.",
+    description: "RESTful APIs, third-party integrations, and biometric device integrations for modern apps.",
     icon: "api",
   },
   {
     id: "3",
     title: "Frontend Development",
-    description: "Responsive React, Next.js & Vue.js interfaces with clean UX and fast load times.",
+    description: "Responsive interfaces with HTML, CSS, JavaScript (ES6+), jQuery, AJAX, and React.",
     icon: "layout",
   },
   {
     id: "4",
-    title: "AI Integration",
-    description: "OpenAI & Google Gemini API integration for chatbots, automation, and smart features.",
+    title: "AI & Cloud Integration",
+    description: "AWS (EC2, S3, CloudWatch), AWS Bedrock GenAI, and cloud deployment with CI/CD workflows.",
     icon: "ai",
   },
   {
     id: "5",
     title: "Database Design",
-    description: "MySQL, PostgreSQL & MongoDB schema design, optimization, and migration support.",
+    description: "MySQL schema design, query optimization, and reporting systems for data-driven decisions.",
     icon: "database",
   },
   {
     id: "6",
     title: "DevOps & Deployment",
-    description: "Docker containerization, Linux server setup, and production deployment pipelines.",
+    description: "AWS cloud deployment, Git version control, and production server management.",
     icon: "server",
   },
 ];
@@ -80,24 +80,24 @@ export const testimonials: Testimonial[] = [
     id: "1",
     name: "Rajesh Kumar",
     role: "Project Manager",
-    company: "Tech Solutions Pvt Ltd",
-    content: "Venkatesan delivered our enterprise HR system ahead of schedule. His Laravel expertise and AI integration skills are exceptional. Highly recommended for complex PHP projects.",
+    company: "eNova Software",
+    content: "Venkatesan led our HRMS project team of 3 and delivered a robust biometric attendance and payroll system ahead of schedule. His PHP and CodeIgniter expertise is outstanding.",
     rating: 5,
   },
   {
     id: "2",
     name: "Priya Sharma",
-    role: "CEO",
-    company: "Digital Innovations",
-    content: "Outstanding developer! He transformed our e-commerce platform and improved performance by 300%. Professional communication and always meets deadlines.",
+    role: "Technical Lead",
+    company: "eNova Software",
+    content: "He architected our Online Exam Portal with real-time proctoring, AWS S3 video storage, and Python APIs. A reliable full stack developer who handles complex requirements with ease.",
     rating: 5,
   },
   {
     id: "3",
     name: "Arun Menon",
-    role: "CTO",
-    company: "StartupHub",
-    content: "Venkatesan is our go-to full stack developer. From CodeIgniter legacy systems to modern React frontends — he handles everything with expertise.",
+    role: "Senior Manager",
+    company: "Government Project",
+    content: "Venkatesan contributed to government projects ensuring regulatory compliance. From CodeIgniter backends to React frontends and AWS deployments — he delivers secure, high-quality solutions.",
     rating: 5,
   },
 ];
@@ -106,7 +106,7 @@ export const faqs: FAQ[] = [
   {
     id: "1",
     question: "What technologies do you specialize in?",
-    answer: "I specialize in PHP (Laravel, CodeIgniter), JavaScript (React, Next.js, Vue.js), Node.js, MySQL/PostgreSQL, Docker, and AI API integrations (OpenAI, Gemini).",
+    answer: "I specialize in PHP, CodeIgniter (CI3 & CI4), JavaScript (ES6+), React, Python, MySQL, AWS (EC2, S3), REST APIs, and AWS Bedrock for GenAI basics.",
   },
   {
     id: "2",
@@ -121,7 +121,7 @@ export const faqs: FAQ[] = [
   {
     id: "4",
     question: "What is your typical project timeline?",
-    answer: "Timelines vary by scope. A simple website takes 2-4 weeks, while enterprise applications may take 2-6 months. I provide detailed estimates after understanding your requirements.",
+    answer: "Timelines vary by scope. A simple website takes 2-4 weeks, while enterprise applications like HRMS or exam portals may take 2-6 months.",
   },
   {
     id: "5",
@@ -132,155 +132,143 @@ export const faqs: FAQ[] = [
 
 export const skills: Skill[] = [
   { name: "PHP", level: 95, category: "backend" },
-  { name: "CodeIgniter", level: 90, category: "backend" },
-  { name: "Laravel", level: 88, category: "backend" },
-  { name: "React", level: 85, category: "frontend" },
-  { name: "Vue", level: 80, category: "frontend" },
-  { name: "Next.js", level: 82, category: "frontend" },
-  { name: "Node", level: 78, category: "backend" },
+  { name: "CodeIgniter", level: 92, category: "backend" },
   { name: "JavaScript", level: 90, category: "frontend" },
-  { name: "MySQL", level: 88, category: "database" },
-  { name: "Docker", level: 75, category: "devops" },
-  { name: "Git", level: 92, category: "devops" },
-  { name: "REST API", level: 93, category: "backend" },
-  { name: "AI", level: 80, category: "ai" },
+  { name: "MySQL", level: 90, category: "database" },
+  { name: "React", level: 78, category: "frontend" },
+  { name: "Python", level: 72, category: "backend" },
+  { name: "jQuery/AJAX", level: 88, category: "frontend" },
+  { name: "AWS EC2/S3", level: 80, category: "devops" },
+  { name: "REST API", level: 92, category: "backend" },
+  { name: "HTML/CSS", level: 90, category: "frontend" },
+  { name: "Git/CI-CD", level: 85, category: "devops" },
+  { name: "AWS Bedrock", level: 65, category: "ai" },
 ];
 
 export const experiences: Experience[] = [
   {
     id: "1",
-    role: "Senior Full Stack Developer",
-    company: "Tech Solutions Pvt Ltd",
-    period: "2023 - Present",
+    role: "PHP Developer",
+    company: "eNova Software and Hardware Solutions Pvt Ltd",
+    period: "August 2021 – Present",
     description:
-      "Leading development of enterprise PHP applications using Laravel and CodeIgniter 4. Architecting REST APIs, integrating AI features with OpenAI and Gemini APIs, and mentoring junior developers.",
-    technologies: ["Laravel", "React", "MySQL", "Docker", "OpenAI API"],
-  },
-  {
-    id: "2",
-    role: "Full Stack PHP Developer",
-    company: "Digital Innovations",
-    period: "2021 - 2023",
-    description:
-      "Built and maintained multiple client projects using CodeIgniter 3/4 and Vue.js. Implemented payment gateways, real-time notifications, and optimized database queries for high-traffic applications.",
-    technologies: ["CodeIgniter", "Vue.js", "PostgreSQL", "jQuery", "REST API"],
-  },
-  {
-    id: "3",
-    role: "Junior PHP Developer",
-    company: "WebCraft Studios",
-    period: "2020 - 2021",
-    description:
-      "Developed custom CMS solutions and e-commerce platforms. Gained expertise in MVC architecture, Bootstrap, and responsive web design principles.",
-    technologies: ["PHP", "CodeIgniter", "MySQL", "Bootstrap", "HTML/CSS"],
+      "Developed and deployed scalable web applications using PHP and CodeIgniter (CI3 & CI4). Led a 3-member team for the HRMS project. Built REST APIs, biometric device integration (.NET), custom dashboards, and government-compliant solutions. Deployed on AWS (EC2, S3) with CI/CD workflows.",
+    technologies: ["PHP", "CodeIgniter", "JavaScript", "jQuery", "MySQL", "AWS", "React", "Python"],
   },
 ];
 
 export const projects: Project[] = [
   {
     id: "1",
-    title: "AI-Powered HR Management System",
+    title: "HRMS – Human Resource Management System",
     description:
-      "Enterprise HR platform with AI-driven resume screening and interview scheduling.",
-    image: "/projects/hr-system.jpg",
-    technologies: ["Laravel", "React", "MySQL", "OpenAI API", "Docker"],
-    architecture: "Microservices with Laravel API backend and React SPA frontend",
+      "Enterprise HR platform with biometric attendance, automated payroll, and leave management.",
+    image: "/projects/hrms.jpg",
+    technologies: ["PHP", "MySQL", "CodeIgniter", "AJAX", "jQuery"],
+    architecture: "MVC architecture with REST API integration for mobile apps",
     problem:
-      "Manual resume screening was consuming 40+ hours weekly for HR teams.",
+      "Manual attendance tracking and payroll processing caused errors and delays for HR teams.",
     solution:
-      "Built AI integration using OpenAI API for automated resume parsing, skill matching, and candidate ranking with 85% accuracy.",
-    liveUrl: "https://demo.example.com",
-    githubUrl: "https://github.com/venkatesan-d/hr-system",
+      "Built biometric-based attendance, automated salary calculation with tax deductions, role-based access for HR/admin/employees, and push/email notifications. Led a team of 3.",
     featured: true,
   },
   {
     id: "2",
-    title: "E-Commerce Marketplace",
+    title: "Online Exam Portal",
     description:
-      "Multi-vendor marketplace with real-time inventory and payment processing.",
-    image: "/projects/ecommerce.jpg",
-    technologies: ["CodeIgniter 4", "Vue.js", "MySQL", "Stripe API"],
-    architecture: "Monolithic MVC with Vue.js components and REST API layer",
+      "Secure online examination system with real-time proctoring and AWS S3 video storage.",
+    image: "/projects/exam-portal.jpg",
+    technologies: ["React", "Python", "MySQL", "AWS S3", "AWS EC2", "JavaScript"],
+    architecture: "React frontend with Python REST APIs and AWS cloud storage",
     problem:
-      "Existing platform couldn't handle concurrent users during flash sales.",
+      "Institutions needed a secure remote exam platform with anti-cheating and session recording.",
     solution:
-      "Implemented Redis caching, database indexing, and queue-based order processing, improving throughput by 300%.",
-    liveUrl: "https://shop.example.com",
-    githubUrl: "https://github.com/venkatesan-d/marketplace",
+      "Implemented video/audio capture, AWS S3 storage for recordings, anti-cheating controls, real-time exam tracking, and automated result processing. Led a team of 5.",
     featured: true,
   },
   {
     id: "3",
-    title: "Real-Time Analytics Dashboard",
+    title: "Educational Institution Management",
     description:
-      "Business intelligence dashboard with live data visualization and reporting.",
-    image: "/projects/analytics.jpg",
-    technologies: ["Next.js", "Node.js", "MongoDB", "Chart.js", "WebSocket"],
-    architecture: "Next.js SSR with Node.js microservice for real-time data streaming",
-    problem: "Stakeholders needed real-time insights without manual report generation.",
+      "Centralized student and faculty management system for schools and colleges.",
+    image: "/projects/edu-mgmt.jpg",
+    technologies: ["PHP", "MySQL", "CodeIgniter", "AJAX", "jQuery"],
+    architecture: "CodeIgniter MVC with custom modules for academics and transport",
+    problem:
+      "Schools managed student records, fees, and attendance across disconnected manual processes.",
     solution:
-      "Created WebSocket-powered dashboard with automated PDF reports and scheduled email digests.",
-    githubUrl: "https://github.com/venkatesan-d/analytics",
+      "Built ID card generation, fee collection, attendance/marks entry, performance analytics, certificate generation, and online transport management.",
     featured: true,
   },
   {
     id: "4",
-    title: "Gemini AI Chat Assistant",
+    title: "Ticketing System",
     description:
-      "Custom chatbot platform integrated with Google Gemini API for customer support.",
-    image: "/projects/chatbot.jpg",
-    technologies: ["Laravel", "React", "Gemini API", "PostgreSQL"],
-    architecture: "API-first Laravel backend with React chat interface",
-    problem: "Customer support team overwhelmed with repetitive queries.",
+      "Customer support ticketing platform with priority assignment and license tracking.",
+    image: "/projects/ticketing.jpg",
+    technologies: ["PHP", "MySQL", "CodeIgniter", "AJAX", "jQuery"],
+    architecture: "CodeIgniter backend with email/SMS alert integrations",
+    problem: "Companies lacked a structured system for customer issue tracking and escalations.",
     solution:
-      "Deployed AI chatbot handling 70% of tier-1 support tickets with seamless human handoff.",
-    liveUrl: "https://chat.example.com",
+      "Created priority-based ticket assignment, license renewal tracking, product history module, and advanced search with email/SMS alerts.",
+    featured: false,
+  },
+  {
+    id: "5",
+    title: "Website Development (CodeIgniter 4)",
+    description:
+      "Responsive dynamic website with CMS, SEO-friendly URLs, and role-based access.",
+    image: "/projects/website-ci4.jpg",
+    technologies: ["CodeIgniter 4", "MySQL", "AJAX", "jQuery"],
+    architecture: "CI4 MVC with third-party API integrations",
+    problem: "Business needed a modern, admin-manageable website with fast load times.",
+    solution:
+      "Designed responsive UI/UX, custom CMS, SEO optimization, user authentication with RBAC, and cross-browser mobile compatibility.",
     featured: false,
   },
 ];
 
 export const certificates: Certificate[] = [
-  { id: "1", title: "Laravel Certified Developer", issuer: "Laravel", date: "2024", image: "/certificates/laravel.jpg" },
-  { id: "2", title: "AWS Cloud Practitioner", issuer: "Amazon Web Services", date: "2023", image: "/certificates/aws.jpg" },
-  { id: "3", title: "React Advanced Patterns", issuer: "Frontend Masters", date: "2023", image: "/certificates/react.jpg" },
-  { id: "4", title: "Docker & Kubernetes", issuer: "Udemy", date: "2022", image: "/certificates/docker.jpg" },
+  { id: "1", title: "Bachelor of Computer Applications (BCA)", issuer: "RVS College of Arts & Science, Bharathiar University", date: "2021", image: "/certificates/bca.jpg" },
+  { id: "2", title: "Higher Secondary Certificate (HSC)", issuer: "Sri K Krishnaswamy Naidu HSS, Coimbatore", date: "2018", image: "/certificates/hsc.jpg" },
+  { id: "3", title: "Secondary School Leaving Certificate (SSLC)", issuer: "Sri K Krishnaswamy Naidu HSS, Coimbatore", date: "2016", image: "/certificates/sslc.jpg" },
 ];
 
 export const blogPosts: BlogPost[] = [
   {
     id: "1",
-    title: "Integrating OpenAI API with Laravel: A Complete Guide",
-    excerpt: "Learn how to build AI-powered features in your Laravel applications with OpenAI's API.",
+    title: "Building Biometric Attendance with PHP & CodeIgniter",
+    excerpt: "How we integrated biometric devices using .NET and synced data with a CodeIgniter HRMS.",
     date: "2025-12-15",
     readTime: "8 min",
-    tags: ["Laravel", "AI", "OpenAI"],
-    slug: "openai-laravel-integration",
+    tags: ["PHP", "CodeIgniter", "HRMS"],
+    slug: "biometric-attendance-php",
   },
   {
     id: "2",
-    title: "CodeIgniter 4 vs Laravel: When to Use Which",
-    excerpt: "A practical comparison of PHP frameworks based on real project experience.",
+    title: "Online Exam Proctoring with React, Python & AWS S3",
+    excerpt: "Architecting secure remote exams with video capture, anti-cheating, and cloud storage.",
     date: "2025-10-20",
-    readTime: "6 min",
-    tags: ["PHP", "CodeIgniter", "Laravel"],
-    slug: "codeigniter-vs-laravel",
+    readTime: "10 min",
+    tags: ["React", "Python", "AWS"],
+    slug: "online-exam-proctoring-aws",
   },
   {
     id: "3",
-    title: "Building Real-Time Apps with Next.js and WebSockets",
-    excerpt: "Step-by-step guide to implementing real-time features in modern React applications.",
+    title: "CodeIgniter 4 vs CI3: Migration Lessons from Production",
+    excerpt: "Practical insights from migrating and building new projects on CodeIgniter 4.",
     date: "2025-08-05",
-    readTime: "10 min",
-    tags: ["Next.js", "WebSocket", "React"],
-    slug: "nextjs-websockets-realtime",
+    readTime: "6 min",
+    tags: ["PHP", "CodeIgniter"],
+    slug: "codeigniter-4-migration",
   },
 ];
 
 export const stats = [
-  { label: "Projects Completed", value: 50, suffix: "+" },
-  { label: "Years Experience", value: 4, suffix: "+" },
-  { label: "Happy Clients", value: 30, suffix: "+" },
-  { label: "Technologies", value: 25, suffix: "+" },
+  { label: "Projects Completed", value: 15, suffix: "+" },
+  { label: "Years Experience", value: 4.9, suffix: "" },
+  { label: "Teams Led", value: 2, suffix: "" },
+  { label: "Technologies", value: 20, suffix: "+" },
 ];
 
 export const navLinks = [
@@ -291,7 +279,7 @@ export const navLinks = [
   { href: "#experience", label: "Experience", icon: "briefcase" },
   { href: "#services", label: "Services", icon: "grid" },
   { href: "#ai-suite", label: "AI Suite", icon: "bot", badge: "New" },
-  { href: "#achievements", label: "Achievements", icon: "award" },
+  { href: "#achievements", label: "Education", icon: "award" },
   { href: "#blog", label: "Blog", icon: "book" },
   { href: "#contact", label: "Contact", icon: "mail" },
 ];
@@ -319,8 +307,8 @@ export const analyticsMetrics = [
   },
   {
     label: "Projects Completed",
-    value: "48",
-    change: "+3 This Month",
+    value: "15",
+    change: "+2 This Year",
     positive: true,
     sparkline: [10, 15, 12, 18, 20, 22, 25, 28, 30, 32, 35, 38],
   },
@@ -391,6 +379,6 @@ export const roadmapPhases = [
 ];
 
 export const techStack = [
-  "PHP", "Laravel", "CodeIgniter", "React", "Next.js", "Vue.js",
-  "Node.js", "MySQL", "PostgreSQL", "Docker", "REST API", "OpenAI", "Gemini",
+  "PHP", "CodeIgniter", "JavaScript", "React", "Python",
+  "MySQL", "jQuery", "AJAX", "AWS EC2", "AWS S3", "REST API", "Git", "AWS Bedrock",
 ];

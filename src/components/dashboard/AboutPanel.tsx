@@ -22,9 +22,9 @@ export function AboutPanel() {
           <div className="rounded-xl border border-border bg-surface-2 p-4">
             <p className="mb-2 text-xs font-bold uppercase tracking-wider text-muted">Quick Facts</p>
             <ul className="space-y-2 text-sm">
-              <li><span className="text-muted">Role:</span> {developer.role}</li>
-              <li><span className="text-muted">Email:</span> {developer.email}</li>
-              <li><span className="text-muted">Phone:</span> {developer.phone}</li>
+              <li className="break-words"><span className="text-muted">Role:</span> {developer.role}</li>
+              <li className="break-all"><span className="text-muted">Email:</span> {developer.email}</li>
+              <li className="break-words"><span className="text-muted">Phone:</span> {developer.phone}</li>
             </ul>
           </div>
         </div>
@@ -39,11 +39,11 @@ export function AchievementsPanel() {
       <div className="panel-header">
         <div className="flex items-center gap-2">
           <Award size={16} className="text-primary" />
-          <p className="panel-title">Achievements & Certificates</p>
+          <p className="panel-title">Education</p>
         </div>
       </div>
       <div className="panel-body">
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {certificates.map((cert) => (
             <div key={cert.id} className="rounded-xl border border-border p-4 text-center">
               <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">

@@ -14,12 +14,12 @@ export function DashboardHero() {
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
               Available for new opportunities
             </span>
-            <h1 className="mb-2 text-3xl font-extrabold tracking-tight md:text-4xl lg:text-[2.5rem]">
+            <h1 className="mb-2 text-2xl font-extrabold tracking-tight text-balance sm:text-3xl md:text-4xl lg:text-[2.5rem]">
               Hi, I&apos;m {developer.firstName}{" "}
               <span className="gradient-text">{developer.lastName}</span>
             </h1>
-            <p className="mb-3 text-base font-semibold text-primary md:text-lg">
-              Full Stack Developer | PHP Expert | AI Enthusiast
+            <p className="mb-3 text-sm font-semibold text-primary sm:text-base md:text-lg">
+              Full Stack Developer | PHP Expert | AWS & AI Enthusiast
             </p>
             <p className="mb-5 max-w-xl text-sm leading-relaxed text-foreground-muted md:text-base">
               {developer.bio}

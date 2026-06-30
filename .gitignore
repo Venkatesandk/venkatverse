@@ -38,4 +38,5 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
+# resume download leads (PII)
+/data/resume-leads.jsonl

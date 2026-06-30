@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import { ThemeScript } from "@/components/ThemeScript";
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -9,9 +10,9 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Venkatesan D | Senior Full Stack PHP Developer",
+  title: "Venkatesan D | Full Stack PHP Developer",
   description:
-    "Professional portfolio of Venkatesan D — Senior Full Stack PHP Developer specializing in Laravel, CodeIgniter, React, Next.js & AI integration. Based in Coimbatore, India.",
+    "Professional portfolio of Venkatesan D — Full Stack Developer with 4.9 years of experience in PHP, CodeIgniter, React, AWS & AI. Based in Coimbatore, India.",
   keywords: ["PHP Developer", "Laravel", "Full Stack Developer", "Coimbatore", "React", "Next.js"],
   authors: [{ name: "Venkatesan D" }],
   openGraph: {
@@ -34,6 +35,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${jakarta.variable} h-full`} data-theme="light" suppressHydrationWarning>
       <body className="min-h-full bg-background text-foreground antialiased" suppressHydrationWarning>
+        <ThemeScript />
         {children}
       </body>
     </html>

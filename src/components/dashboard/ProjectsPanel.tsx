@@ -19,7 +19,7 @@ export function ProjectsPanel() {
           <div className="overflow-hidden rounded-xl border border-border">
             <div className="flex aspect-video items-center justify-center bg-gradient-to-br from-primary/10 via-surface-2 to-accent/10">
               <div className="text-center p-6">
-                <p className="text-4xl font-bold text-primary/30">ERP</p>
+                <p className="text-4xl font-bold text-primary/30">HR</p>
                 <p className="mt-2 text-sm text-muted">Project Preview</p>
               </div>
             </div>
@@ -46,7 +46,7 @@ export function ProjectsPanel() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2">
             {others.map((project) => (
               <div key={project.id} className="overflow-hidden rounded-xl border border-border">
                 <div className="flex aspect-[4/3] items-center justify-center bg-surface-2">

@@ -37,7 +37,7 @@ export function AISuitePanel() {
         <span className="panel-badge">Powered by AI</span>
       </div>
       <div className="panel-body">
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 sm:grid-cols-4">
           {aiSuiteTools.map((tool) => {
             const Icon = iconMap[tool.icon] ?? Bot;
             return (

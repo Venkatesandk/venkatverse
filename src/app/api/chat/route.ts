@@ -28,7 +28,7 @@ function getAIResponse(message: string): string {
   }
 
   if (lower.includes("resume") || lower.includes("download")) {
-    return `You can download Venkat's resume from the homepage or use this link: ${developer.resumeUrl}`;
+    return `Click "Download CV" on the site to get Venkat's latest resume. You'll need to enter your name, email, and mobile number, then verify with a 6-digit OTP.`;
   }
 
   if (lower.includes("whatsapp") || lower.includes("contact via whatsapp")) {

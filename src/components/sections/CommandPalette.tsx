@@ -5,19 +5,29 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, ArrowRight, Sun, Moon, Download, Mail } from "lucide-react";
 import { navLinks, developer } from "@/data/portfolio";
 import { useTheme } from "@/hooks/useTheme";
+import { ClientOnly } from "@/components/ui/ClientOnly";
+import { openResumeDownload } from "@/lib/resume-download";
 
 const commands = [
   { id: "home", label: "Go to Home", href: "#home", icon: ArrowRight },
   { id: "projects", label: "View Projects", href: "#projects", icon: ArrowRight },
   { id: "contact", label: "Contact Me", href: "#contact", icon: Mail },
   { id: "whatsapp", label: "Chat on WhatsApp", href: developer.social.whatsapp, icon: Mail },
-  { id: "resume", label: "Download Resume", href: developer.resumeUrl, icon: Download },
+  { id: "resume", label: "Download Resume", action: openResumeDownload, icon: Download },
 ];
 
 export function CommandPalette() {
+  return (
+    <ClientOnly>
+      <CommandPaletteInner />
+    </ClientOnly>
+  );
+}
+
+function CommandPaletteInner() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme, mounted } = useTheme();
 
   const allCommands = [
     ...navLinks.map((l) => ({
@@ -27,12 +37,14 @@ export function CommandPalette() {
       icon: ArrowRight,
     })),
     ...commands,
-    {
-      id: "theme",
-      label: `Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`,
-      action: toggleTheme,
-      icon: theme === "dark" ? Sun : Moon,
-    },
+    ...(mounted
+      ? [{
+          id: "theme",
+          label: `Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`,
+          action: toggleTheme,
+          icon: theme === "dark" ? Sun : Moon,
+        }]
+      : []),
   ];
 
   const filtered = allCommands.filter((cmd) =>
