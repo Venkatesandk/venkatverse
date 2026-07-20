@@ -1,10 +1,12 @@
-import { appendFile, mkdir, readFile } from "fs/promises";
+import { appendFile, mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 import { sendMail } from "@/lib/mailer";
 import { developer } from "@/data/portfolio";
-import { getWritableDataDir } from "@/lib/data-path";
+import { getSeedDataDir, getWritableDataDir } from "@/lib/data-path";
+import { saveFeedbackPhoto } from "@/lib/feedback-photo";
 
 const FILE = () => path.join(getWritableDataDir(), "feedback.jsonl");
+const SEED_FILE = () => path.join(getSeedDataDir(), "feedback.seed.jsonl");
 
 export interface FeedbackEntry {
   id: string;
@@ -12,8 +14,36 @@ export interface FeedbackEntry {
   email?: string;
   rating: number;
   message: string;
+  photo?: string;
   createdAt: string;
   approved: boolean;
+}
+
+async function readAllRaw(): Promise<FeedbackEntry[]> {
+  const items: FeedbackEntry[] = [];
+  for (const file of [FILE(), SEED_FILE()]) {
+    try {
+      const raw = await readFile(file, "utf8");
+      for (const line of raw.trim().split("\n").filter(Boolean)) {
+        try {
+          items.push(JSON.parse(line) as FeedbackEntry);
+        } catch {
+          /* skip */
+        }
+      }
+      if (items.length) break;
+    } catch {
+      /* try next */
+    }
+  }
+  return items;
+}
+
+async function writeAll(entries: FeedbackEntry[]) {
+  const dir = getWritableDataDir();
+  await mkdir(dir, { recursive: true });
+  const body = entries.map((e) => JSON.stringify(e)).join("\n");
+  await writeFile(FILE(), body ? body + "\n" : "", "utf8");
 }
 
 export async function addFeedback(input: {
@@ -21,13 +51,22 @@ export async function addFeedback(input: {
   email?: string;
   rating: number;
   message: string;
+  photoBase64?: string;
 }) {
+  const id = `fb_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+  let photo: string | undefined;
+
+  if (input.photoBase64) {
+    photo = (await saveFeedbackPhoto(id, input.photoBase64)) ?? undefined;
+  }
+
   const entry: FeedbackEntry = {
-    id: `fb_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    id,
     name: input.name.trim(),
     email: input.email?.trim().toLowerCase() || undefined,
     rating: Math.min(5, Math.max(1, Math.round(input.rating))),
     message: input.message.trim(),
+    photo,
     createdAt: new Date().toISOString(),
     approved: true,
   };
@@ -60,11 +99,11 @@ export async function addFeedback(input: {
 }
 
 export async function listFeedback(limit = 24): Promise<FeedbackEntry[]> {
+  const items: FeedbackEntry[] = [];
+
   try {
     const raw = await readFile(FILE(), "utf8");
-    const lines = raw.trim().split("\n").filter(Boolean);
-    const items: FeedbackEntry[] = [];
-    for (const line of lines) {
+    for (const line of raw.trim().split("\n").filter(Boolean)) {
       try {
         const parsed = JSON.parse(line) as FeedbackEntry;
         if (parsed.approved !== false) items.push(parsed);
@@ -72,7 +111,66 @@ export async function listFeedback(limit = 24): Promise<FeedbackEntry[]> {
         /* skip */
       }
     }
-    return items.reverse().slice(0, limit);
+  } catch {
+    /* no writable file yet */
+  }
+
+  if (items.length === 0) {
+    const seed = await readAllRaw();
+    items.push(...seed.filter((p) => p.approved !== false));
+  }
+
+  return items
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, limit);
+}
+
+export async function updateFeedback(
+  id: string,
+  patch: { name?: string; message?: string; rating?: number }
+): Promise<FeedbackEntry | null> {
+  const all = await readAllFromWritable();
+  const idx = all.findIndex((e) => e.id === id);
+  if (idx === -1) return null;
+
+  const current = all[idx];
+  const next: FeedbackEntry = {
+    ...current,
+    name: patch.name !== undefined ? patch.name.trim() : current.name,
+    message: patch.message !== undefined ? patch.message.trim() : current.message,
+    rating:
+      patch.rating !== undefined
+        ? Math.min(5, Math.max(1, Math.round(patch.rating)))
+        : current.rating,
+  };
+
+  if (next.name.length < 2 || next.message.length < 8) return null;
+
+  all[idx] = next;
+  await writeAll(all);
+  return next;
+}
+
+export async function deleteFeedback(id: string): Promise<boolean> {
+  const all = await readAllFromWritable();
+  const filtered = all.filter((e) => e.id !== id);
+  if (filtered.length === all.length) return false;
+  await writeAll(filtered);
+  return true;
+}
+
+async function readAllFromWritable(): Promise<FeedbackEntry[]> {
+  try {
+    const raw = await readFile(FILE(), "utf8");
+    const items: FeedbackEntry[] = [];
+    for (const line of raw.trim().split("\n").filter(Boolean)) {
+      try {
+        items.push(JSON.parse(line) as FeedbackEntry);
+      } catch {
+        /* skip */
+      }
+    }
+    return items;
   } catch {
     return [];
   }

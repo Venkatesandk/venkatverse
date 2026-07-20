@@ -58,7 +58,7 @@ export function HomePage() {
           <Reveal>
             <RoadmapPanel />
           </Reveal>
-          <div className="dashboard-grid lg:grid-cols-2">
+          <div className="dashboard-grid items-start gap-4 lg:grid-cols-2 lg:gap-5">
             <Reveal>
               <ServicesPanel />
             </Reveal>

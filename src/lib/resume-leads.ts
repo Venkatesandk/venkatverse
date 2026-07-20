@@ -10,6 +10,8 @@ import {
 } from "@/lib/whatsapp-greeting";
 import { developer } from "@/data/portfolio";
 import { getSeedDataDir, getWritableDataDir } from "@/lib/data-path";
+import { isValidCoord, validCoords } from "@/lib/geo";
+import { recordMapPin } from "@/lib/map-pins-store";
 
 const LEADS_FILE = () => path.join(getWritableDataDir(), "resume-leads.jsonl");
 const META_WRITE = () => path.join(getWritableDataDir(), "resume-meta.json");
@@ -148,6 +150,17 @@ export async function logResumeLead(data: {
   } catch (error) {
     console.warn("[resume-leads] persist skipped:", error);
   }
+
+  if (isValidCoord(data.meta?.lat, data.meta?.lng)) {
+    const coords = validCoords(data.meta!.lat, data.meta!.lng)!;
+    await recordMapPin({
+      type: "download",
+      lat: coords.lat,
+      lng: coords.lng,
+      label: "Resume download",
+    });
+  }
+
   console.log("[Resume Download]", lead);
 
   await Promise.allSettled([

@@ -19,6 +19,7 @@ import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { LiveExperienceBadge } from "@/components/ui/LiveExperienceBadge";
 import { useLiveExperience } from "@/hooks/useLiveExperience";
 import { BASE_DOWNLOAD_COUNT, BASE_VISITOR_COUNT } from "@/lib/counters";
+import { fetchAnalyticsStats, useRecordVisit } from "@/hooks/useRecordVisit";
 
 interface DownloadItem {
   name: string;
@@ -44,11 +45,6 @@ export function DashboardHero() {
   const [downloads, setDownloads] = useState({ total: BASE_DOWNLOAD_COUNT, recent: [] as DownloadItem[] });
 
   useEffect(() => {
-    fetch("/api/analytics", { method: "POST" })
-      .then((r) => r.json())
-      .then((d) => setVisitors({ total: d.total ?? BASE_VISITOR_COUNT, today: d.today ?? 0 }))
-      .catch(() => {});
-
     fetch("/api/resume/downloads")
       .then((r) => r.json())
       .then((d) =>
@@ -72,6 +68,18 @@ export function DashboardHero() {
     };
     window.addEventListener("resume-downloaded", refresh);
     return () => window.removeEventListener("resume-downloaded", refresh);
+  }, []);
+
+  useRecordVisit((stats) => setVisitors(stats));
+
+  useEffect(() => {
+    const onVisit = (e: Event) => {
+      const detail = (e as CustomEvent<{ total: number; today: number }>).detail;
+      if (detail) setVisitors(detail);
+      else fetchAnalyticsStats().then(setVisitors);
+    };
+    window.addEventListener("visit-recorded", onVisit);
+    return () => window.removeEventListener("visit-recorded", onVisit);
   }, []);
 
   return (

@@ -1,22 +1,60 @@
-import { BASE_VISITOR_COUNT } from "@/lib/counters";
-import { getAnalytics, recordVisit } from "@/lib/analytics-store";
 import { NextResponse } from "next/server";
+import { getAnalytics, recordVisit } from "@/lib/analytics-store";
+import { isValidCoord, validCoords } from "@/lib/geo";
+import { recordMapPin } from "@/lib/map-pins-store";
+import { readFile } from "fs/promises";
+import path from "path";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function POST() {
+async function fallbackStats() {
   try {
+    const raw = await readFile(
+      path.join(process.cwd(), "src", "data", "analytics.seed.json"),
+      "utf8"
+    );
+    const seed = JSON.parse(raw) as { total?: number; daily?: Record<string, number> };
+    const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
+    return {
+      total: seed.total ?? 925,
+      today: seed.daily?.[today] ?? 0,
+    };
+  } catch {
+    return { total: 925, today: 0 };
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    let lat: number | null = null;
+    let lng: number | null = null;
+
+    try {
+      const body = await request.json();
+      lat = body?.geo?.lat ?? body?.lat ?? null;
+      lng = body?.geo?.lng ?? body?.lng ?? null;
+    } catch {
+      /* no body */
+    }
+
     const stats = await recordVisit();
+
+    const coords = validCoords(lat, lng);
+    if (coords) {
+      await recordMapPin({
+        type: "visit",
+        lat: coords.lat,
+        lng: coords.lng,
+        label: "Portfolio visitor",
+      });
+    }
+
     return NextResponse.json(stats);
   } catch (error) {
     console.error("[analytics POST]", error);
-    // Never break the site for analytics — return a safe baseline
-    return NextResponse.json({
-      total: BASE_VISITOR_COUNT,
-      today: 0,
-      degraded: true,
-    });
+    const baseline = await fallbackStats();
+    return NextResponse.json({ ...baseline, degraded: true });
   }
 }
 
@@ -25,6 +63,7 @@ export async function GET() {
     const stats = await getAnalytics();
     return NextResponse.json(stats);
   } catch {
-    return NextResponse.json({ total: BASE_VISITOR_COUNT, today: 0 });
+    const baseline = await fallbackStats();
+    return NextResponse.json(baseline);
   }
 }

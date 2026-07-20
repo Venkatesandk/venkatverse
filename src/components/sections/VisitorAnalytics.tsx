@@ -5,15 +5,20 @@ import { motion } from "framer-motion";
 import { Eye } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { BASE_VISITOR_COUNT } from "@/lib/counters";
+import { useRecordVisit } from "@/hooks/useRecordVisit";
 
 export function VisitorAnalytics() {
   const [count, setCount] = useState(BASE_VISITOR_COUNT);
 
+  useRecordVisit((stats) => setCount(stats.total));
+
   useEffect(() => {
-    fetch("/api/analytics", { method: "POST" })
-      .then((res) => res.json())
-      .then((data) => setCount(data.total ?? data.visitors ?? BASE_VISITOR_COUNT))
-      .catch(() => setCount(BASE_VISITOR_COUNT));
+    const onVisit = (e: Event) => {
+      const detail = (e as CustomEvent<{ total: number }>).detail;
+      if (detail?.total) setCount(detail.total);
+    };
+    window.addEventListener("visit-recorded", onVisit);
+    return () => window.removeEventListener("visit-recorded", onVisit);
   }, []);
 
   return (

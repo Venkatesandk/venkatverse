@@ -1,140 +1,130 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { analyticsMetrics, liveVisitorCountries } from "@/data/portfolio";
+import { analyticsMetrics } from "@/data/portfolio";
 import { BASE_VISITOR_COUNT } from "@/lib/counters";
+import { fetchAnalyticsStats } from "@/hooks/useRecordVisit";
 import { Sparkline } from "./Sparkline";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { useLiveExperience } from "@/hooks/useLiveExperience";
-import { Globe } from "lucide-react";
+import { LiveGlobePanel } from "./LiveGlobePanel";
+import { Users, Eye, Briefcase, FolderKanban, GitBranch } from "lucide-react";
 import { motion } from "framer-motion";
 import { Stagger, StaggerItem } from "@/components/animations/Motion";
+import type { LucideIcon } from "lucide-react";
+
+const ease = [0.22, 1, 0.36, 1] as const;
+
+interface MetricDef {
+  label: string;
+  value: number;
+  display?: string;
+  sublabel?: string;
+  change?: string;
+  animated: boolean;
+  icon: LucideIcon;
+  accent: string;
+}
 
 export function MetricsRow() {
   const [live, setLive] = useState({ total: BASE_VISITOR_COUNT, today: 0 });
   const exp = useLiveExperience(1000);
 
   useEffect(() => {
-    fetch("/api/analytics")
-      .then((r) => r.json())
-      .then((d) => setLive({ total: d.total ?? BASE_VISITOR_COUNT, today: d.today ?? 0 }))
-      .catch(() => {});
+    fetchAnalyticsStats().then(setLive);
+    const refresh = () => fetchAnalyticsStats().then(setLive);
+    window.addEventListener("visit-recorded", refresh);
+    return () => window.removeEventListener("visit-recorded", refresh);
   }, []);
 
-  const metrics: Array<{
-    label: string;
-    value: number;
-    display?: string;
-    sublabel?: string;
-    change?: string;
-    positive?: boolean;
-    sparkline: number[];
-    animated: boolean;
-  }> = [
+  const metrics: MetricDef[] = [
     {
       label: "Total Visitors",
       value: live.total,
-      sublabel: "All Time",
-      sparkline: analyticsMetrics[0].sparkline,
+      sublabel: "All time",
       animated: true,
+      icon: Users,
+      accent: "from-cyan-500/12 to-transparent",
     },
     {
-      label: "Today's Visitors",
+      label: "Today",
       value: live.today,
-      change: live.today > 0 ? "Live count" : "Waiting…",
-      positive: true,
-      sparkline: analyticsMetrics[1].sparkline,
+      change: live.today > 0 ? "Live" : "—",
       animated: true,
+      icon: Eye,
+      accent: "from-emerald-500/12 to-transparent",
     },
     {
       label: "Experience",
       value: 0,
       display: exp.mounted ? exp.label : "…",
-      change: exp.mounted ? `${exp.days}d · ${exp.clock}` : "Since Jul 2021",
-      positive: true,
-      sparkline: analyticsMetrics[2].sparkline,
+      change: exp.mounted ? exp.clock : "Jul 2021",
       animated: false,
+      icon: Briefcase,
+      accent: "from-violet-500/12 to-transparent",
     },
     {
-      label: "Projects Completed",
+      label: "Projects",
       value: 15,
-      display: "15",
-      change: "+2 This Year",
-      positive: true,
-      sparkline: analyticsMetrics[3].sparkline,
+      display: "15+",
+      change: "+2 yr",
       animated: false,
+      icon: FolderKanban,
+      accent: "from-amber-500/12 to-transparent",
     },
     {
-      label: "GitHub Contributions",
+      label: "GitHub",
       value: 1247,
-      display: "1,247",
-      change: "+92 This Month",
-      positive: true,
-      sparkline: analyticsMetrics[4].sparkline,
+      display: "1.2k",
+      change: "+92 mo",
       animated: false,
+      icon: GitBranch,
+      accent: "from-slate-500/12 to-transparent",
     },
   ];
 
+  const sparklines = analyticsMetrics.map((m) => m.sparkline);
+
   return (
-    <section className="dashboard-grid xl:grid-cols-[1fr_280px]">
-      <Stagger className="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-3 lg:grid-cols-5 lg:gap-4">
-        {metrics.map((metric) => (
-          <StaggerItem key={metric.label}>
-            <motion.div className="metric-card min-w-0" whileHover={{ y: -3 }}>
-              <p className="truncate text-[11px] font-medium text-muted">{metric.label}</p>
-              <p className="mt-1 text-lg font-bold tracking-tight sm:text-xl md:text-2xl" suppressHydrationWarning>
-                {metric.animated ? (
-                  <AnimatedCounter value={Number(metric.value)} />
-                ) : (
-                  metric.display ?? metric.value
-                )}
-              </p>
-              {metric.sublabel && (
-                <p className="text-[10px] text-muted">{metric.sublabel}</p>
-              )}
-              {metric.change && (
-                <p
-                  className={`text-[10px] font-semibold tabular-nums ${metric.positive ? "text-emerald-600" : "text-red-500"}`}
-                  suppressHydrationWarning
-                >
-                  {metric.change}
+    <section className="space-y-3">
+      <Stagger className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+        {metrics.map((metric, index) => {
+          const Icon = metric.icon;
+          return (
+            <StaggerItem key={metric.label}>
+              <motion.div
+                className={`metric-card !p-3 group relative min-w-0 overflow-hidden bg-gradient-to-br ${metric.accent}`}
+                whileHover={{ y: -3 }}
+                transition={{ duration: 0.2 }}
+              >
+                <div className="flex items-center justify-between gap-1">
+                  <p className="truncate text-[10px] font-semibold uppercase tracking-wide text-muted">
+                    {metric.label}
+                  </p>
+                  <Icon size={13} className="shrink-0 text-primary/70" />
+                </div>
+                <p className="mt-1 text-lg font-bold leading-none sm:text-xl" suppressHydrationWarning>
+                  {metric.animated ? (
+                    <AnimatedCounter value={Number(metric.value)} />
+                  ) : (
+                    metric.display ?? metric.value
+                  )}
                 </p>
-              )}
-              <div className="mt-2">
-                <Sparkline data={metric.sparkline} />
-              </div>
-            </motion.div>
-          </StaggerItem>
-        ))}
+                {(metric.sublabel || metric.change) && (
+                  <p className="mt-1 text-[10px] font-medium text-emerald-600" suppressHydrationWarning>
+                    {metric.sublabel ?? metric.change}
+                  </p>
+                )}
+                <div className="mt-2 opacity-70 group-hover:opacity-100">
+                  <Sparkline data={sparklines[index] ?? sparklines[0]} />
+                </div>
+              </motion.div>
+            </StaggerItem>
+          );
+        })}
       </Stagger>
 
-      <div className="panel">
-        <div className="panel-header !border-0 !pb-0">
-          <div className="flex items-center gap-2">
-            <Globe size={16} className="text-primary" />
-            <p className="panel-title">Live Visitors</p>
-          </div>
-          <span className="flex items-center gap-1 text-xs font-semibold text-emerald-600">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
-            Today {live.today}
-          </span>
-        </div>
-        <div className="panel-body !pt-3">
-          <div className="mb-4 flex h-24 items-center justify-center rounded-lg bg-gradient-to-br from-primary/5 to-accent/5">
-            <Globe size={48} className="text-primary/30" />
-          </div>
-          <ul className="space-y-2">
-            {liveVisitorCountries.map((c) => (
-              <li key={c.country} className="flex items-center gap-2 text-xs">
-                <span>{c.flag}</span>
-                <span className="flex-1 text-foreground-muted">{c.country}</span>
-                <span className="font-semibold">{c.count}</span>
-                <span className="w-8 text-right text-muted">{c.percent}%</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+      <LiveGlobePanel />
     </section>
   );
 }

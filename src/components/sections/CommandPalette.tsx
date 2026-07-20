@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, ArrowRight, Sun, Moon, Download, Mail } from "lucide-react";
+import { Search, ArrowRight, Palette, Download, Mail } from "lucide-react";
 import { navLinks, developer } from "@/data/portfolio";
 import { useTheme } from "@/hooks/useTheme";
 import { ClientOnly } from "@/components/ui/ClientOnly";
@@ -27,7 +27,7 @@ export function CommandPalette() {
 function CommandPaletteInner() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const { theme, toggleTheme, mounted } = useTheme();
+  const { current, mounted } = useTheme();
 
   const allCommands = [
     ...navLinks.map((l) => ({
@@ -40,9 +40,9 @@ function CommandPaletteInner() {
     ...(mounted
       ? [{
           id: "theme",
-          label: `Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`,
-          action: toggleTheme,
-          icon: theme === "dark" ? Sun : Moon,
+          label: `Themes — ${current.name} (24 available)`,
+          action: () => window.dispatchEvent(new CustomEvent("open-theme-picker")),
+          icon: Palette,
         }]
       : []),
   ];
