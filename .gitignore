@@ -33,6 +33,13 @@ yarn-error.log*
 # env files
 .env*.local
 
+# runtime data (visitors / resume leads)
+/data/resume-leads.jsonl
+/data/resume-meta.json
+/data/analytics.json
+/data/otp-store.json
+/data/feedback.jsonl
+
 # vercel
 .vercel
 

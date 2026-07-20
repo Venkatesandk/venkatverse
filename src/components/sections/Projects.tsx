@@ -6,6 +6,7 @@ import { ExternalLink, X } from "lucide-react";
 import { GitHubIcon } from "@/components/ui/SocialIcons";
 import { projects } from "@/data/portfolio";
 import type { Project } from "@/types";
+import { TitleCover } from "@/components/ui/TitleCover";
 
 function ProjectModal({ project, onClose }: { project: Project; onClose: () => void }) {
   return (
@@ -89,16 +90,18 @@ export function Projects() {
               className="card gsap-stagger-item group cursor-pointer overflow-hidden"
               onClick={() => setSelected(project)}
             >
-              <div className="flex h-36 items-center justify-center bg-gradient-to-br from-primary/10 to-[#6366f1]/10">
-                <span className="text-5xl font-bold text-primary/20">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
+              <div className="relative h-36 overflow-hidden">
+                <TitleCover
+                  title={project.title}
+                  badge={project.featured ? "Featured" : "Project"}
+                  className="!aspect-auto h-full"
+                />
               </div>
               <div className="p-5">
                 {project.featured && (
                   <span className="badge mb-2 !text-[10px]">Featured</span>
                 )}
-                <h3 className="mb-2 font-semibold group-hover:text-primary">{project.title}</h3>
+                <h3 className="mb-2 font-semibold text-foreground group-hover:text-primary">{project.title}</h3>
                 <p className="mb-3 line-clamp-2 text-sm text-foreground-muted">{project.description}</p>
                 <div className="flex flex-wrap gap-1.5">
                   {project.technologies.slice(0, 4).map((t) => (

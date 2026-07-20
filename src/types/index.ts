@@ -39,9 +39,18 @@ export interface Experience {
   id: string;
   role: string;
   company: string;
+  location?: string;
   period: string;
   description: string;
+  responsibilities?: string[];
   technologies: string[];
+  current?: boolean;
+}
+
+export interface ProjectHighlightGroup {
+  id: string;
+  title: string;
+  items: string[];
 }
 
 export interface Certificate {

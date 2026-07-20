@@ -1,39 +1,65 @@
 import { NextResponse } from "next/server";
 import { otpKey, verifyOtp } from "@/lib/otp-store";
 import { logResumeLead } from "@/lib/resume-leads";
-
-function normalizePhone(phone: string) {
-  const digits = phone.replace(/\D/g, "");
-  if (digits.length === 10) return `+91${digits}`;
-  if (digits.length === 12 && digits.startsWith("91")) return `+${digits}`;
-  return phone.trim();
-}
+import { notifyOwnerOtpVerified } from "@/lib/owner-alerts";
+import { normalizePhone, parseVisitorMeta } from "@/lib/request-meta";
 
 export async function POST(request: Request) {
   try {
-    const { name, email, phone, otp } = await request.json();
+    const body = await request.json();
+    const { name, email, phone, otp, meta: bodyMeta } = body;
 
-    if (!name?.trim() || !email?.trim() || !phone?.trim() || !otp?.trim()) {
-      return NextResponse.json({ error: "All fields including OTP are required." }, { status: 400 });
+    if (!email?.trim() || !phone?.trim() || !otp?.trim()) {
+      return NextResponse.json({ error: "Email, mobile number, and OTP are required." }, { status: 400 });
     }
 
-    const cleanEmail = email.trim().toLowerCase();
-    const cleanPhone = normalizePhone(phone);
+    const cleanEmail = String(email).trim().toLowerCase();
+    const cleanPhone = normalizePhone(String(phone));
+    const cleanOtp = String(otp).replace(/\D/g, "").trim();
+    const cleanName = String(name ?? "").trim();
+
+    if (cleanOtp.length !== 6) {
+      return NextResponse.json({ error: "Please enter the complete 6-digit OTP." }, { status: 400 });
+    }
+
     const key = otpKey(cleanPhone, cleanEmail);
-    const entry = verifyOtp(key, otp);
+    const entry = await verifyOtp(key, cleanOtp);
 
     if (!entry) {
-      return NextResponse.json({ error: "Invalid or expired OTP. Please request a new one." }, { status: 401 });
+      return NextResponse.json(
+        { error: "Invalid or expired OTP. Please request a new one." },
+        { status: 401 }
+      );
     }
 
-    if (entry.name !== name.trim() || entry.email !== cleanEmail || entry.phone !== cleanPhone) {
-      return NextResponse.json({ error: "Details do not match the OTP request." }, { status: 400 });
-    }
+    // Prefer stored name; fall back to submitted name
+    const finalName = entry.name || cleanName || "Visitor";
+    const meta = parseVisitorMeta(request, bodyMeta ?? entry.meta);
 
-    await logResumeLead({ name: entry.name, email: entry.email, phone: entry.phone });
+    const lead = await logResumeLead({
+      name: finalName,
+      email: entry.email,
+      phone: entry.phone,
+      meta,
+    });
 
-    return NextResponse.json({ success: true, downloadUrl: "/resume.pdf" });
-  } catch {
+    void notifyOwnerOtpVerified({
+      name: finalName,
+      email: entry.email,
+      phone: entry.phone,
+      downloadNumber: lead.downloadNumber,
+      meta,
+    });
+
+    return NextResponse.json({
+      success: true,
+      downloadUrl: "/resume.pdf",
+      downloadNumber: lead.downloadNumber,
+      whatsappUrl: lead.whatsappUrl,
+      greeting: `Thanks ${finalName.split(" ")[0]}! Your resume download has started.`,
+    });
+  } catch (err) {
+    console.error("[verify-otp]", err);
     return NextResponse.json({ error: "Verification failed. Please try again." }, { status: 500 });
   }
 }

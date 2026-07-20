@@ -58,8 +58,10 @@ export function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
         >
           <Bell size={17} />
         </button>
-        <ResumeDownloadButton className="btn btn-glass !hidden !w-auto !px-3 !py-2 !text-xs sm:!inline-flex">
-          <Download size={15} /> Download CV
+        <ResumeDownloadButton className="btn btn-glass !inline-flex !w-auto !px-2.5 !py-2 !text-xs sm:!px-3">
+          <Download size={15} />
+          <span className="max-[400px]:hidden">Download CV</span>
+          <span className="min-[401px]:hidden">CV</span>
         </ResumeDownloadButton>
         <a href="#contact" className="btn btn-primary !w-auto !px-2.5 !py-2 !text-xs sm:!px-4">
           <span className="max-[380px]:hidden">Hire </span>Me

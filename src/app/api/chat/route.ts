@@ -5,45 +5,127 @@ function getAIResponse(message: string): string {
   const lower = message.toLowerCase();
 
   if (lower.includes("about") || lower.includes("venkat") || lower.includes("who")) {
-    return `${developer.name} is a ${developer.role} with ${developer.experience} of experience based in ${developer.location}. ${developer.bio}`;
+    return [
+      `👋 Meet ${developer.name}`,
+      "",
+      `${developer.role} · ${developer.experience}`,
+      `${developer.location}`,
+      "",
+      developer.bio,
+      "",
+      "Ask me about projects, skills, experience, or how to hire him.",
+    ].join("\n");
   }
 
   if (lower.includes("php") || lower.includes("project")) {
     const phpProjects = projects.filter((p) =>
-      p.technologies.some((t) => t.toLowerCase().includes("php") || t.toLowerCase().includes("laravel") || t.toLowerCase().includes("codeigniter"))
+      p.technologies.some((t) => {
+        const x = t.toLowerCase();
+        return x.includes("php") || x.includes("laravel") || x.includes("codeigniter");
+      })
     );
-    if (phpProjects.length > 0) {
-      return `Here are Venkat's PHP projects:\n\n${phpProjects.map((p) => `• **${p.title}** - ${p.description}`).join("\n")}`;
-    }
+    const list = (phpProjects.length ? phpProjects : projects).slice(0, 5);
+
+    return [
+      "Here are Venkat's PHP / CodeIgniter projects:",
+      "",
+      ...list.flatMap((p, i) => [
+        `${i + 1}. ${p.title}`,
+        `   ${p.description}`,
+        `   Tech: ${p.technologies.slice(0, 5).join(", ")}`,
+        "",
+      ]),
+      "Want details on any project? Just ask by name.",
+    ].join("\n");
   }
 
   if (lower.includes("skill")) {
-    return `Venkat's top skills include: ${skills.map((s) => `${s.name} (${s.level}%)`).join(", ")}.`;
+    const top = [...skills].sort((a, b) => b.level - a.level).slice(0, 8);
+    return [
+      "Venkat's top skills:",
+      "",
+      ...top.map((s) => `• ${s.name} — ${s.level}% (${s.category})`),
+      "",
+      "He specializes in PHP, CodeIgniter, MySQL, JavaScript, REST APIs, and AWS.",
+    ].join("\n");
   }
 
-  if (lower.includes("experience") || lower.includes("work")) {
-    return experiences
-      .map((e) => `• **${e.role}** at ${e.company} (${e.period})`)
-      .join("\n");
+  if (lower.includes("experience") || lower.includes("work") || lower.includes("enova")) {
+    return [
+      `${developer.name} at eNova Software & Hardware Solutions Pvt. Ltd.`,
+      `Location: Coimbatore · Tenure: ${developer.experience} (since Jul 2021)`,
+      "",
+      "Career path:",
+      "",
+      ...experiences.map(
+        (e, i) =>
+          `${i + 1}. ${e.role}\n   ${e.period}\n   ${e.description}`
+      ),
+      "",
+      "Promoted 3 times: Junior → Programmer → Senior → Lead Application Developer.",
+    ].join("\n");
   }
 
   if (lower.includes("resume") || lower.includes("download")) {
-    return `Click "Download CV" on the site to get Venkat's latest resume. You'll need to enter your name, email, and mobile number, then verify with a 6-digit OTP.`;
+    return [
+      "To download Venkat's resume:",
+      "",
+      "1. Click Download Resume / Download CV",
+      "2. Enter your name, email & mobile",
+      "3. Verify the 6-digit OTP sent to your email",
+      "4. Resume download starts automatically",
+      "",
+      "Need help? Ask me or use WhatsApp.",
+    ].join("\n");
   }
 
   if (lower.includes("whatsapp") || lower.includes("contact via whatsapp")) {
-    return `You can reach Venkat instantly on WhatsApp: ${developer.social.whatsapp}`;
+    return [
+      "Chat with Venkat on WhatsApp:",
+      "",
+      developer.social.whatsapp,
+      "",
+      `Phone: ${developer.phone}`,
+    ].join("\n");
   }
 
   if (lower.includes("contact") || lower.includes("email") || lower.includes("hire")) {
-    return `You can reach Venkat at ${developer.email} or ${developer.phone}. Use the contact form on the website or connect via LinkedIn!`;
+    return [
+      "Happy to connect! Reach Venkat here:",
+      "",
+      `• Email: ${developer.email}`,
+      `• Phone: ${developer.phone}`,
+      `• WhatsApp: ${developer.social.whatsapp}`,
+      `• LinkedIn: ${developer.social.linkedin}`,
+      "",
+      "Or use the contact form on this website.",
+    ].join("\n");
   }
 
   if (lower.includes("ai") || lower.includes("openai") || lower.includes("gemini")) {
-    return `Venkat has experience integrating AI APIs including OpenAI and Google Gemini into production applications. He's built AI-powered HR systems and chatbots.`;
+    return [
+      "Venkat works with AI in real projects:",
+      "",
+      "• OpenAI & Google Gemini API integrations",
+      "• AI question generation for education systems",
+      "• AI-enabled ERP / HR workflow automation",
+      "",
+      "Ask about Educational ERP or AI Suite for more.",
+    ].join("\n");
   }
 
-  return `I'm Venkat's AI assistant! I can tell you about his skills, projects, experience, or help you get in touch. Try asking "Tell me about Venkat" or "Show PHP projects".`;
+  return [
+    "I'm Venkat's AI assistant 👋",
+    "",
+    "I can help with:",
+    "• About Venkat",
+    "• PHP / project details",
+    "• Skills & experience",
+    "• Resume download",
+    "• Contact / hire info",
+    "",
+    'Try: "PHP projects" or "Hire me"',
+  ].join("\n");
 }
 
 export async function POST(request: Request) {
@@ -53,10 +135,6 @@ export async function POST(request: Request) {
     if (!message || typeof message !== "string") {
       return NextResponse.json({ error: "Message required" }, { status: 400 });
     }
-
-    // In production, integrate with OpenAI/Gemini API:
-    // const apiKey = process.env.OPENAI_API_KEY;
-    // if (apiKey) { ... call OpenAI ... }
 
     const reply = getAIResponse(message);
     return NextResponse.json({ reply });

@@ -22,7 +22,13 @@ function buildResume(input: Record<string, string>): AISuiteResult {
   const targetRole = input.targetRole?.trim() || developer.role;
   const highlights = input.highlights?.trim();
   const expList = experiences
-    .map((e) => `• ${e.role} — ${e.company} (${e.period})\n  ${e.description}`)
+    .map((e) => {
+      const bullets = (e.responsibilities ?? [e.description])
+        .slice(0, 5)
+        .map((r) => `  - ${r}`)
+        .join("\n");
+      return `• ${e.role} — ${e.company} (${e.period})\n${bullets}`;
+    })
     .join("\n\n");
   const skillGroups = {
     backend: skills.filter((s) => s.category === "backend").map((s) => s.name),

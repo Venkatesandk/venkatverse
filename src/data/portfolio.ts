@@ -4,37 +4,60 @@ import type {
   Experience,
   FAQ,
   Project,
+  ProjectHighlightGroup,
   Service,
   Skill,
   Testimonial,
 } from "@/types";
 
+import { getExperienceLabel, getExperienceValue } from "@/lib/experience";
+
+/** Joined July 2021 — experience is calculated at runtime */
+export const CAREER_JOINED = "July 2021";
+
 export const developer = {
   name: "Venkatesan D",
   firstName: "Venkatesan",
   lastName: "D",
-  role: "Full Stack Developer",
-  experience: "4.9 Years",
+  role: "Lead Application Developer",
+  /** @deprecated Prefer getExperienceLabel() for live values */
+  get experience() {
+    return getExperienceLabel();
+  },
   location: "Coimbatore, Tamil Nadu, India",
   email: "venkatvs131@gmail.com",
   phone: "+91 96882 13541",
   phoneRaw: "919688213541",
-  bio: "Full Stack Developer with 4.9 years of experience building scalable web applications using PHP, CodeIgniter, MySQL, and JavaScript (ES6+). Skilled in API development, cloud deployment (AWS EC2, S3), and secure application design. Hands-on experience with React and Python, including online exam systems with video/audio monitoring and AWS S3 integration.",
+  get bio() {
+    const label = getExperienceLabel();
+    return `Lead Application Developer with ${label} of experience at eNova Software (joined July 2021), building enterprise ERP and web applications using PHP, CodeIgniter, MySQL, and JavaScript. Promoted three times from Junior Developer to Lead. Skilled in REST APIs, workflow automation, AWS deployment, and AI-enabled education systems.`;
+  },
   taglines: [
-    "Full Stack Developer",
+    "Lead Application Developer",
     "PHP & CodeIgniter Expert",
-    "AWS Cloud Developer",
-    "AI Enthusiast",
+    "ERP & HRMS Specialist",
+    "AWS & AI Enthusiast",
   ],
   social: {
-    github: "https://github.com/venkatesan-devaraj",
+    github: "https://github.com/Venkatesandk",
     linkedin: "https://linkedin.com/in/venkatesan-devaraj",
-    instagram: "https://instagram.com/venkatesan_d",
+    instagram: "https://www.instagram.com/_s_i_n_g_l_e_b_o_i",
     whatsapp: "https://wa.me/919688213541?text=Hello%20Venkatesan%2C%20I%20would%20like%20to%20discuss%20a%20project.",
     email: "mailto:venkatvs131@gmail.com",
   },
   resumeUrl: "/resume.pdf",
+  photoUrl: "/profile-avatar.png",
+  photoFullUrl: "/profile.png",
 };
+
+export function getLiveStats() {
+  return [
+    { label: "Projects Completed", value: 15, suffix: "+" },
+    { label: "Years Experience", value: getExperienceValue(), suffix: "" },
+    { label: "Teams Led", value: 2, suffix: "" },
+    { label: "Technologies", value: 20, suffix: "+" },
+  ];
+}
 
 export const services: Service[] = [
   {
@@ -145,85 +168,236 @@ export const skills: Skill[] = [
   { name: "AWS Bedrock", level: 65, category: "ai" },
 ];
 
+export const experienceCompany = {
+  name: "eNova Software and Hardware Solutions Pvt. Ltd.",
+  location: "Coimbatore, Tamil Nadu, India",
+  period: "July 2021 – Present",
+  tenureLabel: "5+ Years",
+  heading: "Professional Experience",
+};
+
 export const experiences: Experience[] = [
   {
     id: "1",
-    role: "PHP Developer",
-    company: "eNova Software and Hardware Solutions Pvt Ltd",
-    period: "August 2021 – Present",
+    role: "Lead Application Developer",
+    company: experienceCompany.name,
+    location: experienceCompany.location,
+    period: "July 2025 – Present",
+    current: true,
     description:
-      "Developed and deployed scalable web applications using PHP and CodeIgniter (CI3 & CI4). Led a 3-member team for the HRMS project. Built REST APIs, biometric device integration (.NET), custom dashboards, and government-compliant solutions. Deployed on AWS (EC2, S3) with CI/CD workflows.",
-    technologies: ["PHP", "CodeIgniter", "JavaScript", "jQuery", "MySQL", "AWS", "React", "Python"],
+      "Lead design, development, and deployment of enterprise-grade ERP and web applications. Define architecture standards, mentor teams, and drive AI-enabled automation.",
+    responsibilities: [
+      "Lead the design, development, and deployment of enterprise-grade ERP and web applications.",
+      "Define application architecture and development standards for scalable software solutions.",
+      "Mentor development teams, perform code reviews, and ensure software quality.",
+      "Collaborate with clients and business stakeholders to analyze requirements and deliver business solutions.",
+      "Design and develop RESTful APIs and workflow automation.",
+      "Optimize application performance and database efficiency.",
+      "Manage production deployments, version control, and release planning.",
+      "Drive AI-enabled application development and automation initiatives.",
+      "Ensure secure, maintainable, and scalable application architecture.",
+    ],
+    technologies: [
+      "PHP 7/8",
+      "CodeIgniter 3/4",
+      "MySQL",
+      "JavaScript",
+      "jQuery",
+      "AJAX",
+      "HTML5",
+      "CSS3",
+      "Bootstrap",
+      "Git",
+      "REST API",
+    ],
   },
+  {
+    id: "2",
+    role: "Senior Programmer",
+    company: experienceCompany.name,
+    location: experienceCompany.location,
+    period: "June 2024 – July 2025",
+    description:
+      "Led critical ERP modules, designed databases, mentored juniors, and delivered secure APIs with third-party integrations.",
+    responsibilities: [
+      "Led development of critical ERP modules.",
+      "Designed database structures and optimized SQL queries.",
+      "Reviewed code and mentored junior developers.",
+      "Developed secure APIs and integrated third-party services.",
+      "Participated in requirement gathering and client discussions.",
+      "Improved system performance and application security.",
+    ],
+    technologies: ["PHP", "CodeIgniter", "MySQL", "JavaScript", "jQuery", "AJAX", "REST API", "Git"],
+  },
+  {
+    id: "3",
+    role: "Programmer",
+    company: experienceCompany.name,
+    location: experienceCompany.location,
+    period: "April 2023 – June 2024",
+    description:
+      "Built ERP modules for educational institutions including fees, library, exams, inventory, and student management.",
+    responsibilities: [
+      "Developed ERP modules for educational institutions.",
+      "Implemented Fee Management, Library, Examination, Inventory, and Student Management systems.",
+      "Created responsive dashboards using JavaScript and AJAX.",
+      "Developed reports and analytics modules.",
+      "Fixed production issues and optimized application performance.",
+    ],
+    technologies: ["PHP", "CodeIgniter", "MySQL", "JavaScript", "AJAX", "jQuery", "HTML", "CSS"],
+  },
+  {
+    id: "4",
+    role: "Junior Software Developer",
+    company: experienceCompany.name,
+    location: experienceCompany.location,
+    period: "July 2021 – April 2023",
+    description:
+      "Developed PHP/CodeIgniter web apps, MySQL schemas, CRUD & reports, biometric attendance, and government project modules.",
+    responsibilities: [
+      "Developed web applications using PHP and CodeIgniter.",
+      "Created responsive user interfaces using HTML, CSS, JavaScript, and jQuery.",
+      "Designed MySQL database tables and SQL queries.",
+      "Implemented CRUD operations and report generation.",
+      "Participated in testing, debugging, and deployment activities.",
+      "Worked on biometric attendance integration and government projects.",
+    ],
+    technologies: ["PHP", "CodeIgniter", "MySQL", "HTML", "CSS", "JavaScript", "jQuery"],
+  },
+];
+
+export const majorProjectGroups: ProjectHighlightGroup[] = [
+  {
+    id: "edu-erp",
+    title: "Educational ERP",
+    items: [
+      "Student Admission",
+      "Examination Management",
+      "Fee Management",
+      "Library Management",
+      "Inventory Management",
+      "HRMS",
+      "Online Examination",
+      "Mentor-Mentee System",
+      "Certificate Generation",
+      "Student Lab Allocation",
+      "AI Question Generation",
+      "Dashboard & Reports",
+    ],
+  },
+  {
+    id: "hrms",
+    title: "Human Resource Management System (HRMS)",
+    items: [
+      "Employee Management",
+      "Biometric Attendance",
+      "Payroll",
+      "Leave Management",
+      "Salary Processing",
+      "Role-Based Access Control",
+    ],
+  },
+  {
+    id: "tickets",
+    title: "Ticket Management System",
+    items: [
+      "Customer Support",
+      "Product Tracking",
+      "License Renewal",
+      "Email Notifications",
+      "SLA Management",
+    ],
+  },
+  {
+    id: "websites",
+    title: "Website Development",
+    items: [
+      "CMS Development",
+      "REST API Integration",
+      "Authentication",
+      "SEO Optimization",
+      "Responsive Design",
+    ],
+  },
+];
+
+export const keyAchievements: string[] = [
+  "Promoted three times within 5 years, progressing from Junior Software Developer to Lead Application Developer.",
+  "Successfully delivered multiple enterprise ERP solutions for educational institutions.",
+  "Led end-to-end development of mission-critical modules and workflow automation.",
+  "Improved application performance through database optimization and code refactoring.",
+  "Designed and deployed scalable REST APIs and third-party integrations.",
+  "Mentored junior developers and established coding best practices.",
+  "Delivered AI-enabled features for educational management systems.",
 ];
 
 export const projects: Project[] = [
   {
     id: "1",
-    title: "HRMS – Human Resource Management System",
+    title: "Educational ERP",
     description:
-      "Enterprise HR platform with biometric attendance, automated payroll, and leave management.",
+      "Enterprise education platform covering admission, exams, fees, library, inventory, mentor-mentee, certificates, lab allocation, and AI question generation.",
+    image: "/projects/edu-mgmt.jpg",
+    technologies: ["PHP", "CodeIgniter", "MySQL", "JavaScript", "AJAX", "jQuery"],
+    architecture: "CodeIgniter MVC with modular ERP services and analytics dashboards",
+    problem:
+      "Educational institutions needed a unified system for academics, fees, exams, and operations.",
+    solution:
+      "Built interconnected modules for admission, examination, fee & library management, inventory, HRMS, online exams, mentor-mentee, certificates, lab allocation, AI question generation, and reporting.",
+    featured: true,
+  },
+  {
+    id: "2",
+    title: "Human Resource Management System (HRMS)",
+    description:
+      "Enterprise HR platform with employee management, biometric attendance, payroll, leave, and RBAC.",
     image: "/projects/hrms.jpg",
     technologies: ["PHP", "MySQL", "CodeIgniter", "AJAX", "jQuery"],
     architecture: "MVC architecture with REST API integration for mobile apps",
     problem:
       "Manual attendance tracking and payroll processing caused errors and delays for HR teams.",
     solution:
-      "Built biometric-based attendance, automated salary calculation with tax deductions, role-based access for HR/admin/employees, and push/email notifications. Led a team of 3.",
-    featured: true,
-  },
-  {
-    id: "2",
-    title: "Online Exam Portal",
-    description:
-      "Secure online examination system with real-time proctoring and AWS S3 video storage.",
-    image: "/projects/exam-portal.jpg",
-    technologies: ["React", "Python", "MySQL", "AWS S3", "AWS EC2", "JavaScript"],
-    architecture: "React frontend with Python REST APIs and AWS cloud storage",
-    problem:
-      "Institutions needed a secure remote exam platform with anti-cheating and session recording.",
-    solution:
-      "Implemented video/audio capture, AWS S3 storage for recordings, anti-cheating controls, real-time exam tracking, and automated result processing. Led a team of 5.",
+      "Built biometric attendance, payroll & salary processing, leave management, employee records, and role-based access for HR/admin/employees.",
     featured: true,
   },
   {
     id: "3",
-    title: "Educational Institution Management",
+    title: "Online Examination",
     description:
-      "Centralized student and faculty management system for schools and colleges.",
-    image: "/projects/edu-mgmt.jpg",
-    technologies: ["PHP", "MySQL", "CodeIgniter", "AJAX", "jQuery"],
-    architecture: "CodeIgniter MVC with custom modules for academics and transport",
+      "Secure online examination system with proctoring workflows and result processing.",
+    image: "/projects/exam-portal.jpg",
+    technologies: ["PHP", "CodeIgniter", "MySQL", "JavaScript", "AJAX"],
+    architecture: "Web application with exam workflows, monitoring hooks, and reporting",
     problem:
-      "Schools managed student records, fees, and attendance across disconnected manual processes.",
+      "Institutions needed a reliable remote/online exam platform with tracking and analytics.",
     solution:
-      "Built ID card generation, fee collection, attendance/marks entry, performance analytics, certificate generation, and online transport management.",
+      "Implemented exam scheduling, candidate flows, anti-cheat controls, result processing, and dashboards for administrators.",
     featured: true,
   },
   {
     id: "4",
-    title: "Ticketing System",
+    title: "Ticket Management System",
     description:
-      "Customer support ticketing platform with priority assignment and license tracking.",
+      "Customer support ticketing with product tracking, license renewal, email alerts, and SLA management.",
     image: "/projects/ticketing.jpg",
     technologies: ["PHP", "MySQL", "CodeIgniter", "AJAX", "jQuery"],
     architecture: "CodeIgniter backend with email/SMS alert integrations",
     problem: "Companies lacked a structured system for customer issue tracking and escalations.",
     solution:
-      "Created priority-based ticket assignment, license renewal tracking, product history module, and advanced search with email/SMS alerts.",
+      "Created support ticketing, product tracking, license renewal, email notifications, and SLA management workflows.",
     featured: false,
   },
   {
     id: "5",
-    title: "Website Development (CodeIgniter 4)",
+    title: "Website Development",
     description:
-      "Responsive dynamic website with CMS, SEO-friendly URLs, and role-based access.",
+      "Responsive websites with CMS, REST API integration, authentication, and SEO optimization.",
     image: "/projects/website-ci4.jpg",
-    technologies: ["CodeIgniter 4", "MySQL", "AJAX", "jQuery"],
+    technologies: ["CodeIgniter 4", "MySQL", "AJAX", "jQuery", "Bootstrap"],
     architecture: "CI4 MVC with third-party API integrations",
-    problem: "Business needed a modern, admin-manageable website with fast load times.",
+    problem: "Businesses needed modern, admin-manageable websites with fast load times.",
     solution:
-      "Designed responsive UI/UX, custom CMS, SEO optimization, user authentication with RBAC, and cross-browser mobile compatibility.",
+      "Delivered CMS, authentication, REST API integrations, SEO-friendly pages, and fully responsive design.",
     featured: false,
   },
 ];
@@ -264,12 +438,7 @@ export const blogPosts: BlogPost[] = [
   },
 ];
 
-export const stats = [
-  { label: "Projects Completed", value: 15, suffix: "+" },
-  { label: "Years Experience", value: 4.9, suffix: "" },
-  { label: "Teams Led", value: 2, suffix: "" },
-  { label: "Technologies", value: 20, suffix: "+" },
-];
+export const stats = getLiveStats();
 
 export const navLinks = [
   { href: "#home", label: "Home", icon: "home" },

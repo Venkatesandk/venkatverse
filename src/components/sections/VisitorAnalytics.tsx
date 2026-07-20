@@ -4,15 +4,16 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Eye } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { BASE_VISITOR_COUNT } from "@/lib/counters";
 
 export function VisitorAnalytics() {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(BASE_VISITOR_COUNT);
 
   useEffect(() => {
     fetch("/api/analytics", { method: "POST" })
       .then((res) => res.json())
-      .then((data) => setCount(data.visitors))
-      .catch(() => setCount(1284));
+      .then((data) => setCount(data.total ?? data.visitors ?? BASE_VISITOR_COUNT))
+      .catch(() => setCount(BASE_VISITOR_COUNT));
   }, []);
 
   return (

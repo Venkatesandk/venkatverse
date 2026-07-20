@@ -19,7 +19,10 @@ import { AIAssistant } from "@/components/sections/AIAssistant";
 import { CommandPalette } from "@/components/sections/CommandPalette";
 import { ClientOnly } from "@/components/ui/ClientOnly";
 import { ResumeDownloadModal } from "@/components/sections/ResumeDownloadModal";
+import { FeedbackPopup } from "@/components/sections/FeedbackPopup";
 import { BackToTop } from "@/components/sections/BackToTop";
+import { CareerGrowthCard } from "@/components/dashboard/CareerGrowthCard";
+import { Reveal } from "@/components/animations/Motion";
 import { developer, navLinks } from "@/data/portfolio";
 
 const CURRENT_YEAR = 2026;
@@ -30,24 +33,45 @@ export function HomePage() {
       <DashboardShell>
         <div className="dashboard-grid space-y-4">
           <DashboardHero />
-          <MetricsRow />
-          <AboutPanel />
-          <SkillsPanel />
+          <Reveal>
+            <MetricsRow />
+          </Reveal>
+          <Reveal delay={0.05}>
+            <AboutPanel />
+          </Reveal>
+          <Reveal delay={0.05}>
+            <SkillsPanel />
+          </Reveal>
           <div className="dashboard-grid lg:grid-cols-2">
             <ProjectsPanel />
-            <ExperiencePanel />
+            <CareerGrowthCard />
           </div>
+          <ExperiencePanel />
           <div className="dashboard-grid lg:grid-cols-2">
-            <AISuitePanel />
-            <GitHubPanel />
+            <Reveal>
+              <AISuitePanel />
+            </Reveal>
+            <Reveal delay={0.08}>
+              <GitHubPanel />
+            </Reveal>
           </div>
-          <RoadmapPanel />
+          <Reveal>
+            <RoadmapPanel />
+          </Reveal>
           <div className="dashboard-grid lg:grid-cols-2">
-            <ServicesPanel />
-            <TechStackPanel />
+            <Reveal>
+              <ServicesPanel />
+            </Reveal>
+            <Reveal delay={0.08}>
+              <TechStackPanel />
+            </Reveal>
           </div>
-          <AchievementsPanel />
-          <DashboardBottom />
+          <Reveal>
+            <AchievementsPanel />
+          </Reveal>
+          <Reveal>
+            <DashboardBottom />
+          </Reveal>
         </div>
 
         <footer className="mt-8 border-t border-border py-6 text-center text-xs text-muted">
@@ -66,6 +90,7 @@ export function HomePage() {
       <CommandPalette />
       <ClientOnly>
         <ResumeDownloadModal />
+        <FeedbackPopup />
       </ClientOnly>
       <BackToTop />
     </>

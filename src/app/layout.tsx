@@ -10,14 +10,14 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Venkatesan D | Full Stack PHP Developer",
+  title: "Venkatesan D | Lead Application Developer",
   description:
-    "Professional portfolio of Venkatesan D — Full Stack Developer with 4.9 years of experience in PHP, CodeIgniter, React, AWS & AI. Based in Coimbatore, India.",
-  keywords: ["PHP Developer", "Laravel", "Full Stack Developer", "Coimbatore", "React", "Next.js"],
+    "Professional portfolio of Venkatesan D — Lead Application Developer (since July 2021) specializing in PHP, CodeIgniter, ERP, React, AWS & AI. Based in Coimbatore, India.",
+  keywords: ["PHP Developer", "CodeIgniter", "Lead Application Developer", "ERP", "Coimbatore", "React", "Next.js", "AWS"],
   authors: [{ name: "Venkatesan D" }],
   openGraph: {
-    title: "Venkatesan D | Senior Full Stack PHP Developer",
-    description: "Building scalable web applications with PHP, React & AI",
+    title: "Venkatesan D | Lead Application Developer",
+    description: "Building enterprise ERP & web applications with PHP, CodeIgniter & AI since July 2021",
     type: "website",
     locale: "en_IN",
   },

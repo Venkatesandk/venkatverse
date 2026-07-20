@@ -1,5 +1,9 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { ExternalLink, FileText } from "lucide-react";
 import { GitHubIcon } from "@/components/ui/SocialIcons";
+import { TitleCover } from "@/components/ui/TitleCover";
 import { projects } from "@/data/portfolio";
 
 export function ProjectsPanel() {
@@ -16,16 +20,21 @@ export function ProjectsPanel() {
       </div>
       <div className="panel-body">
         <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr]">
-          <div className="overflow-hidden rounded-xl border border-border">
-            <div className="flex aspect-video items-center justify-center bg-gradient-to-br from-primary/10 via-surface-2 to-accent/10">
-              <div className="text-center p-6">
-                <p className="text-4xl font-bold text-primary/30">HR</p>
-                <p className="mt-2 text-sm text-muted">Project Preview</p>
-              </div>
-            </div>
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            whileHover={{ y: -3 }}
+            transition={{ type: "spring", stiffness: 320, damping: 24 }}
+            className="overflow-hidden rounded-xl border border-border"
+          >
+            <TitleCover
+              title={featured.title}
+              badge="Featured Project"
+            />
             <div className="p-4">
-              <h3 className="mb-2 text-lg font-bold">{featured.title}</h3>
-              <p className="mb-3 text-sm text-foreground-muted">{featured.description}</p>
+              <h3 className="mb-2 text-lg font-bold text-foreground">{featured.title}</h3>
+              <p className="mb-3 text-sm leading-relaxed text-foreground-muted">{featured.description}</p>
               <div className="mb-4 flex flex-wrap gap-1.5">
                 {featured.technologies.slice(0, 5).map((t) => (
                   <span key={t} className="rounded-md bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
@@ -44,14 +53,20 @@ export function ProjectsPanel() {
                 </button>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2">
-            {others.map((project) => (
-              <div key={project.id} className="overflow-hidden rounded-xl border border-border">
-                <div className="flex aspect-[4/3] items-center justify-center bg-surface-2">
-                  <span className="text-2xl font-bold text-primary/20">{project.title.charAt(0)}</span>
-                </div>
+            {others.map((project, i) => (
+              <motion.div
+                key={project.id}
+                initial={{ opacity: 0, scale: 0.96 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.06 }}
+                whileHover={{ y: -4, scale: 1.01 }}
+                className="overflow-hidden rounded-xl border border-border"
+              >
+                <TitleCover title={project.title} badge="Project" compact />
                 <div className="p-2.5">
                   <p className="truncate text-xs font-semibold">{project.title}</p>
                   <div className="mt-1 flex gap-1">
@@ -62,7 +77,7 @@ export function ProjectsPanel() {
                     )}
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>

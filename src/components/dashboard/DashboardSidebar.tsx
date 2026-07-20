@@ -15,7 +15,8 @@ import {
   Mail,
   X,
 } from "lucide-react";
-import { navLinks } from "@/data/portfolio";
+import { navLinks, developer } from "@/data/portfolio";
+import Image from "next/image";
 
 const iconMap: Record<string, LucideIcon> = {
   home: Home,
@@ -45,8 +46,15 @@ export function DashboardSidebar({ open, onOpenChange }: DashboardSidebarProps) 
   const NavContent = () => (
     <>
       <div className="flex h-[var(--header-height)] items-center gap-2.5 border-b border-border px-5">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-sm font-bold text-white">
-          V
+        <div className="relative h-9 w-9 overflow-hidden rounded-lg ring-2 ring-primary/30">
+          <Image
+            src={developer.photoUrl}
+            alt={developer.name}
+            fill
+            sizes="36px"
+            quality={95}
+            className="object-cover object-center"
+          />
         </div>
         <span className="text-lg font-bold tracking-tight">
           Venkat<span className="text-primary">.dev</span>

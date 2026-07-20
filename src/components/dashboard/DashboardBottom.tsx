@@ -1,37 +1,102 @@
 "use client";
 
-import { useState } from "react";
-import { Star, Calendar, ArrowRight, Mail, Phone } from "lucide-react";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { Star, Calendar, ArrowRight, Mail, Phone, Clock } from "lucide-react";
 import { testimonials, blogPosts, developer } from "@/data/portfolio";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 import { WhatsAppIcon } from "@/components/ui/SocialIcons";
 import { ClientOnly } from "@/components/ui/ClientOnly";
+import { TitleCover } from "@/components/ui/TitleCover";
 import { Send, CheckCircle, AlertCircle } from "lucide-react";
 
-export function DashboardBottom() {
+interface LiveFeedback {
+  id: string;
+  name: string;
+  rating: number;
+  message: string;
+  createdAt: string;
+}
+
+function FeedbackSection() {
+  const [live, setLive] = useState<LiveFeedback[]>([]);
+
+  const load = () => {
+    fetch("/api/feedback")
+      .then((r) => r.json())
+      .then((d) => setLive(Array.isArray(d.feedback) ? d.feedback : []))
+      .catch(() => {});
+  };
+
+  useEffect(() => {
+    load();
+    const onSubmit = () => load();
+    window.addEventListener("feedback-submitted", onSubmit);
+    return () => window.removeEventListener("feedback-submitted", onSubmit);
+  }, []);
+
+  const cards = [
+    ...live.map((f) => ({
+      id: f.id,
+      name: f.name,
+      role: "Portfolio Visitor",
+      company: "Feedback",
+      content: f.message,
+      rating: f.rating,
+      live: true as const,
+    })),
+    ...testimonials.map((t) => ({ ...t, live: false as const })),
+  ].slice(0, 9);
+
   return (
-    <div className="dashboard-grid space-y-4">
-      <section id="testimonials" className="panel">
-        <div className="panel-header">
-          <p className="panel-title">What Clients Say</p>
-        </div>
-        <div className="panel-body">
-          <div className="grid gap-4 md:grid-cols-3">
-            {testimonials.map((t) => (
-              <div key={t.id} className="rounded-xl border border-border p-4">
-                <div className="mb-2 flex gap-0.5">
+    <section id="testimonials" className="panel">
+      <div className="panel-header">
+        <p className="panel-title">Reviews & Feedback</p>
+        <button
+          type="button"
+          className="text-xs font-semibold text-primary hover:underline"
+          onClick={() => window.dispatchEvent(new CustomEvent("open-feedback-popup"))}
+        >
+          Leave feedback
+        </button>
+      </div>
+      <div className="panel-body">
+        <div className="grid gap-4 md:grid-cols-3">
+          {cards.map((t) => (
+            <motion.div
+              key={t.id}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="rounded-xl border border-border p-4"
+            >
+              <div className="mb-2 flex items-center justify-between gap-2">
+                <div className="flex gap-0.5">
                   {Array.from({ length: t.rating }).map((_, i) => (
                     <Star key={i} size={14} className="fill-amber-400 text-amber-400" />
                   ))}
                 </div>
-                <p className="mb-3 text-sm leading-relaxed text-foreground-muted">&ldquo;{t.content}&rdquo;</p>
-                <p className="text-sm font-semibold">{t.name}</p>
-                <p className="text-xs text-muted">{t.role}, {t.company}</p>
+                {t.live && (
+                  <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
+                    New
+                  </span>
+                )}
               </div>
-            ))}
-          </div>
+              <p className="mb-3 text-sm leading-relaxed text-foreground-muted">&ldquo;{t.content}&rdquo;</p>
+              <p className="text-sm font-semibold">{t.name}</p>
+              <p className="text-xs text-muted">{t.role}{t.company ? `, ${t.company}` : ""}</p>
+            </motion.div>
+          ))}
         </div>
-      </section>
+      </div>
+    </section>
+  );
+}
+
+export function DashboardBottom() {
+  return (
+    <div className="dashboard-grid space-y-4">
+      <FeedbackSection />
 
       <section id="blog" className="panel">
         <div className="panel-header">
@@ -39,22 +104,36 @@ export function DashboardBottom() {
         </div>
         <div className="panel-body">
           <div className="grid gap-4 md:grid-cols-3">
-            {blogPosts.map((post) => (
-              <article key={post.id} className="overflow-hidden rounded-xl border border-border">
-                <div className="flex aspect-[16/9] items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10">
-                  <span className="text-3xl font-bold text-primary/20">📝</span>
-                </div>
+            {blogPosts.map((post, i) => (
+              <motion.article
+                key={post.id}
+                initial={{ opacity: 0, y: 14 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08 }}
+                whileHover={{ y: -4 }}
+                className="overflow-hidden rounded-xl border border-border"
+              >
+                <TitleCover
+                  title={post.title}
+                  badge={post.tags[0] ?? "Article"}
+                />
                 <div className="p-4">
-                  <div className="mb-2 flex items-center gap-2 text-[10px] text-muted">
-                    <Calendar size={11} /> {post.date} · {post.readTime}
+                  <div className="mb-2 flex flex-wrap items-center gap-2 text-[10px] text-muted">
+                    <span className="inline-flex items-center gap-1">
+                      <Calendar size={11} /> {post.date}
+                    </span>
+                    <span className="inline-flex items-center gap-1">
+                      <Clock size={11} /> {post.readTime}
+                    </span>
                   </div>
-                  <h3 className="mb-1.5 text-sm font-bold leading-snug">{post.title}</h3>
-                  <p className="mb-3 text-xs text-foreground-muted line-clamp-2">{post.excerpt}</p>
+                  <h3 className="mb-1.5 text-sm font-bold leading-snug text-foreground">{post.title}</h3>
+                  <p className="mb-3 text-xs leading-relaxed text-foreground-muted line-clamp-2">{post.excerpt}</p>
                   <button type="button" className="flex items-center gap-1 text-xs font-semibold text-primary">
                     Read more <ArrowRight size={12} />
                   </button>
                 </div>
-              </article>
+              </motion.article>
             ))}
           </div>
         </div>

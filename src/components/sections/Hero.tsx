@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Download, MapPin, Briefcase, CheckCircle2 } from "lucide-react";
@@ -113,8 +114,15 @@ export function Hero() {
             </div>
             <div className="relative border-t border-border bg-surface/80 px-4 py-4 backdrop-blur-sm sm:px-5">
               <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-accent text-sm font-bold text-white">
-                  VD
+                <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl">
+                  <Image
+                    src={developer.photoUrl}
+                    alt={developer.name}
+                    fill
+                    sizes="44px"
+                    quality={95}
+                    className="object-cover object-center"
+                  />
                 </div>
                 <div className="min-w-0 text-left">
                   <p className="truncate font-semibold">{developer.name}</p>

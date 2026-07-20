@@ -52,7 +52,7 @@ function SkillRadar() {
 function SkillList({ items }: { items: typeof skills }) {
   return (
     <ul className="space-y-2.5">
-      {items.map((skill) => (
+      {items.map((skill, i) => (
         <li key={skill.name} className="flex items-center gap-2">
           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary/10 text-[10px] font-bold text-primary">
             {skill.name.slice(0, 2).toUpperCase()}
@@ -62,7 +62,10 @@ function SkillList({ items }: { items: typeof skills }) {
             <p className="text-[10px] text-muted">{levelLabel(skill.level)}</p>
           </div>
           <div className="h-1.5 w-16 overflow-hidden rounded-full bg-surface-2">
-            <div className="h-full rounded-full bg-primary" style={{ width: `${skill.level}%` }} />
+            <div
+              className="skill-bar-fill h-full rounded-full bg-primary"
+              style={{ width: `${skill.level}%`, animationDelay: `${i * 0.08}s` }}
+            />
           </div>
         </li>
       ))}

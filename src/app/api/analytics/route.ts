@@ -1,12 +1,21 @@
+import { BASE_VISITOR_COUNT } from "@/lib/counters";
+import { getAnalytics, recordVisit } from "@/lib/analytics-store";
 import { NextResponse } from "next/server";
 
-let visitorCount = 1284;
-
 export async function POST() {
-  visitorCount += 1;
-  return NextResponse.json({ visitors: visitorCount });
+  try {
+    const stats = await recordVisit();
+    return NextResponse.json(stats);
+  } catch {
+    return NextResponse.json({ error: "Failed to record visit" }, { status: 500 });
+  }
 }
 
 export async function GET() {
-  return NextResponse.json({ visitors: visitorCount });
+  try {
+    const stats = await getAnalytics();
+    return NextResponse.json(stats);
+  } catch {
+    return NextResponse.json({ total: BASE_VISITOR_COUNT, today: 0 });
+  }
 }
