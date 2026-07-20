@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { developer, projects, skills, experiences } from "@/data/portfolio";
+import { buildPortfolioContext, generateWithGemini } from "@/lib/gemini";
 
-function getAIResponse(message: string): string {
+function getLocalAIResponse(message: string): string {
   const lower = message.toLowerCase();
 
   if (lower.includes("about") || lower.includes("venkat") || lower.includes("who")) {
@@ -130,14 +131,45 @@ function getAIResponse(message: string): string {
 
 export async function POST(request: Request) {
   try {
-    const { message } = await request.json();
+    const body = await request.json();
+    const message = body.message;
+    const history = Array.isArray(body.history) ? body.history : [];
 
     if (!message || typeof message !== "string") {
       return NextResponse.json({ error: "Message required" }, { status: 400 });
     }
 
-    const reply = getAIResponse(message);
-    return NextResponse.json({ reply });
+    const gemini = await generateWithGemini({
+      systemInstruction: buildPortfolioContext(),
+      userPrompt: message.trim(),
+      history: history
+        .filter(
+          (m: { role?: string; content?: string }) =>
+            (m.role === "user" || m.role === "assistant") &&
+            typeof m.content === "string"
+        )
+        .slice(-8)
+        .map((m: { role: string; content: string }) => ({
+          role: m.role === "assistant" ? ("model" as const) : ("user" as const),
+          text: m.content,
+        })),
+      temperature: 0.6,
+      maxOutputTokens: 900,
+    });
+
+    if (gemini.text) {
+      return NextResponse.json({
+        reply: gemini.text,
+        source: "gemini",
+        model: gemini.model,
+      });
+    }
+
+    return NextResponse.json({
+      reply: getLocalAIResponse(message),
+      source: "local",
+      geminiError: gemini.error,
+    });
   } catch {
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }

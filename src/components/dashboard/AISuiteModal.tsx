@@ -7,11 +7,14 @@ import { toolFields } from "@/lib/ai-suite/tool-fields";
 import type { AISuiteToolSlug } from "@/types";
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import { ClientOnly } from "@/components/ui/ClientOnly";
+import { FormattedAIContent } from "@/components/ui/FormattedAIContent";
 
 interface AISuiteResult {
   title: string;
   content: string;
   source?: string;
+  model?: string;
+  geminiError?: string;
 }
 
 interface AISuiteModalProps {
@@ -256,12 +259,23 @@ export function AISuiteModal({ tool, onClose }: AISuiteModalProps) {
                   )}
                 </div>
               </div>
+              {result.source === "gemini" && (
+                <p className="mb-2 text-[10px] text-emerald-600">
+                  Powered by Google Gemini{result.model ? ` (${result.model})` : ""}
+                </p>
+              )}
               {result.source === "openai" && (
                 <p className="mb-2 text-[10px] text-emerald-600">Powered by OpenAI</p>
               )}
-              <pre className="whitespace-pre-wrap rounded-xl border border-border bg-surface-2 p-4 font-sans text-sm leading-relaxed text-foreground-muted">
-                {result.content}
-              </pre>
+              {result.source === "local" && (
+                <p className="mb-2 text-[10px] text-amber-600">
+                  Local template
+                  {result.geminiError ? ` — Gemini: ${result.geminiError}` : " (Gemini unavailable)"}
+                </p>
+              )}
+              <div className="rounded-xl border border-border bg-surface-2 p-4 sm:p-5">
+                <FormattedAIContent content={result.content} />
+              </div>
               <button
                 type="button"
                 onClick={() => setResult(null)}

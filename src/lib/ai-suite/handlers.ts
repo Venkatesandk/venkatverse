@@ -290,16 +290,81 @@ ${developer.social.whatsapp}`;
 function buildCareerAdvisor(input: Record<string, string>): AISuiteResult {
   const currentLevel = input.currentLevel?.trim() || "mid-level";
   const goals = input.goals?.trim() || "Become a senior full stack developer";
+  const lowerGoal = `${currentLevel} ${goals}`.toLowerCase();
 
-  const content = `CAREER ADVICE — Personalized Path
+  const isArchitect =
+    /architect|solution architect|system design|microservices|cloud/.test(lowerGoal);
+  const isSenior =
+    /senior|lead|4\+|architect|manager|mentor/.test(lowerGoal) ||
+    currentLevel.toLowerCase().includes("senior") ||
+    currentLevel.toLowerCase().includes("lead");
+  const isJunior =
+    /junior|fresher|0–2|0-2|entry/.test(lowerGoal) && !isSenior && !isArchitect;
 
-YOUR PROFILE
-Current level: ${currentLevel}
-Goals: ${goals}
+  let pathBlock: string;
+  let skillFocus: string[];
+  let actionItems: string[];
 
-RECOMMENDED PATH (based on Venkat's journey)
+  if (isArchitect || (isSenior && /architect|cloud|microservice|ai/.test(lowerGoal))) {
+    pathBlock = `Phase 1 — Architecture foundations (next 0–6 months)
+• Deepen system design: scalability, caching, queues, DB sharding, CAP trade-offs.
+• Map end-to-end architecture for one enterprise app (ERP / HRMS style).
+• Strengthen AWS fundamentals (EC2, RDS, S3, VPC, IAM) with real deployments.
 
-Phase 1 — Foundation (0–2 years)
+Phase 2 — Cloud + microservices (6–18 months)
+• Break a monolith module into services with clear API contracts.
+• Add Redis, message queues, and observability (logs, metrics, alerts).
+• Design AI features (Gemini/OpenAI) as production-safe integrations.
+
+Phase 3 — Solution Architect readiness (18–36 months)
+• Own architecture reviews, ADRs, and non-functional requirements.
+• Lead cross-team technical decisions and mentor seniors.
+• Practice SA interviews: system design, cloud cost, risk, and trade-offs.`;
+    skillFocus = [
+      "System design & architecture docs",
+      "AWS / cloud architecture",
+      "Microservices & API design",
+      "Caching, queues, performance",
+      "AI API integration (Gemini/OpenAI)",
+      "Team leadership & mentoring",
+    ];
+    actionItems = [
+      "Write an architecture decision record (ADR) for one production module.",
+      "Design a target architecture diagram for a Solution Architect interview case.",
+      "Ship one AI-enabled feature with rate limits, logging, and fallbacks.",
+      "Mentor one teammate through a code/architecture review this month.",
+    ];
+  } else if (isSenior) {
+    pathBlock = `Phase 1 — Senior impact (0–6 months)
+• Own a module end-to-end: design, delivery, performance, and reliability.
+• Lead code reviews and raise engineering standards on your team.
+• Document architecture and runbooks for critical flows.
+
+Phase 2 — Tech lead depth (6–18 months)
+• Drive CI/CD, Docker, and safer production releases.
+• Introduce caching, queues, and measurable performance wins.
+• Mentor juniors and run knowledge-sharing sessions.
+
+Phase 3 — Lead / specialist (18–36 months)
+• Influence hiring, roadmap, and technical strategy.
+• Specialize in AI integrations or cloud architecture.
+• Prepare for Lead / Architect interviews with system design practice.`;
+    skillFocus = [
+      "PHP / CodeIgniter (deep expertise)",
+      "REST API & integrations",
+      "MySQL performance",
+      "JavaScript / frontend collaboration",
+      "AWS deployment",
+      "Mentoring & system design",
+    ];
+    actionItems = [
+      "Deliver one measurable performance or reliability improvement.",
+      "Publish a short technical write-up from a real production lesson.",
+      "Practice senior/lead system design interviews weekly.",
+      `Expand LinkedIn network in ${developer.location} tech community.`,
+    ];
+  } else if (isJunior) {
+    pathBlock = `Phase 1 — Foundation (0–2 years)
 • Master one PHP framework deeply (Laravel or CodeIgniter).
 • Build 2–3 full projects with MySQL, authentication, and REST APIs.
 • Learn Git, basic Linux, and deployment fundamentals.
@@ -312,25 +377,63 @@ Phase 2 — Full Stack (2–4 years)
 Phase 3 — Senior / Specialist (4+ years)
 • Architecture: microservices, caching (Redis), queue systems.
 • AI integration: OpenAI/Gemini APIs for real product features.
-• Mentoring, code reviews, and system design interviews.
+• Mentoring, code reviews, and system design interviews.`;
+    skillFocus = [...skills]
+      .sort((a, b) => b.level - a.level)
+      .slice(0, 6)
+      .map((s) => `${s.name} (target ${s.level}%+)`);
+    actionItems = [
+      "Ship one portfolio project with a live demo.",
+      "Write one technical blog post.",
+      "Practice mid-level interview questions weekly.",
+      `Network on LinkedIn in ${developer.location}.`,
+    ];
+  } else {
+    pathBlock = `Phase 1 — Strengthen core stack (0–6 months)
+• Deepen PHP + MySQL + REST API skills on real features.
+• Improve frontend collaboration (JavaScript / React basics).
+• Learn Docker and basic cloud deploy.
+
+Phase 2 — Mid → Senior (6–24 months)
+• Own features end-to-end with tests, docs, and monitoring.
+• Add caching, queues, and CI/CD to your toolkit.
+• Build AI-assisted product features where useful.
+
+Phase 3 — Senior path (24–36 months)
+• Lead reviews, mentor peers, and practice system design.
+• Specialize toward architecture, cloud, or AI products.`;
+    skillFocus = [...skills]
+      .sort((a, b) => b.level - a.level)
+      .slice(0, 6)
+      .map((s) => `${s.name} (target ${s.level}%+)`);
+    actionItems = [
+      "Ship one portfolio project with a live demo.",
+      "Write one technical blog post.",
+      "Practice system design for your next level interviews.",
+      `Network on LinkedIn in ${developer.location}.`,
+    ];
+  }
+
+  const content = `CAREER ADVICE — Personalized Path
+
+YOUR PROFILE
+Current level: ${currentLevel}
+Goals: ${goals}
+
+RECOMMENDED PATH (tailored to your goal + inspired by Venkat's journey)
+
+${pathBlock}
 
 SKILLS TO PRIORITIZE FOR YOUR GOAL
-${skills
-  .sort((a, b) => b.level - a.level)
-  .slice(0, 6)
-  .map((s) => `• ${s.name} (target ${s.level}%+ proficiency)`)
-  .join("\n")}
+${skillFocus.map((s) => `• ${s}`).join("\n")}
 
 VENKAT'S EXPERIENCE MAP
 ${experiences.map((e) => `• ${e.period}: ${e.role} @ ${e.company}`).join("\n")}
 
 ACTION ITEMS THIS MONTH
-1. Ship one portfolio project with live demo.
-2. Write a technical blog post (see Venkat's blog topics for inspiration).
-3. Practice system design for ${goals.includes("senior") ? "senior" : "mid-level"} interviews.
-4. Network on LinkedIn — connect with ${developer.location} tech community.
+${actionItems.map((item, i) => `${i + 1}. ${item}`).join("\n")}
 
-Want 1:1 mentorship? Contact Venkat via the portfolio contact form.`;
+Want 1:1 mentorship? Contact Venkat via the portfolio contact form or WhatsApp.`;
 
   return { title: "Career Roadmap", content };
 }

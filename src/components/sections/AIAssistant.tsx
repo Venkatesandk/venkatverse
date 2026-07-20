@@ -103,6 +103,7 @@ export function AIAssistant() {
 
   const send = async (text: string) => {
     if (!text.trim() || loading) return;
+    const history = messages.slice(-8);
     setMessages((p) => [...p, { role: "user", content: text }]);
     setInput("");
     setLoading(true);
@@ -110,10 +111,16 @@ export function AIAssistant() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text }),
+        body: JSON.stringify({ message: text, history }),
       });
       const data = await res.json();
-      setMessages((p) => [...p, { role: "assistant", content: data.reply }]);
+      setMessages((p) => [
+        ...p,
+        {
+          role: "assistant",
+          content: data.reply || "Please try WhatsApp for a quick reply.",
+        },
+      ]);
     } catch {
       setMessages((p) => [
         ...p,
