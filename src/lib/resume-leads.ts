@@ -9,10 +9,11 @@ import {
   sendWhatsAppThanksToDownloader,
 } from "@/lib/whatsapp-greeting";
 import { developer } from "@/data/portfolio";
+import { getSeedDataDir, getWritableDataDir } from "@/lib/data-path";
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const LEADS_FILE = path.join(DATA_DIR, "resume-leads.jsonl");
-const META_FILE = path.join(DATA_DIR, "resume-meta.json");
+const LEADS_FILE = () => path.join(getWritableDataDir(), "resume-leads.jsonl");
+const META_WRITE = () => path.join(getWritableDataDir(), "resume-meta.json");
+const META_SEED = () => path.join(getSeedDataDir(), "resume-meta.json");
 
 export { BASE_DOWNLOAD_COUNT };
 
@@ -29,22 +30,40 @@ interface ResumeMeta {
   totalDownloads: number;
 }
 
+let metaMemory: ResumeMeta | null = null;
+
 async function readMeta(): Promise<ResumeMeta> {
-  try {
-    const raw = await readFile(META_FILE, "utf8");
-    const parsed = JSON.parse(raw) as ResumeMeta;
-    if (typeof parsed.totalDownloads === "number" && parsed.totalDownloads >= BASE_DOWNLOAD_COUNT) {
-      return parsed;
+  if (metaMemory) return metaMemory;
+
+  for (const file of [META_WRITE(), META_SEED()]) {
+    try {
+      const raw = await readFile(file, "utf8");
+      const parsed = JSON.parse(raw) as ResumeMeta;
+      if (
+        typeof parsed.totalDownloads === "number" &&
+        parsed.totalDownloads >= BASE_DOWNLOAD_COUNT
+      ) {
+        metaMemory = parsed;
+        return metaMemory;
+      }
+    } catch {
+      /* try next */
     }
-  } catch {
-    /* first run */
   }
-  return { totalDownloads: BASE_DOWNLOAD_COUNT };
+
+  metaMemory = { totalDownloads: BASE_DOWNLOAD_COUNT };
+  return metaMemory;
 }
 
 async function writeMeta(meta: ResumeMeta) {
-  await mkdir(DATA_DIR, { recursive: true });
-  await writeFile(META_FILE, JSON.stringify(meta, null, 2), "utf8");
+  metaMemory = meta;
+  try {
+    const dir = getWritableDataDir();
+    await mkdir(dir, { recursive: true });
+    await writeFile(META_WRITE(), JSON.stringify(meta, null, 2), "utf8");
+  } catch (error) {
+    console.warn("[resume-meta] persist skipped:", error);
+  }
 }
 
 async function sendThanksEmail(name: string, email: string, downloadNumber: number) {
@@ -79,7 +98,7 @@ export async function getRecentDownloads(limit = 8): Promise<
   }>
 > {
   try {
-    const raw = await readFile(LEADS_FILE, "utf8");
+    const raw = await readFile(LEADS_FILE(), "utf8");
     const lines = raw.trim().split("\n").filter(Boolean);
     const leads: ResumeLead[] = [];
     for (const line of lines.slice(-limit * 2)) {
@@ -122,8 +141,13 @@ export async function logResumeLead(data: {
     downloadNumber: metaFile.totalDownloads,
   };
 
-  await mkdir(DATA_DIR, { recursive: true });
-  await appendFile(LEADS_FILE, JSON.stringify(lead) + "\n", "utf8");
+  try {
+    const dir = getWritableDataDir();
+    await mkdir(dir, { recursive: true });
+    await appendFile(LEADS_FILE(), JSON.stringify(lead) + "\n", "utf8");
+  } catch (error) {
+    console.warn("[resume-leads] persist skipped:", error);
+  }
   console.log("[Resume Download]", lead);
 
   await Promise.allSettled([

@@ -2,9 +2,9 @@ import { appendFile, mkdir, readFile } from "fs/promises";
 import path from "path";
 import { sendMail } from "@/lib/mailer";
 import { developer } from "@/data/portfolio";
+import { getWritableDataDir } from "@/lib/data-path";
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const FILE = path.join(DATA_DIR, "feedback.jsonl");
+const FILE = () => path.join(getWritableDataDir(), "feedback.jsonl");
 
 export interface FeedbackEntry {
   id: string;
@@ -32,8 +32,13 @@ export async function addFeedback(input: {
     approved: true,
   };
 
-  await mkdir(DATA_DIR, { recursive: true });
-  await appendFile(FILE, JSON.stringify(entry) + "\n", "utf8");
+  try {
+    const dir = getWritableDataDir();
+    await mkdir(dir, { recursive: true });
+    await appendFile(FILE(), JSON.stringify(entry) + "\n", "utf8");
+  } catch (error) {
+    console.warn("[feedback] persist skipped:", error);
+  }
 
   const ownerEmail = process.env.OWNER_EMAIL ?? developer.email;
   void sendMail({
@@ -56,7 +61,7 @@ export async function addFeedback(input: {
 
 export async function listFeedback(limit = 24): Promise<FeedbackEntry[]> {
   try {
-    const raw = await readFile(FILE, "utf8");
+    const raw = await readFile(FILE(), "utf8");
     const lines = raw.trim().split("\n").filter(Boolean);
     const items: FeedbackEntry[] = [];
     for (const line of lines) {

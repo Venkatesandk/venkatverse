@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
+import { getWritableDataDir } from "@/lib/data-path";
 
 export interface OtpEntry {
   otp: string;
@@ -25,14 +26,13 @@ export interface VisitorMeta {
 }
 
 const OTP_TTL_MS = 10 * 60 * 1000;
-const DATA_DIR = path.join(process.cwd(), "data");
-const FILE = path.join(DATA_DIR, "otp-store.json");
+const FILE = () => path.join(getWritableDataDir(), "otp-store.json");
 
 type StoreShape = Record<string, OtpEntry>;
 
 async function readStore(): Promise<StoreShape> {
   try {
-    const raw = await readFile(FILE, "utf8");
+    const raw = await readFile(FILE(), "utf8");
     const parsed = JSON.parse(raw) as StoreShape;
     return parsed && typeof parsed === "object" ? parsed : {};
   } catch {
@@ -41,8 +41,13 @@ async function readStore(): Promise<StoreShape> {
 }
 
 async function writeStore(store: StoreShape) {
-  await mkdir(DATA_DIR, { recursive: true });
-  await writeFile(FILE, JSON.stringify(store, null, 2), "utf8");
+  try {
+    const dir = getWritableDataDir();
+    await mkdir(dir, { recursive: true });
+    await writeFile(FILE(), JSON.stringify(store, null, 2), "utf8");
+  } catch (error) {
+    console.warn("[otp-store] persist skipped:", error);
+  }
 }
 
 function prune(store: StoreShape) {
