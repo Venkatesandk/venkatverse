@@ -77,10 +77,14 @@ export async function reverseGeocode(lat: number, lng: number): Promise<GeoPlace
     url.searchParams.set("lon", String(lng));
     url.searchParams.set("format", "json");
     url.searchParams.set("addressdetails", "1");
-    url.searchParams.set("zoom", "10");
+    url.searchParams.set("zoom", "12");
+    url.searchParams.set("accept-language", "en");
 
     const res = await fetch(url.toString(), {
-      headers: { "User-Agent": "VenkatversePortfolio/1.0 (contact@venkatverse.com)" },
+      headers: {
+        "User-Agent": "VenkatversePortfolio/1.0 (contact@venkatverse.com)",
+        Accept: "application/json",
+      },
       next: { revalidate: 86400 },
     });
 

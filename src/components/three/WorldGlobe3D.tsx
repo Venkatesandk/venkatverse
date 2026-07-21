@@ -38,12 +38,20 @@ export interface GlobePin {
 }
 
 const RADIUS = 1.45;
-const MIN_ZOOM = 2.1;
-const MAX_ZOOM = 6.5;
-const DEFAULT_ZOOM = 3.6;
+const MIN_ZOOM = 2.05;
+const MAX_ZOOM = 5.5;
+const DEFAULT_ZOOM = 2.95;
+/** Default camera faces South Asia so India pins are readable on first view */
+const DEFAULT_CAM = latLngToVector3(20, 78, DEFAULT_ZOOM);
 const EARTH_TEXTURE = "/globe/earth-blue-marble.jpg";
 const BUMP_TEXTURE = "/globe/earth-topology.png";
 const CLOUD_TEXTURE = "/globe/earth-clouds.png";
+
+if (typeof window !== "undefined") {
+  useTexture.preload(EARTH_TEXTURE);
+  useTexture.preload(BUMP_TEXTURE);
+  useTexture.preload(CLOUD_TEXTURE);
+}
 
 function pinPosition(pin: GlobePin, radius: number) {
   const v = latLngToVector3(pin.lat, pin.lng, radius);
@@ -172,7 +180,7 @@ function CloudLayer() {
 
   return (
     <mesh ref={ref} scale={1.015}>
-      <sphereGeometry args={[RADIUS, 64, 64]} />
+      <sphereGeometry args={[RADIUS, 40, 40]} />
       <meshStandardMaterial
         map={cloudMap}
         transparent
@@ -210,19 +218,35 @@ class TextureErrorBoundary extends Component<
   }
 }
 
-function Globe({
+function ProceduralEarthMesh() {
+  return (
+    <mesh>
+      <sphereGeometry args={[RADIUS, 48, 48]} />
+      <meshStandardMaterial
+        color="#1d4ed8"
+        emissive="#0c1929"
+        emissiveIntensity={0.35}
+        roughness={0.82}
+        metalness={0.06}
+      />
+    </mesh>
+  );
+}
+
+function GlobeBody({
   pins,
   focusPinId,
   onPinSelect,
   autoRotate,
+  earthMesh,
 }: {
   pins: GlobePin[];
   focusPinId?: string | null;
   onPinSelect?: (pin: GlobePin | null) => void;
   autoRotate: boolean;
+  earthMesh: ReactNode;
 }) {
   const globeRef = useRef<THREE.Group>(null);
-  const [colorMap, bumpMap] = useTexture([EARTH_TEXTURE, BUMP_TEXTURE]);
 
   useFrame((_, delta) => {
     if (globeRef.current && autoRotate && !focusPinId) {
@@ -232,21 +256,9 @@ function Globe({
 
   return (
     <group ref={globeRef}>
-      <mesh>
-        <sphereGeometry args={[RADIUS, 72, 72]} />
-        <meshStandardMaterial
-          map={colorMap}
-          bumpMap={bumpMap}
-          bumpScale={0.05}
-          roughness={0.85}
-          metalness={0.08}
-        />
-      </mesh>
-
+      {earthMesh}
       <CloudLayerSafe />
-
       <AnimatedAtmosphere />
-
       {pins.map((pin) => (
         <PinMarker
           key={pin.id}
@@ -257,6 +269,106 @@ function Globe({
         />
       ))}
     </group>
+  );
+}
+
+function GlobeTextured({
+  pins,
+  focusPinId,
+  onPinSelect,
+  autoRotate,
+}: {
+  pins: GlobePin[];
+  focusPinId?: string | null;
+  onPinSelect?: (pin: GlobePin | null) => void;
+  autoRotate: boolean;
+}) {
+  const [colorMap, bumpMap] = useTexture([EARTH_TEXTURE, BUMP_TEXTURE]);
+
+  return (
+    <GlobeBody
+      pins={pins}
+      focusPinId={focusPinId}
+      onPinSelect={onPinSelect}
+      autoRotate={autoRotate}
+      earthMesh={
+        <mesh>
+          <sphereGeometry args={[RADIUS, 48, 48]} />
+          <meshStandardMaterial
+            map={colorMap}
+            bumpMap={bumpMap}
+            bumpScale={0.04}
+            roughness={0.85}
+            metalness={0.08}
+          />
+        </mesh>
+      }
+    />
+  );
+}
+
+function GlobeProcedural({
+  pins,
+  focusPinId,
+  onPinSelect,
+  autoRotate,
+}: {
+  pins: GlobePin[];
+  focusPinId?: string | null;
+  onPinSelect?: (pin: GlobePin | null) => void;
+  autoRotate: boolean;
+}) {
+  return (
+    <GlobeBody
+      pins={pins}
+      focusPinId={focusPinId}
+      onPinSelect={onPinSelect}
+      autoRotate={autoRotate}
+      earthMesh={<ProceduralEarthMesh />}
+    />
+  );
+}
+
+function GlobeSafe({
+  pins,
+  focusPinId,
+  onPinSelect,
+  autoRotate,
+}: {
+  pins: GlobePin[];
+  focusPinId?: string | null;
+  onPinSelect?: (pin: GlobePin | null) => void;
+  autoRotate: boolean;
+}) {
+  return (
+    <TextureErrorBoundary
+      fallback={
+        <GlobeProcedural
+          pins={pins}
+          focusPinId={focusPinId}
+          onPinSelect={onPinSelect}
+          autoRotate={autoRotate}
+        />
+      }
+    >
+      <Suspense
+        fallback={
+          <GlobeProcedural
+            pins={pins}
+            focusPinId={focusPinId}
+            onPinSelect={onPinSelect}
+            autoRotate={autoRotate}
+          />
+        }
+      >
+        <GlobeTextured
+          pins={pins}
+          focusPinId={focusPinId}
+          onPinSelect={onPinSelect}
+          autoRotate={autoRotate}
+        />
+      </Suspense>
+    </TextureErrorBoundary>
   );
 }
 
@@ -325,21 +437,19 @@ function GlobeScene({
       <directionalLight position={[5, 3, 5]} intensity={1.35} color="#ffffff" />
       <pointLight position={[-4, -2, 3]} intensity={0.45} color="#22d3ee" />
       <pointLight position={[2, -3, -2]} intensity={0.25} color="#f59e0b" />
-      <Stars radius={90} depth={50} count={1200} factor={3} saturation={0} fade speed={0.6} />
-      <Suspense fallback={null}>
-        <Globe
-          pins={pins}
-          focusPinId={focusPinId}
-          onPinSelect={onPinSelect}
-          autoRotate={autoRotate}
-        />
-      </Suspense>
+      <Stars radius={60} depth={40} count={400} factor={2.5} saturation={0} fade speed={0.45} />
+      <GlobeSafe
+        pins={pins}
+        focusPinId={focusPinId}
+        onPinSelect={onPinSelect}
+        autoRotate={autoRotate}
+      />
       <CameraFocus focusPin={focusPin} controlsRef={controlsRef} zoomLevel={zoomLevel} />
       <OrbitControls
         ref={controlsRef}
         enablePan={false}
-        enableZoom
-        zoomSpeed={0.85}
+        /* Wheel/pinch zoom off so the page can scroll; use toolbar zoom buttons */
+        enableZoom={false}
         minDistance={MIN_ZOOM}
         maxDistance={MAX_ZOOM}
         minPolarAngle={Math.PI / 4}
@@ -359,6 +469,7 @@ interface WorldGlobe3DProps {
   className?: string;
   focusPinId?: string | null;
   onPinSelect?: (pin: GlobePin | null) => void;
+  compact?: boolean;
 }
 
 export function WorldGlobe3D({
@@ -366,6 +477,7 @@ export function WorldGlobe3D({
   className = "",
   focusPinId,
   onPinSelect,
+  compact = false,
 }: WorldGlobe3DProps) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -376,7 +488,9 @@ export function WorldGlobe3D({
   const zoomIn = useCallback(() => {
     const ctrl = controlsRef.current;
     if (!ctrl) return;
+    ctrl.enableZoom = true;
     ctrl.dollyIn(1.25);
+    ctrl.enableZoom = false;
     ctrl.update();
     setZoomLevel((z) => Math.max(MIN_ZOOM, z * 0.82));
   }, []);
@@ -384,7 +498,9 @@ export function WorldGlobe3D({
   const zoomOut = useCallback(() => {
     const ctrl = controlsRef.current;
     if (!ctrl) return;
+    ctrl.enableZoom = true;
     ctrl.dollyOut(1.25);
+    ctrl.enableZoom = false;
     ctrl.update();
     setZoomLevel((z) => Math.min(MAX_ZOOM, z * 1.18));
   }, []);
@@ -392,7 +508,7 @@ export function WorldGlobe3D({
   const resetView = useCallback(() => {
     const ctrl = controlsRef.current;
     if (ctrl) {
-      ctrl.object.position.set(0, 0.35, DEFAULT_ZOOM);
+      ctrl.object.position.set(DEFAULT_CAM.x, DEFAULT_CAM.y, DEFAULT_CAM.z);
       ctrl.target.set(0, 0, 0);
       ctrl.autoRotate = autoRotate;
       ctrl.update();
@@ -415,16 +531,35 @@ export function WorldGlobe3D({
     }
   }, [autoRotate, focusPinId]);
 
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+
+    const ro = new ResizeObserver(() => {
+      window.dispatchEvent(new Event("resize"));
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   return (
     <div
       ref={containerRef}
-      className={`group/globe relative h-full min-h-[180px] w-full overflow-hidden ${expanded ? "fixed inset-0 z-[80] !min-h-0 bg-black/90" : ""} ${className}`}
+      className={`group/globe relative h-full w-full overflow-hidden touch-pan-y ${compact ? "min-h-0" : "min-h-[140px]"} ${expanded ? "fixed inset-0 z-[80] !min-h-0 bg-black/90" : ""} ${className}`}
+      style={{ touchAction: "pan-y" }}
     >
-      <Canvas
-        camera={{ position: [0, 0.35, DEFAULT_ZOOM], fov: 42 }}
-        dpr={[1, 2]}
-        gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+      <div className="absolute inset-0">
+        <Canvas
+        camera={{ position: [DEFAULT_CAM.x, DEFAULT_CAM.y, DEFAULT_CAM.z], fov: compact ? 38 : 42 }}
+        dpr={[1, compact ? 1.25 : 1.5]}
+        gl={{ antialias: true, alpha: false, powerPreference: "high-performance", stencil: false }}
+        style={{ touchAction: "pan-y", width: "100%", height: "100%" }}
+        onCreated={({ gl, set }) => {
+          gl.setClearColor("#020617", 1);
+          set({ frameloop: "always" });
+        }}
       >
+        <color attach="background" args={["#020617"]} />
         <GlobeScene
           pins={pins}
           focusPinId={focusPinId}
@@ -434,39 +569,40 @@ export function WorldGlobe3D({
           zoomLevel={zoomLevel}
         />
       </Canvas>
+      </div>
 
       {/* Toolbar */}
-      <div className="absolute right-2 top-2 flex flex-col gap-1 opacity-90 transition-opacity group-hover/globe:opacity-100">
-        <GlobeToolBtn label="Zoom in" onClick={zoomIn}>
-          <ZoomIn size={14} />
+      <div className={`absolute right-1.5 top-1.5 flex flex-col gap-0.5 ${compact ? "opacity-70" : "opacity-90"} transition-opacity group-hover/globe:opacity-100`}>
+        <GlobeToolBtn label="Zoom in" onClick={zoomIn} compact={compact}>
+          <ZoomIn size={compact ? 12 : 14} />
         </GlobeToolBtn>
-        <GlobeToolBtn label="Zoom out" onClick={zoomOut}>
-          <ZoomOut size={14} />
+        <GlobeToolBtn label="Zoom out" onClick={zoomOut} compact={compact}>
+          <ZoomOut size={compact ? 12 : 14} />
         </GlobeToolBtn>
-        <GlobeToolBtn label={autoRotate ? "Pause rotation" : "Auto rotate"} onClick={toggleRotate}>
-          {autoRotate ? <Pause size={14} /> : <Play size={14} />}
+        <GlobeToolBtn label={autoRotate ? "Pause rotation" : "Auto rotate"} onClick={toggleRotate} compact={compact}>
+          {autoRotate ? <Pause size={compact ? 12 : 14} /> : <Play size={compact ? 12 : 14} />}
         </GlobeToolBtn>
-        <GlobeToolBtn label="Reset view" onClick={resetView}>
-          <Home size={14} />
+        <GlobeToolBtn label="Reset view" onClick={resetView} compact={compact}>
+          <Home size={compact ? 12 : 14} />
         </GlobeToolBtn>
-        <GlobeToolBtn label={expanded ? "Exit fullscreen" : "Fullscreen"} onClick={() => setExpanded((e) => !e)}>
-          {expanded ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+        <GlobeToolBtn label={expanded ? "Exit fullscreen" : "Fullscreen"} onClick={() => setExpanded((e) => !e)} compact={compact}>
+          {expanded ? <Minimize2 size={compact ? 12 : 14} /> : <Maximize2 size={compact ? 12 : 14} />}
         </GlobeToolBtn>
       </div>
 
-      {/* Hint */}
-      <div className="pointer-events-none absolute bottom-2 left-2 rounded-lg bg-black/40 px-2 py-1 text-[9px] font-medium text-white/80 backdrop-blur-sm">
-        Scroll zoom · Drag rotate · Click pin
-      </div>
+      {!compact && (
+        <div className="pointer-events-none absolute bottom-2 left-2 rounded-lg bg-black/40 px-2 py-1 text-[9px] font-medium text-white/80 backdrop-blur-sm">
+          Drag rotate · Click pin · Use +/− to zoom
+        </div>
+      )}
 
-      {/* Legend */}
-      <div className="pointer-events-none absolute bottom-2 right-2 flex gap-2 rounded-lg bg-black/40 px-2 py-1 text-[9px] font-medium text-white/80 backdrop-blur-sm">
+      <div className={`pointer-events-none absolute bottom-1.5 ${compact ? "left-1.5" : "right-2"} flex gap-2 rounded-md bg-black/40 px-1.5 py-0.5 text-[8px] font-medium text-white/80 backdrop-blur-sm`}>
         <span className="flex items-center gap-1">
-          <span className="h-2 w-2 rounded-full bg-cyan-400 shadow-[0_0_6px_#22d3ee]" />
+          <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#22d3ee]" />
           Visit
         </span>
         <span className="flex items-center gap-1">
-          <span className="h-2 w-2 rounded-full bg-amber-400 shadow-[0_0_6px_#f59e0b]" />
+          <span className="h-1.5 w-1.5 rounded-full bg-amber-400 shadow-[0_0_6px_#f59e0b]" />
           CV
         </span>
       </div>
@@ -478,10 +614,12 @@ function GlobeToolBtn({
   children,
   label,
   onClick,
+  compact = false,
 }: {
   children: React.ReactNode;
   label: string;
   onClick: () => void;
+  compact?: boolean;
 }) {
   return (
     <button
@@ -489,7 +627,7 @@ function GlobeToolBtn({
       aria-label={label}
       title={label}
       onClick={onClick}
-      className="flex h-7 w-7 items-center justify-center rounded-lg border border-white/20 bg-black/50 text-white/90 backdrop-blur-sm transition hover:bg-primary/80 hover:text-white"
+      className={`flex items-center justify-center rounded-md border border-white/20 bg-black/50 text-white/90 backdrop-blur-sm transition hover:bg-primary/80 hover:text-white ${compact ? "h-6 w-6" : "h-7 w-7 rounded-lg"}`}
     >
       {children}
     </button>

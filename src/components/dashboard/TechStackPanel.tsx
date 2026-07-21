@@ -3,7 +3,7 @@ import { techStack } from "@/data/portfolio";
 const techCategories = [
   { label: "Backend", items: ["PHP", "CodeIgniter", "Python", "MySQL", "REST API"] },
   { label: "Frontend", items: ["JavaScript", "React", "Next.js", "jQuery", "AJAX", "HTML5", "CSS3"] },
-  { label: "Cloud & DevOps", items: ["AWS EC2", "AWS S3", "Git", "Vercel"] },
+  { label: "Tools", items: ["Git", "Postman", "Vercel"] },
   { label: "AI", items: ["Gemini", "AWS Bedrock"] },
 ] as const;
 

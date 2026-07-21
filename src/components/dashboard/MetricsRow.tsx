@@ -8,12 +8,10 @@ import { Sparkline } from "./Sparkline";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { useLiveExperience } from "@/hooks/useLiveExperience";
 import { LiveGlobePanel } from "./LiveGlobePanel";
-import { Users, Eye, Briefcase, FolderKanban, GitBranch } from "lucide-react";
+import { Users, Eye, Briefcase, FolderKanban, GitBranch, UsersRound } from "lucide-react";
 import { motion } from "framer-motion";
 import { Stagger, StaggerItem } from "@/components/animations/Motion";
 import type { LucideIcon } from "lucide-react";
-
-const ease = [0.22, 1, 0.36, 1] as const;
 
 interface MetricDef {
   label: string;
@@ -81,13 +79,24 @@ export function MetricsRow() {
       icon: GitBranch,
       accent: "from-slate-500/12 to-transparent",
     },
+    {
+      label: "Teams Led",
+      value: 2,
+      display: "2+",
+      change: "Mentoring",
+      animated: false,
+      icon: UsersRound,
+      accent: "from-rose-500/12 to-transparent",
+    },
   ];
 
   const sparklines = analyticsMetrics.map((m) => m.sparkline);
+  const fallbackSpark = [20, 35, 28, 48, 42, 60, 55, 70, 65, 80, 75, 88];
 
   return (
     <section className="space-y-3">
-      <Stagger className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+      {/* 6 cards → fills 2-col mobile / 3-col tablet / 6-col desktop evenly */}
+      <Stagger className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
         {metrics.map((metric, index) => {
           const Icon = metric.icon;
           return (
@@ -116,7 +125,7 @@ export function MetricsRow() {
                   </p>
                 )}
                 <div className="mt-2 opacity-70 group-hover:opacity-100">
-                  <Sparkline data={sparklines[index] ?? sparklines[0]} />
+                  <Sparkline data={sparklines[index] ?? fallbackSpark} />
                 </div>
               </motion.div>
             </StaggerItem>

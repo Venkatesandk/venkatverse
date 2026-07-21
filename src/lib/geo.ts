@@ -1,11 +1,14 @@
-/** Convert latitude/longitude to a point on a sphere (radius r). */
+/** Convert latitude/longitude to a Three.js SphereGeometry UV-aligned point.
+ * Equirectangular textures (NASA Blue Marble style): u=0 at lon=-180 (−X), u=0.5 at lon=0 (+X).
+ */
 export function latLngToVector3(lat: number, lng: number, radius: number) {
-  const latRad = (lat * Math.PI) / 180;
-  const lngRad = (lng * Math.PI) / 180;
+  const phi = ((90 - lat) * Math.PI) / 180; // polar angle from +Y
+  const theta = ((lng + 180) * Math.PI) / 180; // azimuth matching SphereGeometry UVs
+
   return {
-    x: radius * Math.cos(latRad) * Math.cos(lngRad),
-    y: radius * Math.sin(latRad),
-    z: radius * Math.cos(latRad) * Math.sin(lngRad),
+    x: -radius * Math.sin(phi) * Math.cos(theta),
+    y: radius * Math.cos(phi),
+    z: radius * Math.sin(phi) * Math.sin(theta),
   };
 }
 

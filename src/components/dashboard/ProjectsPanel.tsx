@@ -1,51 +1,86 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ExternalLink, Target, Lightbulb, UserRound, TrendingUp } from "lucide-react";
+import { ExternalLink, Target, Lightbulb, UserRound, CheckCircle2 } from "lucide-react";
 import { GitHubIcon } from "@/components/ui/SocialIcons";
-import { TitleCover } from "@/components/ui/TitleCover";
 import { projects } from "@/data/portfolio";
 import type { Project } from "@/types";
+import { ProjectMockup3D } from "./ProjectMockup3D";
 
-function ProjectDetail({ project }: { project: Project }) {
+function CaseStudyBody({ project }: { project: Project }) {
   return (
-    <div className="space-y-2.5 text-xs leading-relaxed text-foreground-muted">
-      {project.problem && (
-        <p className="flex gap-2">
-          <Target size={13} className="mt-0.5 shrink-0 text-primary" />
-          <span>
-            <span className="font-semibold text-foreground">Problem: </span>
-            {project.problem}
-          </span>
-        </p>
+    <div className="space-y-3">
+      {project.metrics && project.metrics.length > 0 && (
+        <ul className="space-y-1.5">
+          {project.metrics.map((m) => (
+            <li key={m} className="flex items-start gap-2 text-xs font-medium text-foreground sm:text-[13px]">
+              <CheckCircle2 size={14} className="mt-0.5 shrink-0 text-emerald-500" />
+              <span>{m}</span>
+            </li>
+          ))}
+        </ul>
       )}
-      {project.solution && (
-        <p className="flex gap-2">
-          <Lightbulb size={13} className="mt-0.5 shrink-0 text-amber-500" />
-          <span>
-            <span className="font-semibold text-foreground">Solution: </span>
-            {project.solution}
+
+      <div className="space-y-2 text-xs leading-relaxed text-foreground-muted">
+        {project.problem && (
+          <p className="flex gap-2">
+            <Target size={13} className="mt-0.5 shrink-0 text-primary" />
+            <span>
+              <span className="font-semibold text-foreground">Problem: </span>
+              {project.problem}
+            </span>
+          </p>
+        )}
+        {project.solution && (
+          <p className="flex gap-2">
+            <Lightbulb size={13} className="mt-0.5 shrink-0 text-amber-500" />
+            <span>
+              <span className="font-semibold text-foreground">Solution: </span>
+              {project.solution}
+            </span>
+          </p>
+        )}
+        {project.role && (
+          <p className="flex gap-2">
+            <UserRound size={13} className="mt-0.5 shrink-0 text-emerald-500" />
+            <span>
+              <span className="font-semibold text-foreground">My role: </span>
+              {project.role}
+            </span>
+          </p>
+        )}
+      </div>
+
+      <div className="flex flex-wrap gap-1.5">
+        {project.technologies.map((t) => (
+          <span key={t} className="rounded-md bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
+            {t}
           </span>
-        </p>
-      )}
-      {project.role && (
-        <p className="flex gap-2">
-          <UserRound size={13} className="mt-0.5 shrink-0 text-emerald-500" />
-          <span>
-            <span className="font-semibold text-foreground">My role: </span>
-            {project.role}
-          </span>
-        </p>
-      )}
-      {project.impact && (
-        <p className="flex gap-2">
-          <TrendingUp size={13} className="mt-0.5 shrink-0 text-cyan-500" />
-          <span>
-            <span className="font-semibold text-foreground">Impact: </span>
-            {project.impact}
-          </span>
-        </p>
-      )}
+        ))}
+      </div>
+
+      <div className="flex flex-wrap gap-2 pt-1">
+        {project.liveUrl && (
+          <a
+            href={project.liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-primary !w-auto !px-3 !py-2 !text-xs"
+          >
+            <ExternalLink size={14} /> Live Demo
+          </a>
+        )}
+        {project.githubUrl && (
+          <a
+            href={project.githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-glass !w-auto !px-3 !py-2 !text-xs"
+          >
+            <GitHubIcon width={14} height={14} /> GitHub
+          </a>
+        )}
+      </div>
     </div>
   );
 }
@@ -58,8 +93,10 @@ export function ProjectsPanel() {
     <section id="projects" className="panel">
       <div className="panel-header">
         <div>
-          <p className="panel-title">Featured Projects</p>
-          <p className="mt-0.5 text-[11px] text-muted">Problem · Solution · Role · Impact</p>
+          <p className="panel-title">Case Studies</p>
+          <p className="mt-0.5 text-[11px] text-muted">
+            Screenshot mockup · Metrics · Problem · Solution · Role
+          </p>
         </div>
         <a
           href="https://github.com/Venkatesandk"
@@ -70,77 +107,51 @@ export function ProjectsPanel() {
           GitHub →
         </a>
       </div>
-      <div className="panel-body space-y-4">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
+      <div className="panel-body space-y-5">
+        <motion.article
+          initial={{ opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          whileHover={{ y: -2 }}
-          className="overflow-hidden rounded-xl border border-border"
+          className="overflow-hidden rounded-2xl border border-border"
         >
-          <TitleCover
-            title={featured.title}
-            subtitle={featured.impact ?? featured.description}
-            badge="Featured Project"
-          />
-          <div className="p-4">
-            <h3 className="mb-1.5 text-lg font-bold text-foreground">{featured.title}</h3>
-            <p className="mb-3 text-sm leading-relaxed text-foreground-muted">{featured.description}</p>
-            <ProjectDetail project={featured} />
-            <div className="mb-4 mt-3 flex flex-wrap gap-1.5">
-              {featured.technologies.map((t) => (
-                <span
-                  key={t}
-                  className="rounded-md bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary"
-                >
-                  {t}
-                </span>
-              ))}
+          <div className="grid gap-0 lg:grid-cols-[1.05fr_1fr]">
+            <div className="border-b border-border bg-surface-2/40 p-3 sm:p-4 lg:border-b-0 lg:border-r">
+              <ProjectMockup3D project={featured} />
             </div>
-            <div className="flex flex-wrap gap-2">
-              {featured.liveUrl && (
-                <a
-                  href={featured.liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-primary !w-auto !px-3 !py-2 !text-xs"
-                >
-                  <ExternalLink size={14} /> Live Demo
-                </a>
-              )}
-              {featured.githubUrl && (
-                <a
-                  href={featured.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-glass !w-auto !px-3 !py-2 !text-xs"
-                >
-                  <GitHubIcon width={14} height={14} /> GitHub
-                </a>
-              )}
+            <div className="p-4 sm:p-5">
+              <p className="mb-1 text-[10px] font-bold uppercase tracking-wider text-primary">Featured case study</p>
+              <h3 className="mb-2 text-lg font-bold">{featured.title}</h3>
+              <p className="mb-3 text-sm text-foreground-muted">{featured.description}</p>
+              <CaseStudyBody project={featured} />
             </div>
           </div>
-        </motion.div>
+        </motion.article>
 
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2">
           {others.map((project, i) => (
             <motion.article
               key={project.id}
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.05 }}
-              whileHover={{ y: -3 }}
-              className="flex flex-col overflow-hidden rounded-xl border border-border"
+              whileHover={{ y: -4 }}
+              className="overflow-hidden rounded-2xl border border-border bg-surface"
             >
-              <TitleCover title={project.title} badge="Project" compact />
-              <div className="flex flex-1 flex-col p-3">
+              <div className="bg-surface-2/30 p-3">
+                <ProjectMockup3D project={project} compact />
+              </div>
+              <div className="p-3.5">
                 <h4 className="mb-1 text-sm font-bold">{project.title}</h4>
-                <p className="mb-2 line-clamp-2 text-[11px] text-foreground-muted">{project.description}</p>
-                {project.impact && (
-                  <p className="mb-2 text-[10px] font-medium text-emerald-600">
-                    Impact: {project.impact}
-                  </p>
+                {project.metrics && (
+                  <ul className="mb-2 space-y-1">
+                    {project.metrics.slice(0, 3).map((m) => (
+                      <li key={m} className="flex gap-1.5 text-[11px] font-medium text-foreground-muted">
+                        <CheckCircle2 size={12} className="mt-0.5 shrink-0 text-emerald-500" />
+                        {m}
+                      </li>
+                    ))}
+                  </ul>
                 )}
                 <div className="mb-2 flex flex-wrap gap-1">
                   {project.technologies.slice(0, 4).map((t) => (
@@ -149,28 +160,16 @@ export function ProjectsPanel() {
                     </span>
                   ))}
                 </div>
-                <div className="mt-auto flex gap-2">
-                  {project.liveUrl && (
-                    <a
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[10px] font-semibold text-primary hover:underline"
-                    >
-                      Demo
-                    </a>
-                  )}
-                  {project.githubUrl && (
-                    <a
-                      href={project.githubUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-[10px] font-semibold text-muted hover:text-primary"
-                    >
-                      <GitHubIcon width={11} height={11} /> Repo
-                    </a>
-                  )}
-                </div>
+                {project.githubUrl && (
+                  <a
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-[10px] font-semibold text-primary hover:underline"
+                  >
+                    <GitHubIcon width={11} height={11} /> GitHub
+                  </a>
+                )}
               </div>
             </motion.article>
           ))}

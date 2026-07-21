@@ -637,7 +637,7 @@ function ContactPanel() {
             initial={{ opacity: 0, x: 16 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="max-h-[min(70dvh,32rem)] overflow-y-auto overscroll-contain p-4 sm:p-6"
+            className="p-4 sm:p-6"
           >
             <div className="mb-3">
               <label htmlFor="dash-name" className="mb-1 block text-xs font-medium">Name</label>

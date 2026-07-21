@@ -3,6 +3,7 @@
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { DashboardHero } from "@/components/dashboard/DashboardHero";
 import { MetricsRow } from "@/components/dashboard/MetricsRow";
+import { DailyGreetingBanner } from "@/components/dashboard/DailyGreetingBanner";
 import { AboutPanel, AchievementsPanel, CertificationsPanel } from "@/components/dashboard/AboutPanel";
 import { SkillsPanel } from "@/components/dashboard/SkillsPanel";
 import { ProjectsPanel } from "@/components/dashboard/ProjectsPanel";
@@ -25,6 +26,7 @@ import { CareerGrowthCard } from "@/components/dashboard/CareerGrowthCard";
 import { HireAvailabilityStrip } from "@/components/dashboard/HireAvailabilityStrip";
 import { FAQPanel } from "@/components/dashboard/FAQPanel";
 import { WorkProcessPanel } from "@/components/dashboard/WorkProcessPanel";
+import { WhyHireMePanel } from "@/components/dashboard/WhyHireMePanel";
 import { Reveal } from "@/components/animations/Motion";
 import { developer, navLinks } from "@/data/portfolio";
 
@@ -35,6 +37,7 @@ export function HomePage() {
     <>
       <DashboardShell>
         <div className="dashboard-grid space-y-4">
+          <DailyGreetingBanner />
           <DashboardHero />
           <Reveal>
             <HireAvailabilityStrip />
@@ -47,6 +50,9 @@ export function HomePage() {
           </Reveal>
           <Reveal delay={0.05}>
             <SkillsPanel />
+          </Reveal>
+          <Reveal>
+            <WhyHireMePanel />
           </Reveal>
           <Reveal>
             <ProjectsPanel />
@@ -91,11 +97,11 @@ export function HomePage() {
           </Reveal>
         </div>
 
-        <footer className="mt-8 border-t border-border py-6 text-center text-xs text-muted">
+        <footer className="mt-4 border-t border-border py-4 pb-2 text-center text-xs text-muted md:mt-6 md:py-5">
           <p suppressHydrationWarning>
             © {CURRENT_YEAR} {developer.name}. All rights reserved.
           </p>
-          <div className="mt-2 flex flex-wrap justify-center gap-3">
+          <div className="mt-2 flex flex-wrap justify-center gap-x-3 gap-y-1">
             {navLinks.slice(0, 8).map((l) => (
               <a key={l.href} href={l.href} className="hover:text-primary">
                 {l.label}

@@ -31,6 +31,8 @@ export interface Project {
   solution: string;
   role?: string;
   impact?: string;
+  /** Quantified outcomes for recruiters */
+  metrics?: string[];
   liveUrl?: string;
   githubUrl?: string;
   caseStudyUrl?: string;

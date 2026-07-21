@@ -49,7 +49,14 @@ export const developer = {
   calendarUrl:
     "https://wa.me/919688213541?text=Hi%20Venkatesan%2C%20I%27d%20like%20to%20schedule%20an%20interview.",
   hirePitch:
-    "5+ Years Experience · PHP · CodeIgniter · Next.js · ERP Solutions · AI Integration",
+    "5+ Years Experience · PHP · Python · CodeIgniter · Next.js · ERP Solutions · AI Integration",
+  specialties: [
+    "5+ Years Experience",
+    "PHP • Python • CodeIgniter • Next.js",
+    "ERP Development",
+    "REST APIs",
+    "AI Integration",
+  ],
   resumeUrl: "/resume.pdf",
   photoUrl: "/profile-avatar.png",
   photoFullUrl: "/profile.png",
@@ -165,7 +172,7 @@ export const skills: Skill[] = [
   { name: "JavaScript", level: 90, category: "frontend" },
   { name: "MySQL", level: 90, category: "database" },
   { name: "React", level: 78, category: "frontend" },
-  { name: "Python", level: 72, category: "backend" },
+  { name: "Python", level: 78, category: "backend" },
   { name: "jQuery/AJAX", level: 88, category: "frontend" },
   { name: "AWS EC2/S3", level: 80, category: "devops" },
   { name: "REST API", level: 92, category: "backend" },
@@ -352,6 +359,11 @@ export const projects: Project[] = [
       "Built interconnected modules for admission, examination, fee & library management, inventory, HRMS, online exams, mentor-mentee, certificates, lab allocation, AI question generation, and reporting.",
     role: "Lead Application Developer — architecture, core modules & team mentoring",
     impact: "Unified 12+ campus workflows into one platform; cut admin manual work by ~60%",
+    metrics: [
+      "ERP spanning 20+ modules across campuses",
+      "Reduced manual admin work by ~60%",
+      "Faster report generation for academics & fees",
+    ],
     githubUrl: "https://github.com/Venkatesandk",
     featured: true,
   },
@@ -369,6 +381,11 @@ export const projects: Project[] = [
       "Built biometric attendance, payroll & salary processing, leave management, employee records, and role-based access for HR/admin/employees.",
     role: "Lead / Senior Developer — biometric sync, payroll & RBAC",
     impact: "Reduced payroll processing time by ~50% and eliminated attendance discrepancies",
+    metrics: [
+      "Payroll processing time cut by ~50%",
+      "Biometric sync for multi-campus attendance",
+      "Role-based access for HR, Admin & Employees",
+    ],
     githubUrl: "https://github.com/Venkatesandk",
     featured: false,
   },
@@ -386,6 +403,11 @@ export const projects: Project[] = [
       "Implemented exam scheduling, candidate flows, anti-cheat controls, result processing, and dashboards for administrators.",
     role: "Full-stack Developer — proctoring hooks, result engine & dashboards",
     impact: "Enabled secure remote exams for 1000+ concurrent candidates",
+    metrics: [
+      "Supports 1000+ concurrent candidates",
+      "Proctoring + evidence stored on AWS S3",
+      "Faster result publishing for institutions",
+    ],
     githubUrl: "https://github.com/Venkatesandk",
     featured: false,
   },
@@ -402,6 +424,11 @@ export const projects: Project[] = [
       "Created support ticketing, product tracking, license renewal, email notifications, and SLA management workflows.",
     role: "Application Developer — ticketing workflows & SLA alerts",
     impact: "Improved first-response SLA compliance and license renewal tracking",
+    metrics: [
+      "SLA tracking with email/SMS alerts",
+      "License renewal visibility for support teams",
+      "Structured escalation workflows",
+    ],
     githubUrl: "https://github.com/Venkatesandk",
     featured: false,
   },
@@ -418,6 +445,11 @@ export const projects: Project[] = [
       "Delivered CMS, authentication, REST API integrations, SEO-friendly pages, and fully responsive design.",
     role: "Full-stack Developer — CMS, auth & SEO pages",
     impact: "Delivered SEO-ready sites with admin CMS for non-technical editors",
+    metrics: [
+      "SEO-ready pages with CMS for editors",
+      "Auth + REST API integrations",
+      "Fully responsive across devices",
+    ],
     githubUrl: "https://github.com/Venkatesandk",
     featured: false,
   },
@@ -449,7 +481,7 @@ export const skillCategories = [
   {
     id: "backend",
     title: "Backend",
-    items: ["PHP 7/8", "CodeIgniter 3/4", "REST APIs", "Python"],
+    items: ["PHP", "CodeIgniter", "REST API", "Python"],
   },
   {
     id: "frontend",
@@ -459,19 +491,28 @@ export const skillCategories = [
   {
     id: "database",
     title: "Database",
-    items: ["MySQL", "Query optimization", "Reporting"],
+    items: ["MySQL"],
   },
   {
     id: "tools",
     title: "Tools",
-    items: ["Git", "VS Code", "Vercel", "AWS EC2/S3"],
+    items: ["Git", "Postman", "Vercel", "VS Code", "AWS EC2/S3"],
   },
   {
     id: "ai",
     title: "AI",
-    items: ["Gemini API", "AWS Bedrock", "Prompt Engineering"],
+    items: ["Gemini API", "Prompt Engineering", "AWS Bedrock"],
   },
 ] as const;
+
+export const whyHireMe = [
+  { title: "5+ Years Experience", desc: "Production systems since July 2021 at eNova Software." },
+  { title: "Enterprise ERP Development", desc: "Education, HRMS, exams, tickets — real business modules." },
+  { title: "Team Leadership", desc: "Promoted to Lead; mentoring, reviews, and architecture standards." },
+  { title: "AI Integration", desc: "Gemini / Bedrock features inside practical product workflows." },
+  { title: "Secure Applications", desc: "Auth, RBAC, OTP resume flow, and careful production practices." },
+  { title: "Deploy & Support", desc: "AWS / Vercel deploys, monitoring mindset, and long-term ownership." },
+];
 
 export const blogPosts: BlogPost[] = [
   {
@@ -571,6 +612,7 @@ export const navLinks = [
   { href: "#home", label: "Home", icon: "home" },
   { href: "#about", label: "About", icon: "user" },
   { href: "#skills", label: "Skills", icon: "layers" },
+  { href: "#why-hire", label: "Why Hire", icon: "star" },
   { href: "#projects", label: "Projects", icon: "folder" },
   { href: "#experience", label: "Experience", icon: "briefcase" },
   { href: "#services", label: "Services", icon: "grid" },
@@ -677,6 +719,6 @@ export const roadmapPhases = [
 ];
 
 export const techStack = [
-  "PHP", "CodeIgniter", "JavaScript", "React", "Next.js", "Python",
-  "MySQL", "jQuery", "AJAX", "HTML5", "CSS3", "AWS EC2", "AWS S3", "REST API", "Git", "Vercel", "Gemini", "AWS Bedrock",
+  "PHP", "Python", "CodeIgniter", "JavaScript", "React", "Next.js",
+  "MySQL", "jQuery", "AJAX", "HTML5", "CSS3", "AWS EC2", "AWS S3", "REST API", "Git", "Postman", "Vercel", "Gemini", "AWS Bedrock",
 ];

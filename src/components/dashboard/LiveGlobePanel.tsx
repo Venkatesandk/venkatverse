@@ -12,32 +12,12 @@ const WorldGlobe3D = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex h-full min-h-[180px] items-center justify-center rounded-xl bg-surface-2">
-        <Globe className="h-8 w-8 animate-pulse text-primary/40" />
+      <div className="flex h-full items-center justify-center bg-[#020617]">
+        <Globe className="h-7 w-7 animate-pulse text-primary/50" />
       </div>
     ),
   }
 );
-
-function PlaceLines({ pin }: { pin: GlobePin }) {
-  const district = pin.district || "—";
-  const state = pin.state || "—";
-  const country = pin.country || "—";
-
-  return (
-    <div className="mt-0.5 space-y-0.5 text-[10px] leading-snug text-muted">
-      <p>
-        <span className="font-semibold text-foreground/80">District:</span> {district}
-      </p>
-      <p>
-        <span className="font-semibold text-foreground/80">State:</span> {state}
-      </p>
-      <p>
-        <span className="font-semibold text-foreground/80">Country:</span> {country}
-      </p>
-    </div>
-  );
-}
 
 export function LiveGlobePanel() {
   const [pins, setPins] = useState<GlobePin[]>([]);
@@ -69,87 +49,80 @@ export function LiveGlobePanel() {
     };
   }, []);
 
-  const recent = showAll ? pins.slice(0, 10) : pins.slice(0, 5);
+  const recent = showAll ? pins.slice(0, 8) : pins.slice(0, 5);
 
   return (
     <motion.div
       className="panel overflow-hidden"
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
     >
-      <div className="flex flex-col gap-0 lg:flex-row">
-        <div className="min-h-[220px] flex-1 border-b border-border lg:min-h-[260px] lg:border-b-0 lg:border-r">
-          <div className="flex items-center justify-between px-3 py-2 sm:px-4">
-            <div className="flex items-center gap-2">
-              <Globe size={15} className="text-primary" />
-              <p className="text-xs font-bold">Live World Map</p>
-            </div>
-            <div className="flex gap-2 text-[10px] font-semibold">
-              <span className="flex items-center gap-1 text-cyan-600">
-                <span className="h-2 w-2 rounded-full bg-cyan-400" />
-                {stats.visits} visits
-              </span>
-              <span className="flex items-center gap-1 text-amber-600">
-                <span className="h-2 w-2 rounded-full bg-amber-400" />
-                {stats.downloads} CV
-              </span>
-            </div>
-          </div>
+      <div className="flex items-center justify-between gap-2 border-b border-border px-3 py-2 sm:px-4">
+        <div className="flex min-w-0 items-center gap-2">
+          <Globe size={15} className="shrink-0 text-primary" />
+          <p className="truncate text-xs font-bold sm:text-sm">Live World Map</p>
+        </div>
+        <div className="flex shrink-0 gap-2.5 text-[10px] font-semibold sm:text-[11px]">
+          <span className="flex items-center gap-1 text-cyan-600">
+            <span className="h-2 w-2 rounded-full bg-cyan-400" />
+            {stats.visits} visits
+          </span>
+          <span className="flex items-center gap-1 text-amber-600">
+            <span className="h-2 w-2 rounded-full bg-amber-400" />
+            {stats.downloads} CV
+          </span>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_min(34%,260px)]">
+        <div className="relative h-[220px] overflow-hidden bg-[#020617] sm:h-[250px] lg:h-[270px]">
           <WorldGlobe3D
             pins={pins}
-            focusPinId={active?.id ?? null}
-            onPinSelect={(pin) => setActive(pin)}
-            className="h-[220px] lg:h-[260px]"
+            focusPinId={active?.id}
+            onPinSelect={setActive}
+            className="!min-h-0 h-full"
           />
         </div>
 
-        <div className="flex w-full shrink-0 flex-col gap-2 p-3 sm:p-4 lg:w-[240px] xl:w-[260px]">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-muted">
-            Locations (Country · State · District)
-          </p>
-          {recent.length === 0 ? (
-            <p className="text-[11px] text-muted">
-              Seed locations load shortly. Allow browser location to add your live pin.
+        <div className="flex max-h-[220px] flex-col border-t border-border md:max-h-[250px] md:border-t-0 md:border-l lg:max-h-[270px]">
+          <div className="shrink-0 border-b border-border px-3 py-1.5">
+            <p className="text-[10px] font-bold uppercase tracking-wide text-muted">
+              Locations (Country · State · District)
             </p>
-          ) : (
-            <ul className="space-y-1.5">
-              {recent.map((p) => {
-                const isActive = active?.id === p.id;
-                const title = formatPlaceLabel(p);
-                return (
-                  <li key={p.id}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setActive(isActive ? null : p);
-                      }}
-                      className={`flex w-full items-start gap-2 rounded-lg px-2 py-1.5 text-left transition hover:bg-surface-2 ${isActive ? "bg-surface-2 ring-1 ring-primary/20" : ""}`}
-                    >
-                      {p.type === "download" ? (
-                        <Download size={12} className="mt-0.5 shrink-0 text-amber-500" />
-                      ) : (
-                        <MapPin size={12} className="mt-0.5 shrink-0 text-cyan-500" />
-                      )}
-                      <span className="min-w-0 flex-1">
-                        <span className="block truncate text-[11px] font-medium">
-                          {p.type === "download" ? "CV Download" : "Visitor"} · {title}
-                        </span>
-                        {isActive && <PlaceLines pin={p} />}
-                      </span>
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+          </div>
+          <ul className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+            {recent.length === 0 && (
+              <li className="px-3 py-5 text-center text-xs text-muted">No pins yet</li>
+            )}
+            {recent.map((pin) => (
+              <li key={pin.id}>
+                <button
+                  type="button"
+                  onClick={() => setActive(pin)}
+                  className={`flex w-full items-center gap-2 px-3 py-2 text-left transition hover:bg-surface-2 ${
+                    active?.id === pin.id ? "bg-primary/5" : ""
+                  }`}
+                >
+                  {pin.type === "download" ? (
+                    <Download size={13} className="shrink-0 text-amber-500" />
+                  ) : (
+                    <MapPin size={13} className="shrink-0 text-cyan-500" />
+                  )}
+                  <span className="min-w-0 flex-1 truncate text-[11px] font-medium leading-tight text-foreground sm:text-xs">
+                    {formatPlaceLabel(pin)}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
           {pins.length > 5 && (
             <button
               type="button"
-              onClick={() => setShowAll(!showAll)}
-              className="text-left text-[10px] font-semibold text-primary hover:underline"
+              onClick={() => setShowAll((v) => !v)}
+              className="shrink-0 border-t border-border px-3 py-1.5 text-[11px] font-semibold text-primary"
             >
-              {showAll ? "Show less" : `View more (${pins.length - 5})`}
+              {showAll ? "Show less" : `View more (${Math.min(pins.length, 8)})`}
             </button>
           )}
         </div>

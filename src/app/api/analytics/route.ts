@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { getAnalytics, recordVisit } from "@/lib/analytics-store";
-import { isValidCoord, validCoords } from "@/lib/geo";
+import { validCoords } from "@/lib/geo";
 import { recordMapPin } from "@/lib/map-pins-store";
+import { geoFromIp, getClientIp } from "@/lib/ip-geo";
 import { readFile } from "fs/promises";
 import path from "path";
 
@@ -40,7 +41,11 @@ export async function POST(request: Request) {
 
     const stats = await recordVisit();
 
-    const coords = validCoords(lat, lng);
+    let coords = validCoords(lat, lng);
+    if (!coords) {
+      coords = await geoFromIp(getClientIp(request));
+    }
+
     if (coords) {
       await recordMapPin({
         type: "visit",
