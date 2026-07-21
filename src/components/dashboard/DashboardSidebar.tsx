@@ -2,6 +2,7 @@
 
 import type { LucideIcon } from "lucide-react";
 import { useEffect } from "react";
+import Link from "next/link";
 import {
   Home,
   User,
@@ -14,6 +15,9 @@ import {
   BookOpen,
   Mail,
   X,
+  Sparkles,
+  Star,
+  HelpCircle,
 } from "lucide-react";
 import { navLinks, developer } from "@/data/portfolio";
 import Image from "next/image";
@@ -29,6 +33,9 @@ const iconMap: Record<string, LucideIcon> = {
   award: Award,
   book: BookOpen,
   mail: Mail,
+  sparkles: Sparkles,
+  star: Star,
+  help: HelpCircle,
 };
 
 interface DashboardSidebarProps {
@@ -63,13 +70,10 @@ export function DashboardSidebar({ open, onOpenChange }: DashboardSidebarProps) 
       <nav className="flex-1 space-y-0.5 py-4">
         {navLinks.map((link) => {
           const Icon = iconMap[link.icon] ?? Home;
-          return (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={() => onOpenChange(false)}
-              className="sidebar-link"
-            >
+          const isRoute = link.href.startsWith("/");
+          const className = "sidebar-link";
+          const children = (
+            <>
               <Icon size={18} />
               <span className="flex-1">{link.label}</span>
               {"badge" in link && link.badge && (
@@ -77,6 +81,15 @@ export function DashboardSidebar({ open, onOpenChange }: DashboardSidebarProps) 
                   {link.badge}
                 </span>
               )}
+            </>
+          );
+          return isRoute ? (
+            <Link key={link.href} href={link.href} onClick={() => onOpenChange(false)} className={className}>
+              {children}
+            </Link>
+          ) : (
+            <a key={link.href} href={link.href} onClick={() => onOpenChange(false)} className={className}>
+              {children}
             </a>
           );
         })}

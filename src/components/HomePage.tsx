@@ -27,6 +27,7 @@ import { HireAvailabilityStrip } from "@/components/dashboard/HireAvailabilitySt
 import { FAQPanel } from "@/components/dashboard/FAQPanel";
 import { WorkProcessPanel } from "@/components/dashboard/WorkProcessPanel";
 import { WhyHireMePanel } from "@/components/dashboard/WhyHireMePanel";
+import { AdvancedFeaturesPanel } from "@/components/dashboard/AdvancedFeaturesPanel";
 import { Reveal } from "@/components/animations/Motion";
 import { developer, navLinks } from "@/data/portfolio";
 
@@ -74,6 +75,9 @@ export function HomePage() {
           </div>
           <Reveal>
             <RoadmapPanel />
+          </Reveal>
+          <Reveal>
+            <AdvancedFeaturesPanel />
           </Reveal>
           <div className="dashboard-grid items-start gap-4 lg:grid-cols-2 lg:gap-5">
             <Reveal>

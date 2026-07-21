@@ -645,6 +645,8 @@ export const navLinks = [
   { href: "#why-hire", label: "Why Hire", icon: "star" },
   { href: "#projects", label: "Projects", icon: "folder" },
   { href: "#experience", label: "Experience", icon: "briefcase" },
+  { href: "#advanced-features", label: "Advanced", icon: "sparkles", badge: "New" },
+  { href: "/recruiter", label: "Recruiter", icon: "briefcase", badge: "New" },
   { href: "#services", label: "Services", icon: "grid" },
   { href: "#ai-suite", label: "AI Suite", icon: "bot", badge: "New" },
   { href: "#achievements", label: "Education", icon: "award" },
@@ -736,15 +738,15 @@ export const roadmapPhases = [
     id: "4",
     title: "Recruiter UX",
     period: "Q2–Q3 2026",
-    status: "in-progress" as const,
-    items: ["Case studies", "Blog articles", "Cert badges", "Hire CTAs"],
+    status: "completed" as const,
+    items: ["Case studies", "Recruiter dashboard", "ATS Resume Reviewer", "Interview Simulator"],
   },
   {
     id: "5",
     title: "Next",
     period: "Q4 2026+",
-    status: "upcoming" as const,
-    items: ["Live demos", "Open-source kits", "Video intro", "SaaS experiments"],
+    status: "in-progress" as const,
+    items: ["Live demos", "Open-source kits", "Video intro", "Calendly integration"],
   },
 ];
 
