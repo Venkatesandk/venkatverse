@@ -1,8 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { developer, certificates } from "@/data/portfolio";
-import { Award, Calendar } from "lucide-react";
+import { developer, certificates, professionalCerts } from "@/data/portfolio";
+import { Award, Calendar, BadgeCheck } from "lucide-react";
 import { Stagger, StaggerItem } from "@/components/animations/Motion";
 
 export function AboutPanel() {
@@ -38,12 +38,64 @@ export function AboutPanel() {
           >
             <p className="mb-2 text-xs font-bold uppercase tracking-wider text-muted">Quick Facts</p>
             <ul className="space-y-2 text-sm">
-              <li className="break-words"><span className="text-muted">Role:</span> {developer.role}</li>
-              <li className="break-all"><span className="text-muted">Email:</span> {developer.email}</li>
-              <li className="break-words"><span className="text-muted">Phone:</span> {developer.phone}</li>
+              <li className="break-words">
+                <span className="text-muted">Role:</span> {developer.role}
+              </li>
+              <li className="break-all">
+                <span className="text-muted">Email:</span> {developer.email}
+              </li>
+              <li className="break-words">
+                <span className="text-muted">Phone:</span> {developer.phone}
+              </li>
             </ul>
           </motion.div>
         </div>
+      </div>
+    </section>
+  );
+}
+
+export function CertificationsPanel() {
+  return (
+    <section id="certifications" className="panel">
+      <div className="panel-header">
+        <div className="flex items-center gap-2">
+          <BadgeCheck size={16} className="text-primary" />
+          <p className="panel-title">Certifications</p>
+        </div>
+        <span className="panel-badge">Platform badges</span>
+      </div>
+      <div className="panel-body">
+        <Stagger className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {professionalCerts.map((cert) => {
+            const Card = (
+              <motion.div
+                className="flex items-start gap-3 rounded-xl border border-border p-3.5 transition hover:border-primary/30"
+                whileHover={{ y: -3 }}
+              >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-cyan-500/10 text-[10px] font-extrabold tracking-wide text-primary ring-1 ring-primary/20">
+                  {cert.badge}
+                </span>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold leading-snug">{cert.title}</p>
+                  <p className="text-xs text-muted">{cert.issuer}</p>
+                  <p className="mt-0.5 text-[10px] font-medium text-primary">{cert.date}</p>
+                </div>
+              </motion.div>
+            );
+            return (
+              <StaggerItem key={cert.id}>
+                {cert.url ? (
+                  <a href={cert.url} target="_blank" rel="noopener noreferrer" className="block">
+                    {Card}
+                  </a>
+                ) : (
+                  Card
+                )}
+              </StaggerItem>
+            );
+          })}
+        </Stagger>
       </div>
     </section>
   );

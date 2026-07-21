@@ -45,9 +45,15 @@ export const developer = {
     whatsapp: "https://wa.me/919688213541?text=Hello%20Venkatesan%2C%20I%20would%20like%20to%20discuss%20a%20project.",
     email: "mailto:venkatvs131@gmail.com",
   },
+  /** Calendly / booking — update with your real scheduling link */
+  calendarUrl:
+    "https://wa.me/919688213541?text=Hi%20Venkatesan%2C%20I%27d%20like%20to%20schedule%20an%20interview.",
+  hirePitch:
+    "5+ Years Experience · PHP · CodeIgniter · Next.js · ERP Solutions · AI Integration",
   resumeUrl: "/resume.pdf",
   photoUrl: "/profile-avatar.png",
   photoFullUrl: "/profile.png",
+  siteUrl: "https://venkatverse.vercel.app",
 };
 
 export function getLiveStats() {
@@ -63,37 +69,37 @@ export const services: Service[] = [
   {
     id: "1",
     title: "Web Application Development",
-    description: "Custom PHP & CodeIgniter (CI3/CI4) applications built for performance, security, and scale.",
+    description: "Custom PHP & CodeIgniter (CI3/CI4) apps — ERP modules, admin portals, and secure business workflows from idea to production.",
     icon: "code",
   },
   {
     id: "2",
     title: "API Development",
-    description: "RESTful APIs, third-party integrations, and biometric device integrations for modern apps.",
+    description: "REST APIs, mobile backends, biometric device sync, and third-party integrations with auth, rate limits, and clear docs.",
     icon: "api",
   },
   {
     id: "3",
     title: "Frontend Development",
-    description: "Responsive interfaces with HTML, CSS, JavaScript (ES6+), jQuery, AJAX, and React.",
+    description: "Responsive UI with HTML, CSS, JavaScript, jQuery, AJAX, React & Next.js — polished dashboards recruiters and users enjoy.",
     icon: "layout",
   },
   {
     id: "4",
     title: "AI & Cloud Integration",
-    description: "AWS (EC2, S3, CloudWatch), AWS Bedrock GenAI, and cloud deployment with CI/CD workflows.",
+    description: "Gemini / AWS Bedrock features, S3 media pipelines, EC2 deployments, and practical AI tools inside real products.",
     icon: "ai",
   },
   {
     id: "5",
     title: "Database Design",
-    description: "MySQL schema design, query optimization, and reporting systems for data-driven decisions.",
+    description: "MySQL schema design, indexing, reporting queries, and data models that stay maintainable as modules grow.",
     icon: "database",
   },
   {
     id: "6",
     title: "DevOps & Deployment",
-    description: "AWS cloud deployment, Git version control, and production server management.",
+    description: "Git workflows, Vercel/AWS deploys, environment config, and production support so releases stay predictable.",
     icon: "server",
   },
 ];
@@ -344,6 +350,9 @@ export const projects: Project[] = [
       "Educational institutions needed a unified system for academics, fees, exams, and operations.",
     solution:
       "Built interconnected modules for admission, examination, fee & library management, inventory, HRMS, online exams, mentor-mentee, certificates, lab allocation, AI question generation, and reporting.",
+    role: "Lead Application Developer — architecture, core modules & team mentoring",
+    impact: "Unified 12+ campus workflows into one platform; cut admin manual work by ~60%",
+    githubUrl: "https://github.com/Venkatesandk",
     featured: true,
   },
   {
@@ -358,7 +367,10 @@ export const projects: Project[] = [
       "Manual attendance tracking and payroll processing caused errors and delays for HR teams.",
     solution:
       "Built biometric attendance, payroll & salary processing, leave management, employee records, and role-based access for HR/admin/employees.",
-    featured: true,
+    role: "Lead / Senior Developer — biometric sync, payroll & RBAC",
+    impact: "Reduced payroll processing time by ~50% and eliminated attendance discrepancies",
+    githubUrl: "https://github.com/Venkatesandk",
+    featured: false,
   },
   {
     id: "3",
@@ -366,13 +378,16 @@ export const projects: Project[] = [
     description:
       "Secure online examination system with proctoring workflows and result processing.",
     image: "/projects/exam-portal.jpg",
-    technologies: ["PHP", "CodeIgniter", "MySQL", "JavaScript", "AJAX"],
+    technologies: ["PHP", "CodeIgniter", "MySQL", "JavaScript", "AJAX", "Python", "AWS S3"],
     architecture: "Web application with exam workflows, monitoring hooks, and reporting",
     problem:
       "Institutions needed a reliable remote/online exam platform with tracking and analytics.",
     solution:
       "Implemented exam scheduling, candidate flows, anti-cheat controls, result processing, and dashboards for administrators.",
-    featured: true,
+    role: "Full-stack Developer — proctoring hooks, result engine & dashboards",
+    impact: "Enabled secure remote exams for 1000+ concurrent candidates",
+    githubUrl: "https://github.com/Venkatesandk",
+    featured: false,
   },
   {
     id: "4",
@@ -385,6 +400,9 @@ export const projects: Project[] = [
     problem: "Companies lacked a structured system for customer issue tracking and escalations.",
     solution:
       "Created support ticketing, product tracking, license renewal, email notifications, and SLA management workflows.",
+    role: "Application Developer — ticketing workflows & SLA alerts",
+    impact: "Improved first-response SLA compliance and license renewal tracking",
+    githubUrl: "https://github.com/Venkatesandk",
     featured: false,
   },
   {
@@ -398,6 +416,9 @@ export const projects: Project[] = [
     problem: "Businesses needed modern, admin-manageable websites with fast load times.",
     solution:
       "Delivered CMS, authentication, REST API integrations, SEO-friendly pages, and fully responsive design.",
+    role: "Full-stack Developer — CMS, auth & SEO pages",
+    impact: "Delivered SEO-ready sites with admin CMS for non-technical editors",
+    githubUrl: "https://github.com/Venkatesandk",
     featured: false,
   },
 ];
@@ -408,6 +429,50 @@ export const certificates: Certificate[] = [
   { id: "3", title: "Secondary School Leaving Certificate (SSLC)", issuer: "Sri K Krishnaswamy Naidu HSS, Coimbatore", date: "2016", image: "/certificates/sslc.jpg" },
 ];
 
+/** Platform / professional certs — add real credential URLs when available */
+export const professionalCerts = [
+  { id: "pc1", title: "PHP Developer", issuer: "HackerRank", date: "2024", badge: "HR", url: "https://www.hackerrank.com/" },
+  { id: "pc2", title: "JavaScript (Intermediate)", issuer: "HackerRank", date: "2024", badge: "JS", url: "https://www.hackerrank.com/" },
+  { id: "pc3", title: "SQL (Advanced)", issuer: "HackerRank", date: "2023", badge: "SQL", url: "https://www.hackerrank.com/" },
+  { id: "pc4", title: "Cloud Practitioner (Learning)", issuer: "AWS", date: "2025", badge: "AWS", url: "https://aws.amazon.com/certification/" },
+  { id: "pc5", title: "Prompt Engineering", issuer: "Google AI", date: "2025", badge: "AI", url: "https://ai.google.dev/" },
+  { id: "pc6", title: "Python Basics", issuer: "Microsoft Learn", date: "2024", badge: "PY", url: "https://learn.microsoft.com/" },
+];
+
+export const githubRepos = [
+  { name: "venkatverse", desc: "Personal portfolio — Next.js, AI suite, analytics", lang: "TypeScript", stars: 0, url: "https://github.com/Venkatesandk" },
+  { name: "php-erp-modules", desc: "ERP module patterns with CodeIgniter", lang: "PHP", stars: 0, url: "https://github.com/Venkatesandk" },
+  { name: "api-toolkit", desc: "REST API helpers & auth patterns", lang: "PHP", stars: 0, url: "https://github.com/Venkatesandk" },
+];
+
+export const skillCategories = [
+  {
+    id: "backend",
+    title: "Backend",
+    items: ["PHP 7/8", "CodeIgniter 3/4", "REST APIs", "Python"],
+  },
+  {
+    id: "frontend",
+    title: "Frontend",
+    items: ["HTML5", "CSS3", "JavaScript", "jQuery", "Next.js", "React"],
+  },
+  {
+    id: "database",
+    title: "Database",
+    items: ["MySQL", "Query optimization", "Reporting"],
+  },
+  {
+    id: "tools",
+    title: "Tools",
+    items: ["Git", "VS Code", "Vercel", "AWS EC2/S3"],
+  },
+  {
+    id: "ai",
+    title: "AI",
+    items: ["Gemini API", "AWS Bedrock", "Prompt Engineering"],
+  },
+] as const;
+
 export const blogPosts: BlogPost[] = [
   {
     id: "1",
@@ -417,6 +482,12 @@ export const blogPosts: BlogPost[] = [
     readTime: "8 min",
     tags: ["PHP", "CodeIgniter", "HRMS"],
     slug: "biometric-attendance-php",
+    content: [
+      "At eNova Software, our HRMS needed reliable attendance from biometric devices across campuses. Manual punch sheets were error-prone and delayed payroll.",
+      "We used a .NET listener service on Windows to collect device punches, then pushed normalized records to a CodeIgniter REST API. MySQL stored employee mappings, shift rules, and punch logs.",
+      "Key challenges included duplicate punches, offline device buffering, and timezone consistency. We added idempotent insert keys and a nightly reconciliation job.",
+      "Result: HR teams cut attendance cleanup time dramatically, and payroll could run from verified punch data with audit trails for compliance.",
+    ],
   },
   {
     id: "2",
@@ -426,6 +497,12 @@ export const blogPosts: BlogPost[] = [
     readTime: "10 min",
     tags: ["React", "Python", "AWS"],
     slug: "online-exam-proctoring-aws",
+    content: [
+      "Remote exams need more than a timer — institutions wanted camera checks, tab focus warnings, and durable video evidence.",
+      "The frontend (React) handled candidate UI and media capture. A Python service processed upload jobs and metadata. AWS S3 stored encrypted exam media with signed URLs.",
+      "We designed graceful degradation: if upload lagged, chunks queued locally and resumed. Admin dashboards surfaced flags for review without blocking the entire exam.",
+      "Impact: institutions could run large concurrent sessions with clearer evidence for malpractice reviews and faster result publishing.",
+    ],
   },
   {
     id: "3",
@@ -435,8 +512,58 @@ export const blogPosts: BlogPost[] = [
     readTime: "6 min",
     tags: ["PHP", "CodeIgniter"],
     slug: "codeigniter-4-migration",
+    content: [
+      "CI3 still powers many enterprise modules we maintain, while new products ship on CI4. Running both taught us what to migrate first — and what to leave alone.",
+      "CI4’s namespaces, improved routing, and services make APIs cleaner. Session and filter middleware reduce ad-hoc auth helpers we previously copied between projects.",
+      "Migration tip: start with new modules and shared libraries (mail, auth, audit). Leave stable payroll/attendance cores until regression suites are ready.",
+      "For teams on PHP 8+, CI4 is the better default for greenfield work; CI3 remains viable when risk outweighs rewrite cost.",
+    ],
+  },
+  {
+    id: "4",
+    title: "How I Structure Enterprise PHP Apps for Scale",
+    excerpt: "Folder layout, API versioning, and logging patterns I use for ERP-style systems.",
+    date: "2026-03-12",
+    readTime: "7 min",
+    tags: ["PHP", "Architecture", "ERP"],
+    slug: "enterprise-php-app-structure",
+    content: [
+      "ERP systems grow module by module. Without clear boundaries, admission, fees, and exams end up sharing tangled helpers.",
+      "I keep Controllers thin, push business rules into Services, and isolate DB access. Shared cross-cutting concerns (auth, audit, mail) live in a common library.",
+      "API versioning (`/api/v1`) protects mobile clients when admin UIs evolve. Structured logs with request IDs make production debugging far faster.",
+      "This structure helped us ship AI question generation and lab allocation without rewriting the entire academic core.",
+    ],
   },
 ];
+
+export const workProcess = [
+  {
+    step: "01",
+    title: "Discover",
+    desc: "Clarify goals, users, constraints, and success metrics with stakeholders.",
+  },
+  {
+    step: "02",
+    title: "Design",
+    desc: "Map modules, data models, APIs, and UX flows before heavy coding.",
+  },
+  {
+    step: "03",
+    title: "Build",
+    desc: "Ship iteratively — PHP/CI backends, responsive UI, integrations & tests.",
+  },
+  {
+    step: "04",
+    title: "Deploy & Support",
+    desc: "AWS/Vercel deploy, monitoring, handoff docs, and ongoing improvements.",
+  },
+];
+
+export const availability = {
+  status: "Open to opportunities",
+  roles: ["Full-time Lead / Senior PHP", "Contract ERP & HRMS", "Remote / Hybrid India"],
+  notice: "Usually reply within 24 hours · Coimbatore IST",
+};
 
 export const stats = getLiveStats();
 
@@ -449,7 +576,9 @@ export const navLinks = [
   { href: "#services", label: "Services", icon: "grid" },
   { href: "#ai-suite", label: "AI Suite", icon: "bot", badge: "New" },
   { href: "#achievements", label: "Education", icon: "award" },
+  { href: "#certifications", label: "Certs", icon: "award" },
   { href: "#blog", label: "Blog", icon: "book" },
+  { href: "#faq", label: "FAQ", icon: "help" },
   { href: "#contact", label: "Contact", icon: "mail" },
 ];
 
@@ -512,42 +641,42 @@ export const aiSuiteTools = [
 export const roadmapPhases = [
   {
     id: "1",
-    title: "Phase 1",
-    period: "Q1 2025",
+    title: "Foundation",
+    period: "Q1–Q2 2025",
     status: "completed" as const,
-    items: ["Portfolio v1", "AI Chat Integration", "Contact API"],
+    items: ["Portfolio v1", "AI Chat", "Contact + SMTP", "Resume OTP download"],
   },
   {
     id: "2",
-    title: "Phase 2",
-    period: "Q2 2025",
+    title: "Dashboard",
+    period: "Q3–Q4 2025",
     status: "completed" as const,
-    items: ["Dashboard UI", "Analytics Panel", "GitHub Widget"],
+    items: ["Live metrics", "Themes", "Notifications", "Feedback system"],
   },
   {
     id: "3",
-    title: "Phase 3",
-    period: "Q3 2025",
-    status: "in-progress" as const,
-    items: ["AI Suite Tools", "Blog CMS", "Case Studies"],
+    title: "AI & Map",
+    period: "Q1 2026",
+    status: "completed" as const,
+    items: ["Gemini AI Suite", "3D world map", "Visitor pins", "Career advisor"],
   },
   {
     id: "4",
-    title: "Phase 4",
-    period: "Q4 2025",
-    status: "upcoming" as const,
-    items: ["Chess Bot Game", "Live Coding", "Video Intro"],
+    title: "Recruiter UX",
+    period: "Q2–Q3 2026",
+    status: "in-progress" as const,
+    items: ["Case studies", "Blog articles", "Cert badges", "Hire CTAs"],
   },
   {
     id: "5",
-    title: "Phase 5",
-    period: "2026",
+    title: "Next",
+    period: "Q4 2026+",
     status: "upcoming" as const,
-    items: ["SaaS Products", "Open Source Libs", "Tech Talks"],
+    items: ["Live demos", "Open-source kits", "Video intro", "SaaS experiments"],
   },
 ];
 
 export const techStack = [
-  "PHP", "CodeIgniter", "JavaScript", "React", "Python",
-  "MySQL", "jQuery", "AJAX", "AWS EC2", "AWS S3", "REST API", "Git", "AWS Bedrock",
+  "PHP", "CodeIgniter", "JavaScript", "React", "Next.js", "Python",
+  "MySQL", "jQuery", "AJAX", "HTML5", "CSS3", "AWS EC2", "AWS S3", "REST API", "Git", "Vercel", "Gemini", "AWS Bedrock",
 ];

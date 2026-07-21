@@ -3,7 +3,7 @@
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { DashboardHero } from "@/components/dashboard/DashboardHero";
 import { MetricsRow } from "@/components/dashboard/MetricsRow";
-import { AboutPanel, AchievementsPanel } from "@/components/dashboard/AboutPanel";
+import { AboutPanel, AchievementsPanel, CertificationsPanel } from "@/components/dashboard/AboutPanel";
 import { SkillsPanel } from "@/components/dashboard/SkillsPanel";
 import { ProjectsPanel } from "@/components/dashboard/ProjectsPanel";
 import { ExperiencePanel } from "@/components/dashboard/ExperiencePanel";
@@ -22,6 +22,9 @@ import { ResumeDownloadModal } from "@/components/sections/ResumeDownloadModal";
 import { FeedbackPopup } from "@/components/sections/FeedbackPopup";
 import { BackToTop } from "@/components/sections/BackToTop";
 import { CareerGrowthCard } from "@/components/dashboard/CareerGrowthCard";
+import { HireAvailabilityStrip } from "@/components/dashboard/HireAvailabilityStrip";
+import { FAQPanel } from "@/components/dashboard/FAQPanel";
+import { WorkProcessPanel } from "@/components/dashboard/WorkProcessPanel";
 import { Reveal } from "@/components/animations/Motion";
 import { developer, navLinks } from "@/data/portfolio";
 
@@ -34,6 +37,9 @@ export function HomePage() {
         <div className="dashboard-grid space-y-4">
           <DashboardHero />
           <Reveal>
+            <HireAvailabilityStrip />
+          </Reveal>
+          <Reveal>
             <MetricsRow />
           </Reveal>
           <Reveal delay={0.05}>
@@ -42,9 +48,14 @@ export function HomePage() {
           <Reveal delay={0.05}>
             <SkillsPanel />
           </Reveal>
-          <div className="dashboard-grid lg:grid-cols-2">
+          <Reveal>
             <ProjectsPanel />
+          </Reveal>
+          <div className="dashboard-grid items-start gap-4 lg:grid-cols-2">
             <CareerGrowthCard />
+            <Reveal delay={0.06}>
+              <WorkProcessPanel />
+            </Reveal>
           </div>
           <ExperiencePanel />
           <div className="dashboard-grid lg:grid-cols-2">
@@ -67,7 +78,13 @@ export function HomePage() {
             </Reveal>
           </div>
           <Reveal>
+            <CertificationsPanel />
+          </Reveal>
+          <Reveal>
             <AchievementsPanel />
+          </Reveal>
+          <Reveal>
+            <FAQPanel />
           </Reveal>
           <Reveal>
             <DashboardBottom />
@@ -75,10 +92,14 @@ export function HomePage() {
         </div>
 
         <footer className="mt-8 border-t border-border py-6 text-center text-xs text-muted">
-          <p suppressHydrationWarning>© {CURRENT_YEAR} {developer.name}. All rights reserved.</p>
+          <p suppressHydrationWarning>
+            © {CURRENT_YEAR} {developer.name}. All rights reserved.
+          </p>
           <div className="mt-2 flex flex-wrap justify-center gap-3">
-            {navLinks.slice(0, 6).map((l) => (
-              <a key={l.href} href={l.href} className="hover:text-primary">{l.label}</a>
+            {navLinks.slice(0, 8).map((l) => (
+              <a key={l.href} href={l.href} className="hover:text-primary">
+                {l.label}
+              </a>
             ))}
           </div>
         </footer>

@@ -35,7 +35,7 @@ export function TitleCover({ title, subtitle, badge, className, compact }: Title
       className={cn(
         "group/cover relative flex overflow-hidden bg-gradient-to-br text-white",
         theme.bg,
-        compact ? "aspect-[4/3] flex-col justify-between p-3" : "aspect-[16/10] flex-col justify-between p-4 sm:p-5",
+        compact ? "min-h-[7.5rem] flex-col justify-between p-3" : "min-h-[10.5rem] flex-col justify-between p-4 sm:min-h-[12rem] sm:p-5",
         className
       )}
       whileHover={{ scale: 1.01 }}

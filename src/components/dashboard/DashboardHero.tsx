@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import {
-  ArrowRight,
   Download,
   MapPin,
   Eye,
   Users,
   ShieldCheck,
   Sparkles,
+  Calendar,
+  Briefcase,
 } from "lucide-react";
 import { developer, techStack } from "@/data/portfolio";
 import { ResumeDownloadButton } from "@/components/sections/ResumeDownloadModal";
@@ -109,13 +110,16 @@ export function DashboardHero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
             >
-              Hi, I&apos;m{" "}
               <span className="hero-brand-name">{developer.firstName}</span>{" "}
               <span className="gradient-text">{developer.lastName}</span>
             </motion.h1>
 
-            <p className="mb-3 text-sm font-semibold text-primary sm:text-base md:text-lg">
-              Lead Application Developer · PHP Expert · AWS &amp; AI
+            <p className="mb-2 text-base font-bold text-foreground sm:text-lg md:text-xl">
+              {developer.role}
+            </p>
+
+            <p className="mb-3 text-xs font-semibold leading-relaxed text-primary sm:text-sm">
+              {developer.hirePitch}
             </p>
 
             <p className="mx-auto mb-5 max-w-xl text-sm leading-relaxed text-foreground-muted md:mx-0 md:text-[0.95rem]">
@@ -127,8 +131,16 @@ export function DashboardHero() {
                 <Download size={17} className="animate-bounce" style={{ animationDuration: "2.2s" }} /> Download Resume
                 <ShieldCheck size={15} className="opacity-80" />
               </ResumeDownloadButton>
-              <a href="#projects" className="btn btn-glass !w-full sm:!w-auto">
-                Explore My Work <ArrowRight size={16} />
+              <a href="#contact" className="btn btn-glass !w-full sm:!w-auto">
+                <Briefcase size={16} /> Hire Me
+              </a>
+              <a
+                href={developer.calendarUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-glass !w-full sm:!w-auto"
+              >
+                <Calendar size={16} /> Schedule Interview
               </a>
             </div>
 

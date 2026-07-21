@@ -109,7 +109,9 @@ export function LiveGlobePanel() {
             Locations (Country · State · District)
           </p>
           {recent.length === 0 ? (
-            <p className="text-[11px] text-muted">Allow location to pin your visit on the globe.</p>
+            <p className="text-[11px] text-muted">
+              Seed locations load shortly. Allow browser location to add your live pin.
+            </p>
           ) : (
             <ul className="space-y-1.5">
               {recent.map((p) => {

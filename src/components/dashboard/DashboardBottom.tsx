@@ -1,11 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState, useRef, useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Star, Calendar, ArrowRight, Mail, Phone, Clock, Quote, Pencil, Trash2, Lock, LogOut } from "lucide-react";
 import { testimonials, blogPosts, developer } from "@/data/portfolio";
 import { SocialLinks } from "@/components/ui/SocialLinks";
-import { WhatsAppIcon } from "@/components/ui/SocialIcons";
+import { WhatsAppIcon, LinkedInIcon } from "@/components/ui/SocialIcons";
 import { ClientOnly } from "@/components/ui/ClientOnly";
 import { TitleCover } from "@/components/ui/TitleCover";
 import { Send, CheckCircle, AlertCircle } from "lucide-react";
@@ -482,25 +483,25 @@ export function DashboardBottom() {
 
       <section id="blog" className="panel">
         <div className="panel-header">
-          <p className="panel-title">Latest Blog Posts</p>
+          <div>
+            <p className="panel-title">Latest Blog Posts</p>
+            <p className="mt-0.5 text-[11px] text-muted">Real articles — click Read more</p>
+          </div>
         </div>
         <div className="panel-body">
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {blogPosts.map((post, i) => (
               <motion.article
                 key={post.id}
                 initial={{ opacity: 0, y: 14 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
+                transition={{ delay: i * 0.06 }}
                 whileHover={{ y: -4 }}
                 className="overflow-hidden rounded-xl border border-border"
               >
-                <TitleCover
-                  title={post.title}
-                  badge={post.tags[0] ?? "Article"}
-                />
-                <div className="p-4">
+                <TitleCover title={post.title} badge={post.tags[0] ?? "Article"} compact />
+                <div className="p-3.5">
                   <div className="mb-2 flex flex-wrap items-center gap-2 text-[10px] text-muted">
                     <span className="inline-flex items-center gap-1">
                       <Calendar size={11} /> {post.date}
@@ -509,11 +510,18 @@ export function DashboardBottom() {
                       <Clock size={11} /> {post.readTime}
                     </span>
                   </div>
-                  <h3 className="mb-1.5 text-sm font-bold leading-snug text-foreground">{post.title}</h3>
-                  <p className="mb-3 text-xs leading-relaxed text-foreground-muted line-clamp-2">{post.excerpt}</p>
-                  <button type="button" className="flex items-center gap-1 text-xs font-semibold text-primary">
+                  <h3 className="mb-1.5 line-clamp-2 text-sm font-bold leading-snug text-foreground">
+                    {post.title}
+                  </h3>
+                  <p className="mb-3 line-clamp-2 text-xs leading-relaxed text-foreground-muted">
+                    {post.excerpt}
+                  </p>
+                  <Link
+                    href={`/blog/${post.slug}`}
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+                  >
                     Read more <ArrowRight size={12} />
-                  </button>
+                  </Link>
                 </div>
               </motion.article>
             ))}
@@ -584,6 +592,26 @@ function ContactPanel() {
               whileTap={{ scale: 0.97 }}
             >
               <WhatsAppIcon width={16} height={16} /> WhatsApp
+            </motion.a>
+            <motion.a
+              href={developer.calendarUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-glass !w-auto"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              <Calendar size={16} /> Schedule Interview
+            </motion.a>
+            <motion.a
+              href={developer.social.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-glass !w-auto"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              <LinkedInIcon width={16} height={16} /> LinkedIn
             </motion.a>
           </div>
           <SocialLinks size="md" />

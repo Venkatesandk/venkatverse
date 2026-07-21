@@ -29,6 +29,8 @@ export interface Project {
   architecture: string;
   problem: string;
   solution: string;
+  role?: string;
+  impact?: string;
   liveUrl?: string;
   githubUrl?: string;
   caseStudyUrl?: string;
@@ -62,6 +64,16 @@ export interface Certificate {
   url?: string;
 }
 
+/** Professional / platform certifications (separate from education) */
+export interface ProfessionalCert {
+  id: string;
+  title: string;
+  issuer: string;
+  date: string;
+  badge: string;
+  url?: string;
+}
+
 export interface BlogPost {
   id: string;
   title: string;
@@ -70,6 +82,7 @@ export interface BlogPost {
   readTime: string;
   tags: string[];
   slug: string;
+  content: string[];
 }
 
 export interface Skill {
