@@ -16,19 +16,22 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://venkatverse.vercel.
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Venkatesan D | Lead Application Developer — PHP, CodeIgniter, ERP & AI",
+    default: "Venkatesan D — Lead PHP & ERP Developer | CodeIgniter · Next.js · AWS",
     template: "%s | Venkatesan D",
   },
   description:
-    "Lead Application Developer with 5+ years experience building enterprise ERP, HRMS, and AI-enabled systems using PHP, CodeIgniter, Next.js, MySQL & AWS. Based in Coimbatore, India. Available for hire.",
+    "Lead Application Developer with 5+ years building enterprise ERP, HRMS & AI-integrated systems. PHP, CodeIgniter, MySQL, Next.js, AWS. 3× promoted. Open to senior roles. Coimbatore, India.",
   keywords: [
+    "Lead PHP Developer India",
+    "CodeIgniter ERP Developer",
+    "HRMS Software Developer Coimbatore",
+    "Enterprise Web Developer Tamil Nadu",
     "Lead Application Developer",
     "PHP Developer",
     "CodeIgniter",
     "ERP Developer",
     "HRMS",
     "Next.js",
-    "Coimbatore",
     "AWS",
     "AI Integration",
     "Hire PHP Developer",
@@ -37,9 +40,9 @@ export const metadata: Metadata = {
   creator: "Venkatesan D",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Venkatesan D | Lead Application Developer",
+    title: "Venkatesan D — Lead PHP & ERP Developer",
     description:
-      "5+ years · PHP · CodeIgniter · Next.js · ERP Solutions · AI Integration. Hire a Lead Application Developer.",
+      "5+ years · 3× promoted · 20+ ERP modules · PHP · CodeIgniter · Next.js · AWS. Enterprise ERP & HRMS specialist.",
     type: "website",
     locale: "en_IN",
     url: siteUrl,
@@ -55,8 +58,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Venkatesan D | Lead Application Developer",
-    description: "PHP · CodeIgniter · Next.js · ERP · AI — 5+ years experience. Available for hire.",
+    title: "Venkatesan D — Lead PHP & ERP Developer",
+    description: "3× promoted · 20+ ERP modules · PHP · CodeIgniter · Next.js · AWS. Open to senior roles.",
     images: ["/profile.png"],
   },
   robots: {

@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
   try {
-    const { name, email, message } = await request.json();
+    const { name, email, message, purpose } = await request.json();
 
     if (!name?.trim() || !email?.trim() || !message?.trim()) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
@@ -17,6 +17,7 @@ export async function POST(request: Request) {
       name: String(name),
       email: String(email),
       message: String(message),
+      purpose: purpose ? String(purpose) : undefined,
     });
 
     const emailSent = (entry as { emailSent?: boolean }).emailSent ?? false;

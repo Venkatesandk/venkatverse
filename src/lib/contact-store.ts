@@ -11,6 +11,7 @@ export interface ContactMessage {
   name: string;
   email: string;
   message: string;
+  purpose?: string;
   createdAt: string;
 }
 
@@ -18,12 +19,14 @@ export async function saveContactMessage(input: {
   name: string;
   email: string;
   message: string;
+  purpose?: string;
 }): Promise<ContactMessage> {
   const entry: ContactMessage = {
     id: `msg_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
     name: input.name.trim(),
     email: input.email.trim().toLowerCase(),
     message: input.message.trim(),
+    purpose: input.purpose?.trim() || undefined,
     createdAt: new Date().toISOString(),
   };
 
@@ -47,6 +50,7 @@ export async function saveContactMessage(input: {
         <table style="width:100%;border-collapse:collapse;font-size:14px;">
           <tr><td style="padding:8px 0;color:#64748b;width:100px;">Name</td><td style="padding:8px 0;font-weight:600;">${entry.name}</td></tr>
           <tr><td style="padding:8px 0;color:#64748b;">Email</td><td style="padding:8px 0;"><a href="mailto:${entry.email}">${entry.email}</a></td></tr>
+          ${entry.purpose ? `<tr><td style="padding:8px 0;color:#64748b;">Purpose</td><td style="padding:8px 0;">${entry.purpose}</td></tr>` : ""}
           <tr><td style="padding:8px 0;color:#64748b;vertical-align:top;">Message</td><td style="padding:8px 0;">${entry.message.replace(/\n/g, "<br/>")}</td></tr>
           <tr><td style="padding:8px 0;color:#64748b;">Time</td><td style="padding:8px 0;">${new Date(entry.createdAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })} IST</td></tr>
         </table>

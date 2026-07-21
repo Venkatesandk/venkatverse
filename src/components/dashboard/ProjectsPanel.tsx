@@ -143,6 +143,9 @@ export function ProjectsPanel() {
               </div>
               <div className="p-3.5">
                 <h4 className="mb-1 text-sm font-bold">{project.title}</h4>
+                {project.impact && (
+                  <p className="mb-2 text-[11px] font-medium leading-snug text-primary">{project.impact}</p>
+                )}
                 {project.metrics && (
                   <ul className="mb-2 space-y-1">
                     {project.metrics.slice(0, 3).map((m) => (

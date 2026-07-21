@@ -10,8 +10,9 @@ import {
   Users,
   ShieldCheck,
   Sparkles,
-  Briefcase,
   Mail,
+  Calendar,
+  FolderKanban,
 } from "lucide-react";
 import { developer, techStack } from "@/data/portfolio";
 import { ResumeDownloadButton } from "@/components/sections/ResumeDownloadModal";
@@ -195,7 +196,7 @@ export function DashboardHero() {
                 </span>
 
                 <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
-                  Portfolio · Joined Jul 2021
+                  {developer.heroSubheadline}
                 </p>
 
                 <motion.h1
@@ -209,20 +210,31 @@ export function DashboardHero() {
                 </motion.h1>
 
                 <p className="text-base font-bold text-foreground sm:text-lg">
-                  {developer.role}
+                  {developer.headline}
+                </p>
+                <p className="mt-1 text-sm font-medium text-primary sm:text-base">
+                  {developer.tagline}
                 </p>
               </div>
 
               <blockquote
                 className="hero-bio-card text-left text-sm leading-relaxed text-foreground-muted md:text-[15px]"
-                suppressHydrationWarning
               >
-                {developer.bio}
+                {developer.heroDescription}
               </blockquote>
 
-              <p className="flex items-center justify-center gap-1.5 text-xs text-muted md:justify-start sm:text-sm">
-                <MapPin size={14} className="shrink-0 text-primary" />
-                <span>{developer.location}</span>
+              <p className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-muted md:justify-start sm:text-sm">
+                <span className="flex items-center gap-1.5">
+                  <MapPin size={14} className="shrink-0 text-primary" />
+                  {developer.location}
+                </span>
+                <a
+                  href={`mailto:${developer.email}`}
+                  className="flex items-center gap-1.5 transition hover:text-primary"
+                >
+                  <Mail size={14} className="shrink-0 text-primary" />
+                  {developer.email}
+                </a>
               </p>
 
               <HeroStats
@@ -252,11 +264,16 @@ export function DashboardHero() {
                   <Download size={17} style={{ animationDuration: "2.2s" }} /> Download Resume
                   <ShieldCheck size={15} className="opacity-80" />
                 </ResumeDownloadButton>
-                <a href="#why-hire" className="btn btn-glass !w-full sm:!w-auto">
-                  <Briefcase size={16} /> Hire Me
+                <a href="#projects" className="btn btn-glass !w-full sm:!w-auto">
+                  <FolderKanban size={16} /> View Projects
                 </a>
-                <a href="#contact" className="btn btn-glass !w-full sm:!w-auto">
-                  <Mail size={16} /> Contact Me
+                <a
+                  href={developer.calendarUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-glass !w-full sm:!w-auto"
+                >
+                  <Calendar size={16} /> Book Interview
                 </a>
               </div>
 

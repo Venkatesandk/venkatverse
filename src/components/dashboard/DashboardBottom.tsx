@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState, useRef, useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Star, Calendar, ArrowRight, Mail, Phone, Clock, Quote, Pencil, Trash2, Lock, LogOut } from "lucide-react";
+import { Star, Calendar, ArrowRight, Mail, Phone, Clock, Quote, Pencil, Trash2, Lock, LogOut, CheckCircle2 } from "lucide-react";
 import { testimonials, blogPosts, developer } from "@/data/portfolio";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 import { WhatsAppIcon, LinkedInIcon } from "@/components/ui/SocialIcons";
@@ -535,7 +535,7 @@ export function DashboardBottom() {
 }
 
 function ContactPanel() {
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [form, setForm] = useState({ name: "", email: "", purpose: "job", message: "" });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -550,7 +550,7 @@ function ContactPanel() {
       const data = await res.json();
       if (res.ok) {
         setStatus("success");
-        setForm({ name: "", email: "", message: "" });
+        setForm({ name: "", email: "", purpose: "job", message: "" });
         window.dispatchEvent(new CustomEvent("contact-submitted"));
       } else {
         setStatus("error");
@@ -571,9 +571,13 @@ function ContactPanel() {
           className="border-b border-border p-4 sm:p-6 lg:border-b-0 lg:border-r"
         >
           <h2 className="mb-2 text-xl font-bold sm:text-2xl">Let&apos;s Work Together</h2>
-          <p className="mb-5 text-sm text-foreground-muted">
-            Have a project in mind? I&apos;d love to hear about it. Reach out and let&apos;s build something great.
+          <p className="mb-2 text-sm text-foreground-muted">
+            Hiring for a senior role or need an ERP specialist? I&apos;d love to hear from you.
           </p>
+          <span className="mb-5 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-600">
+            <CheckCircle2 size={12} />
+            {developer.responseTime}
+          </span>
           <div className="mb-5 flex flex-wrap gap-2">
             <motion.a
               href={`mailto:${developer.email}`}
@@ -601,7 +605,7 @@ function ContactPanel() {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
             >
-              <Calendar size={16} /> Schedule Interview
+              <Calendar size={16} /> Book Interview
             </motion.a>
             <motion.a
               href={developer.social.linkedin}
@@ -662,6 +666,20 @@ function ContactPanel() {
                 className="input-field !py-2 text-sm transition-shadow focus:shadow-md focus:shadow-primary/10"
                 placeholder="you@email.com"
               />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="dash-purpose" className="mb-1 block text-xs font-medium">Purpose</label>
+              <select
+                id="dash-purpose"
+                value={form.purpose}
+                onChange={(e) => setForm({ ...form, purpose: e.target.value })}
+                className="input-field !py-2 text-sm transition-shadow focus:shadow-md focus:shadow-primary/10"
+              >
+                <option value="job">Job Opportunity</option>
+                <option value="freelance">Freelance Project</option>
+                <option value="collaboration">Collaboration</option>
+                <option value="other">Other</option>
+              </select>
             </div>
             <div className="mb-4">
               <label htmlFor="dash-message" className="mb-1 block text-xs font-medium">Message</label>

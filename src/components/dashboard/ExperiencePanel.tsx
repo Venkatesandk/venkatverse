@@ -95,7 +95,7 @@ export function ExperiencePanel() {
                 {exp.responsibilities && exp.responsibilities.length > 0 && (
                   <div className="mt-3">
                     <p className="mb-1.5 text-[11px] font-bold uppercase tracking-wider text-muted">
-                      Key Responsibilities
+                      Key Achievements
                     </p>
                     <ul className="space-y-1.5">
                       {exp.responsibilities.map((item) => (

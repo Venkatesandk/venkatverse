@@ -39,7 +39,7 @@ export function JsonLd() {
     name: "Venkatverse",
     url: siteUrl,
     description:
-      "Portfolio of Venkatesan D — Lead Application Developer specializing in PHP, CodeIgniter, ERP & AI.",
+      "Portfolio of Venkatesan D — Lead Application Developer specializing in PHP, CodeIgniter, enterprise ERP, HRMS & AI integration. 3× promoted, 20+ modules in production.",
     author: { "@type": "Person", name: "Venkatesan D" },
   };
 

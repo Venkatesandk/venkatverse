@@ -69,16 +69,16 @@ export function SkillsPanel() {
       <div className="panel-header">
         <div>
           <p className="panel-title">Skills</p>
-          <p className="mt-0.5 text-[11px] text-muted">Backend · Frontend · Database · Tools · AI</p>
+          <p className="mt-0.5 text-[11px] text-muted">Backend · Frontend · Database · AI · Cloud · Architecture</p>
         </div>
-        <span className="panel-badge">Categorized</span>
+        <span className="panel-badge">8 Categories</span>
       </div>
       <div className="panel-body space-y-5">
         <div className="flex justify-center">
           <SkillRadar />
         </div>
 
-        <Stagger className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <Stagger className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {skillCategories.map((cat) => (
             <StaggerItem key={cat.id}>
               <motion.div

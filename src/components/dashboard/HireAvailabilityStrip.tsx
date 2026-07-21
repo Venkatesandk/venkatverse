@@ -19,6 +19,7 @@ export function HireAvailabilityStrip() {
           </span>
           <h3 className="text-lg font-bold sm:text-xl">Ready to hire a Lead Application Developer?</h3>
           <p className="mt-1.5 text-sm text-foreground-muted">{availability.notice}</p>
+          <p className="mt-2 text-xs font-medium text-primary">{developer.hirePitch}</p>
           <ul className="mt-3 flex flex-wrap gap-2">
             {availability.roles.map((role) => (
               <li
@@ -48,7 +49,7 @@ export function HireAvailabilityStrip() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <Calendar size={16} /> Schedule Interview
+            <Calendar size={16} /> Book Interview
           </motion.a>
         </div>
       </div>

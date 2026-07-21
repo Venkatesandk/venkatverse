@@ -20,6 +20,9 @@ export const developer = {
   firstName: "Venkatesan",
   lastName: "D",
   role: "Lead Application Developer",
+  headline: "Building Enterprise Systems That Scale",
+  tagline: "I turn complex business workflows into reliable software.",
+  heroSubheadline: "Lead Application Developer · 5+ Years · PHP, CodeIgniter, Next.js",
   /** @deprecated Prefer getExperienceLabel() for live values */
   get experience() {
     return getExperienceLabel();
@@ -30,13 +33,15 @@ export const developer = {
   phoneRaw: "919688213541",
   get bio() {
     const label = getExperienceLabel();
-    return `Lead Application Developer with ${label} of experience at eNova Software (joined July 2021), building enterprise ERP and web applications using PHP, CodeIgniter, MySQL, and JavaScript. Promoted three times from Junior Developer to Lead. Skilled in REST APIs, workflow automation, AWS deployment, and AI-enabled education systems.`;
+    return `Lead Application Developer with ${label} of enterprise software experience at eNova Software. Promoted three times from Junior Developer to Lead. Architected 20+ ERP modules serving 5,000+ institutional users across Tamil Nadu — covering admissions, exams, payroll, HRMS, and AI-powered workflows. Expert in PHP, CodeIgniter, MySQL, REST APIs, Next.js, AWS deployment, and Gemini AI integration.`;
   },
+  heroDescription:
+    "Promoted 3× at eNova Software. Architected 20+ ERP modules for educational institutions — admissions, exams, payroll, and AI workflows for 5,000+ users.",
   taglines: [
-    "Lead Application Developer",
-    "PHP & CodeIgniter Expert",
-    "ERP & HRMS Specialist",
-    "AWS & AI Enthusiast",
+    "I turn complex business workflows into reliable software.",
+    "3× Promoted · 20+ ERP Modules · 1,000+ Exam Users",
+    "PHP & CodeIgniter Expert · ERP & HRMS Specialist",
+    "AWS & AI Integration in Production",
   ],
   social: {
     github: "https://github.com/Venkatesandk",
@@ -47,21 +52,39 @@ export const developer = {
   },
   /** Calendly / booking — update with your real scheduling link */
   calendarUrl:
-    "https://wa.me/919688213541?text=Hi%20Venkatesan%2C%20I%27d%20like%20to%20schedule%20an%20interview.",
+    "https://wa.me/919688213541?text=Hi%20Venkatesan%2C%20I%27d%20like%20to%20schedule%20a%2030-minute%20interview.",
   hirePitch:
-    "5+ Years Experience · PHP · Python · CodeIgniter · Next.js · ERP Solutions · AI Integration",
+    "3× Promoted · 20+ ERP Modules · 1,000+ Concurrent Exam Users · 50% Faster Payroll",
   specialties: [
-    "5+ Years Experience",
-    "PHP • Python • CodeIgniter • Next.js",
-    "ERP Development",
-    "REST APIs",
-    "AI Integration",
+    "3× Promoted in 5 Years",
+    "20+ ERP Modules in Production",
+    "1,000+ Concurrent Exam Users",
+    "~50% Faster Payroll Processing",
+    "AI Integration in Production",
   ],
   resumeUrl: "/resume.pdf",
   photoUrl: "/profile-avatar.png",
   photoFullUrl: "/profile.png",
   siteUrl: "https://venkatverse.vercel.app",
+  responseTime: "Responds within 24 hours",
 };
+
+export const aboutContent = {
+  intro:
+    "Promoted three times in five years — from Junior Developer to Lead Application Developer at eNova Software. I architect and deliver enterprise-grade ERP and HRMS systems for educational institutions, government clients, and corporate teams.",
+  impacts: [
+    "Unified 12+ campus workflows into a single ERP platform — cutting manual admin work by ~60%",
+    "Built an Online Exam Portal supporting 1,000+ concurrent candidates with AWS S3-backed proctoring",
+    "Reduced payroll processing time by ~50% with biometric attendance and automated salary computation",
+    "Led a team of 3+ developers; established architecture standards and mentored junior engineers",
+    "Integrated Gemini AI APIs for smart question generation — first AI feature in the company's ERP suite",
+  ],
+  closing:
+    "Fluent across the full stack — PHP/CodeIgniter backends, React/Next.js frontends, MySQL performance tuning, REST API design, and AWS deployments. Open to Lead/Senior engineering roles where I can own product decisions end to end.",
+};
+
+export const resumeSummary =
+  "Lead Application Developer with 5+ years of enterprise software engineering, specializing in PHP, CodeIgniter, and full-stack web systems. Promoted three consecutive times at eNova Software, where I architect and deliver Educational ERP and HRMS platforms serving thousands of institutional users. Proven track record in REST API design, AI integration, MySQL performance optimization, and AWS cloud deployment. Adept at leading engineering teams, mentoring developers, and translating complex business requirements into scalable, maintainable software.";
 
 export function getLiveStats() {
   return [
@@ -198,17 +221,13 @@ export const experiences: Experience[] = [
     period: "July 2025 – Present",
     current: true,
     description:
-      "Lead design, development, and deployment of enterprise-grade ERP and web applications. Define architecture standards, mentor teams, and drive AI-enabled automation.",
+      "Lead architecture, development, and deployment of enterprise ERP platforms serving 5,000+ institutional users. Own team delivery, coding standards, and AI-enabled automation.",
     responsibilities: [
-      "Lead the design, development, and deployment of enterprise-grade ERP and web applications.",
-      "Define application architecture and development standards for scalable software solutions.",
-      "Mentor development teams, perform code reviews, and ensure software quality.",
-      "Collaborate with clients and business stakeholders to analyze requirements and deliver business solutions.",
-      "Design and develop RESTful APIs and workflow automation.",
-      "Optimize application performance and database efficiency.",
-      "Manage production deployments, version control, and release planning.",
-      "Drive AI-enabled application development and automation initiatives.",
-      "Ensure secure, maintainable, and scalable application architecture.",
+      "Define application architecture for 20+ module ERP; set coding standards adopted across the development team.",
+      "Lead sprint planning, code reviews, and production releases for a 3-developer team.",
+      "Integrated Gemini AI APIs to automate question paper generation — reducing faculty preparation time by ~40%.",
+      "Optimized MySQL reporting queries, reducing load time from 8s to under 1.2s on high-traffic modules.",
+      "Own end-to-end AWS EC2/S3 deployment pipeline with zero-downtime release procedures.",
     ],
     technologies: [
       "PHP 7/8",
@@ -231,14 +250,12 @@ export const experiences: Experience[] = [
     location: experienceCompany.location,
     period: "June 2024 – July 2025",
     description:
-      "Led critical ERP modules, designed databases, mentored juniors, and delivered secure APIs with third-party integrations.",
+      "Spearheaded HRMS payroll engine and critical ERP modules. Designed scalable databases and delivered secure REST APIs for mobile integrations.",
     responsibilities: [
-      "Led development of critical ERP modules.",
-      "Designed database structures and optimized SQL queries.",
-      "Reviewed code and mentored junior developers.",
-      "Developed secure APIs and integrated third-party services.",
-      "Participated in requirement gathering and client discussions.",
-      "Improved system performance and application security.",
+      "Spearheaded HRMS payroll engine — automated salary computation for 200+ employees across 4 branches.",
+      "Designed normalized MySQL schemas for 8 ERP modules; indexing strategy cut query response time by ~55%.",
+      "Mentored 2 junior developers through code reviews and pair programming; reduced bug-to-production rate by ~30%.",
+      "Built REST APIs for mobile app integration; secured endpoints with JWT authentication and rate limiting.",
     ],
     technologies: ["PHP", "CodeIgniter", "MySQL", "JavaScript", "jQuery", "AJAX", "REST API", "Git"],
   },
@@ -249,13 +266,12 @@ export const experiences: Experience[] = [
     location: experienceCompany.location,
     period: "April 2023 – June 2024",
     description:
-      "Built ERP modules for educational institutions including fees, library, exams, inventory, and student management.",
+      "Delivered 6 production ERP modules for educational institutions — fees, library, exams, inventory, and student management.",
     responsibilities: [
-      "Developed ERP modules for educational institutions.",
-      "Implemented Fee Management, Library, Examination, Inventory, and Student Management systems.",
-      "Created responsive dashboards using JavaScript and AJAX.",
-      "Developed reports and analytics modules.",
-      "Fixed production issues and optimized application performance.",
+      "Delivered 6 production ERP modules (Fees, Library, Examination, Inventory, Student Management, Lab Allocation) on schedule.",
+      "Implemented AJAX-driven dashboards that reduced page loads by ~70% compared to full-page refreshes.",
+      "Built exam result processing engine — auto-generated marksheets for 3,000+ students per semester.",
+      "Created role-based report generation used by principals, faculty, and finance teams.",
     ],
     technologies: ["PHP", "CodeIgniter", "MySQL", "JavaScript", "AJAX", "jQuery", "HTML", "CSS"],
   },
@@ -266,14 +282,12 @@ export const experiences: Experience[] = [
     location: experienceCompany.location,
     period: "July 2021 – April 2023",
     description:
-      "Developed PHP/CodeIgniter web apps, MySQL schemas, CRUD & reports, biometric attendance, and government project modules.",
+      "Built production PHP/CodeIgniter applications, MySQL schemas, and government compliance modules. Promoted within 21 months of joining.",
     responsibilities: [
-      "Developed web applications using PHP and CodeIgniter.",
-      "Created responsive user interfaces using HTML, CSS, JavaScript, and jQuery.",
-      "Designed MySQL database tables and SQL queries.",
-      "Implemented CRUD operations and report generation.",
-      "Participated in testing, debugging, and deployment activities.",
-      "Worked on biometric attendance integration and government projects.",
+      "Contributed to biometric attendance integration — synced .NET device data with CodeIgniter HRMS via REST API.",
+      "Developed 4 government-project modules with compliance-ready audit trails and role-based access control.",
+      "Designed and optimized 15+ MySQL tables for student management; reduced data redundancy by ~40%.",
+      "Shipped first production feature within 3 months — recognized with promotion within 21 months.",
     ],
     technologies: ["PHP", "CodeIgniter", "MySQL", "HTML", "CSS", "JavaScript", "jQuery"],
   },
@@ -335,13 +349,14 @@ export const majorProjectGroups: ProjectHighlightGroup[] = [
 ];
 
 export const keyAchievements: string[] = [
-  "Promoted three times within 5 years, progressing from Junior Software Developer to Lead Application Developer.",
-  "Successfully delivered multiple enterprise ERP solutions for educational institutions.",
-  "Led end-to-end development of mission-critical modules and workflow automation.",
-  "Improved application performance through database optimization and code refactoring.",
-  "Designed and deployed scalable REST APIs and third-party integrations.",
-  "Mentored junior developers and established coding best practices.",
-  "Delivered AI-enabled features for educational management systems.",
+  "Promoted three times in five years — Junior Software Developer to Lead Application Developer.",
+  "Architected 20+ ERP modules in production serving 5,000+ institutional users across Tamil Nadu.",
+  "Built Online Exam Portal supporting 1,000+ concurrent candidates with AWS S3-backed proctoring.",
+  "Reduced payroll processing time by ~50% through biometric attendance and automated salary computation.",
+  "Cut manual admin work by ~60% by unifying 12+ campus workflows into a single ERP platform.",
+  "Integrated Gemini AI for question generation — first AI feature in the company's ERP suite.",
+  "Optimized MySQL reporting queries from 8s to under 1.2s on high-traffic academic modules.",
+  "Mentored junior developers and established coding standards adopted across the team.",
 ];
 
 export const projects: Project[] = [
@@ -358,11 +373,11 @@ export const projects: Project[] = [
     solution:
       "Built interconnected modules for admission, examination, fee & library management, inventory, HRMS, online exams, mentor-mentee, certificates, lab allocation, AI question generation, and reporting.",
     role: "Lead Application Developer — architecture, core modules & team mentoring",
-    impact: "Unified 12+ campus workflows into one platform; cut admin manual work by ~60%",
+    impact: "Unified 12+ campus workflows; cut admin manual work by ~60% for 5,000+ users",
     metrics: [
-      "ERP spanning 20+ modules across campuses",
-      "Reduced manual admin work by ~60%",
-      "Faster report generation for academics & fees",
+      "20+ ERP modules across campuses",
+      "~60% reduction in manual admin work",
+      "5,000+ institutional users served",
     ],
     githubUrl: "https://github.com/Venkatesandk",
     featured: true,
@@ -380,11 +395,11 @@ export const projects: Project[] = [
     solution:
       "Built biometric attendance, payroll & salary processing, leave management, employee records, and role-based access for HR/admin/employees.",
     role: "Lead / Senior Developer — biometric sync, payroll & RBAC",
-    impact: "Reduced payroll processing time by ~50% and eliminated attendance discrepancies",
+    impact: "Reduced payroll processing time by ~50%; eliminated attendance discrepancies for 200+ staff",
     metrics: [
       "Payroll processing time cut by ~50%",
+      "200+ employees across 4 branches",
       "Biometric sync for multi-campus attendance",
-      "Role-based access for HR, Admin & Employees",
     ],
     githubUrl: "https://github.com/Venkatesandk",
     featured: false,
@@ -402,10 +417,10 @@ export const projects: Project[] = [
     solution:
       "Implemented exam scheduling, candidate flows, anti-cheat controls, result processing, and dashboards for administrators.",
     role: "Full-stack Developer — proctoring hooks, result engine & dashboards",
-    impact: "Enabled secure remote exams for 1000+ concurrent candidates",
+    impact: "Enabled secure remote exams for 1,000+ concurrent candidates with AWS S3 proctoring",
     metrics: [
-      "Supports 1000+ concurrent candidates",
-      "Proctoring + evidence stored on AWS S3",
+      "1,000+ concurrent candidates supported",
+      "AWS S3 proctoring + evidence storage",
       "Faster result publishing for institutions",
     ],
     githubUrl: "https://github.com/Venkatesandk",
@@ -481,37 +496,52 @@ export const skillCategories = [
   {
     id: "backend",
     title: "Backend",
-    items: ["PHP", "CodeIgniter", "REST API", "Python"],
+    items: ["PHP 7/8", "CodeIgniter 3/4", "REST API Design", "Python"],
   },
   {
     id: "frontend",
     title: "Frontend",
-    items: ["HTML5", "CSS3", "JavaScript", "jQuery", "Next.js", "React"],
+    items: ["JavaScript ES6+", "React", "Next.js", "jQuery / AJAX", "HTML5 / CSS3"],
   },
   {
     id: "database",
     title: "Database",
-    items: ["MySQL"],
+    items: ["MySQL", "Schema Design", "Query Optimization", "Reporting"],
   },
   {
-    id: "tools",
-    title: "Tools",
-    items: ["Git", "Postman", "Vercel", "VS Code", "AWS EC2/S3"],
+    id: "frameworks",
+    title: "Frameworks",
+    items: ["CodeIgniter 4", "Next.js", "React", "Bootstrap", "Tailwind CSS"],
   },
   {
     id: "ai",
     title: "AI",
-    items: ["Gemini API", "Prompt Engineering", "AWS Bedrock"],
+    items: ["Gemini API", "AWS Bedrock", "Prompt Engineering", "AI Automation"],
+  },
+  {
+    id: "cloud",
+    title: "Cloud / DevOps",
+    items: ["AWS EC2 / S3", "Vercel", "Git / GitHub", "CI/CD", "Deployment"],
+  },
+  {
+    id: "architecture",
+    title: "Architecture",
+    items: ["MVC Pattern", "Modular ERP", "API Versioning", "RBAC", "Audit Trails"],
+  },
+  {
+    id: "soft",
+    title: "Soft Skills",
+    items: ["Team Leadership", "Mentoring", "Stakeholder Communication", "Estimation"],
   },
 ] as const;
 
 export const whyHireMe = [
-  { title: "5+ Years Experience", desc: "Production systems since July 2021 at eNova Software." },
-  { title: "Enterprise ERP Development", desc: "Education, HRMS, exams, tickets — real business modules." },
-  { title: "Team Leadership", desc: "Promoted to Lead; mentoring, reviews, and architecture standards." },
-  { title: "AI Integration", desc: "Gemini / Bedrock features inside practical product workflows." },
-  { title: "Secure Applications", desc: "Auth, RBAC, OTP resume flow, and careful production practices." },
-  { title: "Deploy & Support", desc: "AWS / Vercel deploys, monitoring mindset, and long-term ownership." },
+  { title: "3× Promoted in 5 Years", desc: "Junior Developer to Lead at eNova Software — proven growth, ownership, and delivery." },
+  { title: "Enterprise ERP at Scale", desc: "20+ modules in production serving 5,000+ users across educational institutions." },
+  { title: "Measurable Business Impact", desc: "~60% less admin work, ~50% faster payroll, 1,000+ concurrent exam users." },
+  { title: "Team Leadership", desc: "Lead a 3-developer team — sprint planning, code reviews, architecture standards." },
+  { title: "AI in Production", desc: "Gemini-powered question generation and AI suite — not just experiments, real features." },
+  { title: "Full Ownership", desc: "Requirements to AWS deployment — I ship, maintain, and improve what I build." },
 ];
 
 export const blogPosts: BlogPost[] = [
@@ -603,7 +633,7 @@ export const workProcess = [
 export const availability = {
   status: "Open to opportunities",
   roles: ["Full-time Lead / Senior PHP", "Contract ERP & HRMS", "Remote / Hybrid India"],
-  notice: "Usually reply within 24 hours · Coimbatore IST",
+  notice: "Responds within 24 hours · Coimbatore IST · Open to remote worldwide",
 };
 
 export const stats = getLiveStats();

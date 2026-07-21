@@ -1,8 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { developer, certificates, professionalCerts } from "@/data/portfolio";
-import { Award, Calendar, BadgeCheck } from "lucide-react";
+import { developer, certificates, professionalCerts, aboutContent } from "@/data/portfolio";
+import { Award, Calendar, BadgeCheck, CheckCircle2 } from "lucide-react";
 import { Stagger, StaggerItem } from "@/components/animations/Motion";
 
 export function AboutPanel() {
@@ -10,6 +10,7 @@ export function AboutPanel() {
     <section id="about" className="panel">
       <div className="panel-header">
         <p className="panel-title">About Me</p>
+        <span className="panel-badge">{developer.responseTime}</span>
       </div>
       <div className="panel-body">
         <div className="grid gap-4 md:grid-cols-3">
@@ -20,7 +21,19 @@ export function AboutPanel() {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <p className="text-sm leading-relaxed text-foreground-muted">{developer.bio}</p>
+            <p className="text-sm leading-relaxed text-foreground-muted">{aboutContent.intro}</p>
+            <div className="mt-4">
+              <p className="mb-2 text-xs font-bold uppercase tracking-wider text-primary">Key Impact</p>
+              <ul className="space-y-2">
+                {aboutContent.impacts.map((item) => (
+                  <li key={item} className="flex gap-2 text-sm leading-relaxed text-foreground-muted">
+                    <CheckCircle2 size={15} className="mt-0.5 shrink-0 text-emerald-500" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <p className="mt-4 text-sm leading-relaxed text-foreground-muted">{aboutContent.closing}</p>
             <div className="mt-4 flex flex-wrap gap-4 text-sm">
               <span className="flex items-center gap-1.5 text-muted">
                 <Calendar size={14} className="text-primary" /> {developer.experience} · Since Jul 2021
