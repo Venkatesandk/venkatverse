@@ -32,7 +32,11 @@ export function MetricsRow() {
     fetchAnalyticsStats().then(setLive);
     const refresh = () => fetchAnalyticsStats().then(setLive);
     window.addEventListener("visit-recorded", refresh);
-    return () => window.removeEventListener("visit-recorded", refresh);
+    const poll = window.setInterval(refresh, 12_000);
+    return () => {
+      window.removeEventListener("visit-recorded", refresh);
+      window.clearInterval(poll);
+    };
   }, []);
 
   const metrics: MetricDef[] = [
@@ -45,9 +49,9 @@ export function MetricsRow() {
       accent: "from-cyan-500/12 to-transparent",
     },
     {
-      label: "Today",
+      label: "Today's Visitors",
       value: live.today,
-      change: live.today > 0 ? "Live" : "—",
+      change: live.today > 0 ? `Live · ${live.today}` : "No visits yet",
       animated: true,
       icon: Eye,
       accent: "from-emerald-500/12 to-transparent",

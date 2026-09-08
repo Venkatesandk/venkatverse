@@ -35,7 +35,7 @@ export function TitleCover({ title, subtitle, badge, className, compact }: Title
       className={cn(
         "group/cover relative flex overflow-hidden bg-gradient-to-br text-white",
         theme.bg,
-        compact ? "min-h-[7.5rem] flex-col justify-between p-3" : "min-h-[10.5rem] flex-col justify-between p-4 sm:min-h-[12rem] sm:p-5",
+        compact ? "min-h-0 flex-col gap-2.5 p-3" : "min-h-[10.5rem] flex-col justify-between p-4 sm:min-h-[12rem] sm:p-5",
         className
       )}
       whileHover={{ scale: 1.01 }}
@@ -60,7 +60,7 @@ export function TitleCover({ title, subtitle, badge, className, compact }: Title
         </motion.span>
       </div>
 
-      <div className="relative z-10 mt-auto">
+      <div className={cn("relative z-10", compact ? "mt-0" : "mt-auto")}>
         {!compact && (
           <div className="mb-2 flex flex-wrap gap-1.5">
             {words.map((w) => (

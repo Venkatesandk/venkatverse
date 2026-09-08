@@ -79,11 +79,11 @@ export function HomePage() {
           <Reveal>
             <AdvancedFeaturesPanel />
           </Reveal>
-          <div className="dashboard-grid items-start gap-4 lg:grid-cols-2 lg:gap-5">
-            <Reveal>
+          <div className="dashboard-grid items-stretch gap-4 lg:grid-cols-2 lg:gap-5">
+            <Reveal className="h-full">
               <ServicesPanel />
             </Reveal>
-            <Reveal delay={0.08}>
+            <Reveal className="h-full" delay={0.08}>
               <TechStackPanel />
             </Reveal>
           </div>

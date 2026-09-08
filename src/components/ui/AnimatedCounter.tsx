@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface AnimatedCounterProps {
   value: number;
@@ -8,30 +8,44 @@ interface AnimatedCounterProps {
   className?: string;
 }
 
-export function AnimatedCounter({ value, duration = 900, className }: AnimatedCounterProps) {
-  const [display, setDisplay] = useState(0);
+/** Clear, stable number display — avoids flashing 0 and keeps updates readable */
+export function AnimatedCounter({ value, duration = 700, className }: AnimatedCounterProps) {
+  const [display, setDisplay] = useState(value);
+  const prevRef = useRef(value);
 
   useEffect(() => {
-    if (value <= 0) {
-      setDisplay(0);
+    const from = prevRef.current;
+    const to = value;
+    prevRef.current = value;
+
+    if (to === from) {
+      setDisplay(to);
+      return;
+    }
+
+    // Small jumps: show instantly for clarity
+    if (Math.abs(to - from) <= 3) {
+      setDisplay(to);
       return;
     }
 
     let frame = 0;
     const start = performance.now();
-    const from = display > 0 && display < value ? display : Math.max(0, value - Math.min(40, value));
 
     const tick = (now: number) => {
       const progress = Math.min(1, (now - start) / duration);
       const eased = 1 - Math.pow(1 - progress, 3);
-      setDisplay(Math.round(from + (value - from) * eased));
+      setDisplay(Math.round(from + (to - from) * eased));
       if (progress < 1) frame = requestAnimationFrame(tick);
     };
 
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- animate when value changes
   }, [value, duration]);
 
-  return <span className={className}>{display.toLocaleString()}</span>;
+  return (
+    <span className={`tabular-nums ${className ?? ""}`} suppressHydrationWarning>
+      {Number.isFinite(display) ? display.toLocaleString("en-IN") : "0"}
+    </span>
+  );
 }

@@ -13,7 +13,7 @@ export function Blog() {
           <span className="section-label">Blog</span>
           <h2 className="section-title">Latest Articles</h2>
         </div>
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid items-start gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {blogPosts.map((post, i) => (
             <motion.article
               key={post.id}
@@ -21,15 +21,16 @@ export function Blog() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.06 }}
-              whileHover={{ y: -4 }}
-              className="card flex flex-col overflow-hidden p-0"
+              whileHover={{ y: -3 }}
+              className="card overflow-hidden p-0"
             >
               <TitleCover
                 title={post.title}
                 badge={post.tags[0] ?? "Article"}
+                compact
               />
-              <div className="flex flex-1 flex-col p-5">
-                <div className="mb-3 flex gap-3 text-xs text-muted">
+              <div className="space-y-2 p-4">
+                <div className="flex gap-3 text-xs text-muted">
                   <span className="flex items-center gap-1">
                     <Calendar size={12} />
                     {new Date(post.date).toLocaleDateString("en-IN", { month: "short", year: "numeric" })}
@@ -39,9 +40,8 @@ export function Blog() {
                     {post.readTime}
                   </span>
                 </div>
-                <h3 className="mb-2 font-semibold leading-snug text-foreground">{post.title}</h3>
-                <p className="mb-4 flex-1 text-sm leading-relaxed text-foreground-muted">{post.excerpt}</p>
-                <div className="mb-4 flex flex-wrap gap-1.5">
+                <p className="line-clamp-2 text-sm leading-relaxed text-foreground-muted">{post.excerpt}</p>
+                <div className="flex flex-wrap gap-1.5">
                   {post.tags.map((t) => (
                     <span key={t} className="badge !text-[10px] !normal-case">{t}</span>
                   ))}

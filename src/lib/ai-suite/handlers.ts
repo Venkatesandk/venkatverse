@@ -314,7 +314,8 @@ function buildCareerAdvisor(input: Record<string, string>): AISuiteResult {
 Phase 2 — Cloud + microservices (6–18 months)
 • Break a monolith module into services with clear API contracts.
 • Add Redis, message queues, and observability (logs, metrics, alerts).
-• Design AI features (Gemini/OpenAI) as production-safe integrations.
+• Design AI features (Gemini/OpenAI/Ollama/vLLM) as production-safe integrations.
+• LMS + Admission AI patterns for education ERP products.
 
 Phase 3 — Solution Architect readiness (18–36 months)
 • Own architecture reviews, ADRs, and non-functional requirements.
@@ -325,7 +326,8 @@ Phase 3 — Solution Architect readiness (18–36 months)
       "AWS / cloud architecture",
       "Microservices & API design",
       "Caching, queues, performance",
-      "AI API integration (Gemini/OpenAI)",
+      "AI API integration (Gemini/OpenAI/Ollama/vLLM)",
+      "LMS & Admission AI for education ERP",
       "Team leadership & mentoring",
     ];
     actionItems = [

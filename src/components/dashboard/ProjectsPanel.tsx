@@ -95,7 +95,7 @@ export function ProjectsPanel() {
         <div>
           <p className="panel-title">Case Studies</p>
           <p className="mt-0.5 text-[11px] text-muted">
-            Screenshot mockup · Metrics · Problem · Solution · Role
+            Live product screenshots · Metrics · Problem · Solution · Role
           </p>
         </div>
         <a
@@ -114,7 +114,7 @@ export function ProjectsPanel() {
           viewport={{ once: true }}
           className="overflow-hidden rounded-2xl border border-border"
         >
-          <div className="grid gap-0 lg:grid-cols-[1.05fr_1fr]">
+          <div className="grid gap-0 lg:grid-cols-[1.25fr_0.95fr]">
             <div className="border-b border-border bg-surface-2/40 p-3 sm:p-4 lg:border-b-0 lg:border-r">
               <ProjectMockup3D project={featured} />
             </div>

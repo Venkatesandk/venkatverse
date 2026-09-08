@@ -9,7 +9,15 @@ function todaySessionKey() {
   return `vv_visit_${today}`;
 }
 
-/** Record one visit per browser session per day (prevents refresh inflation). */
+function applyStats(
+  onStats: ((stats: { total: number; today: number }) => void) | undefined,
+  stats: { total: number; today: number }
+) {
+  onStats?.(stats);
+  window.dispatchEvent(new CustomEvent("visit-recorded", { detail: stats }));
+}
+
+/** Record one visit per browser session per day, then keep stats fresh. */
 export function useRecordVisit(
   onStats?: (stats: { total: number; today: number }) => void
 ) {
@@ -17,12 +25,22 @@ export function useRecordVisit(
   onStatsRef.current = onStats;
 
   useEffect(() => {
+    let cancelled = false;
     const key = todaySessionKey();
 
-    const apply = (stats: { total: number; today: number }) => {
-      onStatsRef.current?.(stats);
-      window.dispatchEvent(new CustomEvent("visit-recorded", { detail: stats }));
+    const push = (d: { total?: number; today?: number }) => {
+      if (cancelled) return;
+      applyStats(onStatsRef.current, {
+        total: typeof d.total === "number" ? d.total : BASE_VISITOR_COUNT,
+        today: typeof d.today === "number" ? d.today : 0,
+      });
     };
+
+    const load = () =>
+      fetch("/api/analytics", { cache: "no-store" })
+        .then((r) => r.json())
+        .then(push)
+        .catch(() => {});
 
     const record = async () => {
       const geo = await collectClientGeo();
@@ -30,32 +48,48 @@ export function useRecordVisit(
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ geo }),
+        cache: "no-store",
       });
       return res.json();
     };
 
     if (sessionStorage.getItem(key)) {
-      fetch("/api/analytics")
-        .then((r) => r.json())
-        .then((d) =>
-          apply({ total: d.total ?? BASE_VISITOR_COUNT, today: d.today ?? 0 })
-        )
-        .catch(() => {});
-      return;
+      void load();
+    } else {
+      record()
+        .then((d) => {
+          sessionStorage.setItem(key, "1");
+          push(d);
+        })
+        .catch(() => {
+          void load();
+        });
     }
 
-    record()
-      .then((d) => {
-        sessionStorage.setItem(key, "1");
-        apply({ total: d.total ?? BASE_VISITOR_COUNT, today: d.today ?? 0 });
-      })
-      .catch(() => {});
+    // Keep Visitors panel live without requiring a full page refresh
+    const poll = window.setInterval(load, 12_000);
+    const onFocus = () => void load();
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") void load();
+    };
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(poll);
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, []);
 }
 
 export function fetchAnalyticsStats(): Promise<{ total: number; today: number }> {
-  return fetch("/api/analytics")
+  return fetch("/api/analytics", { cache: "no-store" })
     .then((r) => r.json())
-    .then((d) => ({ total: d.total ?? BASE_VISITOR_COUNT, today: d.today ?? 0 }))
+    .then((d) => ({
+      total: typeof d.total === "number" ? d.total : BASE_VISITOR_COUNT,
+      today: typeof d.today === "number" ? d.today : 0,
+    }))
     .catch(() => ({ total: BASE_VISITOR_COUNT, today: 0 }));
 }

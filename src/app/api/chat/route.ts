@@ -103,15 +103,16 @@ function getLocalAIResponse(message: string): string {
     ].join("\n");
   }
 
-  if (lower.includes("ai") || lower.includes("openai") || lower.includes("gemini")) {
+  if (lower.includes("ai") || lower.includes("openai") || lower.includes("gemini") || lower.includes("ollama") || lower.includes("vllm") || lower.includes("lms") || lower.includes("admission")) {
     return [
-      "Venkat works with AI in real projects:",
+      "Venkat works with AI in real campus products:",
       "",
-      "• OpenAI & Google Gemini API integrations",
-      "• AI question generation for education systems",
-      "• AI-enabled ERP / HR workflow automation",
+      "• LMS integration with Educational ERP (courses, enrollments, progress)",
+      "• Admission AI on private Ollama / vLLM servers (enquiry, eligibility, document Q&A)",
+      "• Google Gemini API for question generation & AI suite tools",
+      "• AWS Bedrock familiarity for cloud GenAI",
       "",
-      "Ask about Educational ERP or AI Suite for more.",
+      "Ask about Educational ERP, LMS Integration, or Admission AI for more.",
     ].join("\n");
   }
 

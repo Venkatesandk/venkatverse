@@ -489,7 +489,7 @@ export function DashboardBottom() {
           </div>
         </div>
         <div className="panel-body">
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid items-start gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {blogPosts.map((post, i) => (
               <motion.article
                 key={post.id}
@@ -497,12 +497,12 @@ export function DashboardBottom() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.06 }}
-                whileHover={{ y: -4 }}
-                className="overflow-hidden rounded-xl border border-border"
+                whileHover={{ y: -3 }}
+                className="overflow-hidden rounded-xl border border-border bg-surface"
               >
                 <TitleCover title={post.title} badge={post.tags[0] ?? "Article"} compact />
-                <div className="p-3.5">
-                  <div className="mb-2 flex flex-wrap items-center gap-2 text-[10px] text-muted">
+                <div className="space-y-2 p-3">
+                  <div className="flex flex-wrap items-center gap-2 text-[10px] text-muted">
                     <span className="inline-flex items-center gap-1">
                       <Calendar size={11} /> {post.date}
                     </span>
@@ -510,10 +510,7 @@ export function DashboardBottom() {
                       <Clock size={11} /> {post.readTime}
                     </span>
                   </div>
-                  <h3 className="mb-1.5 line-clamp-2 text-sm font-bold leading-snug text-foreground">
-                    {post.title}
-                  </h3>
-                  <p className="mb-3 line-clamp-2 text-xs leading-relaxed text-foreground-muted">
+                  <p className="line-clamp-2 text-xs leading-relaxed text-foreground-muted">
                     {post.excerpt}
                   </p>
                   <Link

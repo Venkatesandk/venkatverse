@@ -79,7 +79,7 @@ export default function RecruiterPage() {
             { label: "Experience", value: "5+ yrs" },
             { label: "Promotions", value: "3×" },
             { label: "ERP Modules", value: "20+" },
-            { label: "Exam Capacity", value: "1,000+" },
+            { label: "Private LLMs", value: "Ollama / vLLM" },
           ].map((m) => (
             <div key={m.label} className="rounded-xl border border-border bg-surface p-4 text-center">
               <p className="text-2xl font-extrabold text-primary">{m.value}</p>

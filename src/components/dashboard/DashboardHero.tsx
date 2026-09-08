@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import {
   Download,
   MapPin,
@@ -87,15 +86,13 @@ export function DashboardHero() {
   }, []);
 
   return (
-    <section id="home" className="dashboard-grid lg:grid-cols-[1fr_300px]">
-      <motion.article
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35 }}
-        className="panel overflow-hidden !p-0"
-      >
+    <section
+      id="home"
+      className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-stretch lg:gap-4"
+    >
+      <article className="panel flex h-full flex-col overflow-hidden !p-0">
         {/* Top status bar */}
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-surface-2/70 px-5 py-2.5 sm:px-7">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-surface-2/70 px-4 py-2 sm:px-5">
           <span className="inline-flex items-center gap-2 text-[11px] font-semibold text-emerald-600">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
@@ -108,83 +105,84 @@ export function DashboardHero() {
           </span>
         </div>
 
-        <div className="px-5 py-6 sm:px-7 sm:py-8">
-          {/* Profile header row */}
-          <div className="flex flex-col items-center gap-5 sm:flex-row sm:items-start sm:gap-6">
-            <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-full border-[3px] border-border bg-surface-2 sm:h-[7.5rem] sm:w-[7.5rem]">
+        <div className="flex flex-1 flex-col px-4 py-4 sm:px-5 sm:py-4">
+          {/* Profile header — compact single block */}
+          <div className="flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:gap-4">
+            <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full border-[3px] border-border bg-surface-2 sm:h-24 sm:w-24">
               <Image
                 src={developer.photoUrl}
                 alt={developer.name}
                 fill
                 priority
-                sizes="120px"
+                sizes="96px"
                 quality={100}
                 className="object-cover object-center"
               />
             </div>
 
             <div className="min-w-0 flex-1 text-center sm:text-left">
-              <h1 className="text-[1.85rem] font-extrabold leading-tight tracking-tight text-foreground sm:text-[2.15rem]">
+              <h1 className="text-[1.55rem] font-extrabold leading-tight tracking-tight text-foreground sm:text-[1.85rem]">
                 {developer.name}
               </h1>
-              <p className="mt-1 text-[15px] font-semibold text-primary sm:text-base">
-                {developer.role}
-              </p>
-              <p className="mt-1 text-sm text-foreground-muted">
-                PHP · CodeIgniter · MySQL · Next.js · Enterprise ERP & HRMS
+              <p className="mt-0.5 text-[14px] font-semibold text-primary">{developer.role}</p>
+              <p className="mt-0.5 text-xs text-foreground-muted sm:text-sm">
+                PHP · CodeIgniter · MySQL · Next.js · LMS · Ollama / vLLM
               </p>
 
-              <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-xs text-muted sm:justify-start">
-                <span className="inline-flex items-center gap-1.5">
-                  <MapPin size={13} className="text-primary" />
+              <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs text-muted sm:justify-start">
+                <span className="inline-flex items-center gap-1">
+                  <MapPin size={12} className="text-primary" />
                   {developer.location}
                 </span>
-                <a href={`mailto:${developer.email}`} className="inline-flex items-center gap-1.5 hover:text-primary">
-                  <Mail size={13} className="text-primary" />
+                <a
+                  href={`mailto:${developer.email}`}
+                  className="inline-flex items-center gap-1 hover:text-primary"
+                >
+                  <Mail size={12} className="text-primary" />
                   {developer.email}
                 </a>
-                <a href={`tel:+${developer.phoneRaw}`} className="inline-flex items-center gap-1.5 hover:text-primary">
-                  <Phone size={13} className="text-primary" />
+                <a
+                  href={`tel:+${developer.phoneRaw}`}
+                  className="inline-flex items-center gap-1 hover:text-primary"
+                >
+                  <Phone size={12} className="text-primary" />
                   {developer.phone}
                 </a>
-              </div>
-
-              <div className="mt-3 flex items-center justify-center gap-2 sm:justify-start">
+                <span className="hidden h-3 w-px bg-border sm:inline-block" aria-hidden />
                 <a
                   href={developer.social.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted transition hover:border-primary hover:text-primary"
+                  className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border text-muted transition hover:border-primary hover:text-primary"
                   aria-label="LinkedIn"
                 >
-                  <LinkedInIcon width={15} height={15} />
+                  <LinkedInIcon width={13} height={13} />
                 </a>
                 <a
                   href={developer.social.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted transition hover:border-primary hover:text-primary"
+                  className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border text-muted transition hover:border-primary hover:text-primary"
                   aria-label="GitHub"
                 >
-                  <GitHubIcon width={15} height={15} />
+                  <GitHubIcon width={13} height={13} />
                 </a>
               </div>
             </div>
           </div>
 
-          {/* Professional summary */}
-          <div className="mt-6 border-t border-border pt-5">
-            <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-muted">
+          <div className="mt-3 border-t border-border pt-3">
+            <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-muted">
               Professional Summary
             </p>
-            <p className="max-w-3xl text-sm leading-relaxed text-foreground-muted sm:text-[15px]">
+            <p className="text-sm leading-relaxed text-foreground-muted">
               {developer.heroDescription} Promoted three times from Junior Developer to Lead.
-              Skilled in REST APIs, workflow automation, AWS deployment, and AI-enabled education systems.
+              Skilled in REST APIs, workflow automation, AWS deployment, and AI-enabled education
+              systems.
             </p>
           </div>
 
-          {/* Impact metrics — divider style, not cards */}
-          <div className="mt-5 grid grid-cols-2 gap-y-4 border-t border-border pt-5 sm:grid-cols-4">
+          <div className="mt-3 grid grid-cols-2 gap-y-2.5 border-t border-border pt-3 sm:grid-cols-4">
             {[
               { value: "5+", label: "Years Experience" },
               { value: "3×", label: "Promotions" },
@@ -193,9 +191,11 @@ export function DashboardHero() {
             ].map((item, i) => (
               <div
                 key={item.label}
-                className={`px-2 text-center sm:px-3 ${i > 0 ? "sm:border-l sm:border-border" : ""} ${i === 2 ? "border-t border-border pt-4 sm:border-t-0 sm:pt-0" : ""} ${i === 3 ? "border-t border-border pt-4 sm:border-t-0 sm:pt-0" : ""}`}
+                className={`px-2 text-center ${i > 0 ? "sm:border-l sm:border-border" : ""}`}
               >
-                <p className="text-xl font-extrabold tracking-tight text-foreground">{item.value}</p>
+                <p className="text-lg font-extrabold tracking-tight text-foreground sm:text-xl">
+                  {item.value}
+                </p>
                 <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted">
                   {item.label}
                 </p>
@@ -203,8 +203,7 @@ export function DashboardHero() {
             ))}
           </div>
 
-          {/* Actions */}
-          <div className="mt-6 flex flex-col gap-2.5 border-t border-border pt-5 sm:flex-row sm:flex-wrap">
+          <div className="mt-auto flex flex-col gap-2 border-t border-border pt-3 sm:flex-row sm:flex-wrap">
             <ResumeDownloadButton className="btn btn-primary !w-full sm:!w-auto">
               <Download size={16} />
               Download Resume
@@ -227,18 +226,14 @@ export function DashboardHero() {
             </a>
           </div>
         </div>
-      </motion.article>
+      </article>
 
-      <div className="dashboard-grid gap-3 sm:grid-cols-2 lg:grid-cols-1 lg:gap-4">
+      {/* Right rail — stretches to match profile card height */}
+      <aside className="flex h-full min-h-0 flex-col gap-3">
         <DashboardAIWidget />
 
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.08, duration: 0.35 }}
-          className="panel"
-        >
-          <div className="panel-header !pb-2">
+        <div className="panel flex min-h-0 flex-1 flex-col">
+          <div className="panel-header !py-2.5 !pb-2">
             <div className="flex items-center gap-2">
               <Eye size={15} className="text-primary" />
               <p className="panel-title text-sm">Visitors</p>
@@ -248,19 +243,19 @@ export function DashboardHero() {
               Live
             </span>
           </div>
-          <div className="panel-body !pt-2">
-            <div className="mb-3 grid grid-cols-2 gap-2">
-              <div className="rounded-lg bg-surface-2 px-3 py-2.5">
-                <p className="text-lg font-bold tracking-tight">
+          <div className="panel-body flex min-h-0 flex-1 flex-col !pt-2">
+            <div className="mb-2.5 grid grid-cols-2 gap-2">
+              <div className="rounded-lg border border-border bg-surface-2 px-2.5 py-2">
+                <p className="text-[9px] font-bold uppercase tracking-wide text-muted">All Time</p>
+                <p className="mt-0.5 text-xl font-extrabold tracking-tight">
                   <AnimatedCounter value={visitors.total} />
                 </p>
-                <p className="text-[10px] text-muted">All time</p>
               </div>
-              <div className="rounded-lg bg-primary/10 px-3 py-2.5">
-                <p className="text-lg font-bold tracking-tight text-primary">
+              <div className="rounded-lg border border-primary/20 bg-primary/10 px-2.5 py-2">
+                <p className="text-[9px] font-bold uppercase tracking-wide text-primary">Today</p>
+                <p className="mt-0.5 text-xl font-extrabold tracking-tight text-primary">
                   <AnimatedCounter value={visitors.today} />
                 </p>
-                <p className="text-[10px] text-muted">Today</p>
               </div>
             </div>
 
@@ -273,12 +268,12 @@ export function DashboardHero() {
             </div>
 
             {downloads.recent.length === 0 ? (
-              <p className="flex items-center gap-1.5 rounded-lg border border-dashed border-border px-3 py-4 text-xs text-muted">
+              <p className="flex flex-1 items-center gap-1.5 rounded-lg border border-dashed border-border px-3 py-3 text-xs text-muted">
                 <Sparkles size={12} /> Be the next to download
               </p>
             ) : (
-              <ul className="max-h-[180px] space-y-2 overflow-y-auto pr-0.5">
-                {downloads.recent.map((d, i) => (
+              <ul className="min-h-0 flex-1 space-y-2 overflow-y-auto pr-0.5">
+                {downloads.recent.map((d) => (
                   <li
                     key={`${d.downloadNumber}-${d.downloadedAt}`}
                     className="flex items-start gap-2 rounded-lg border border-border/60 bg-surface-2/50 px-2.5 py-2 text-xs"
@@ -299,8 +294,8 @@ export function DashboardHero() {
               </ul>
             )}
           </div>
-        </motion.div>
-      </div>
+        </div>
+      </aside>
     </section>
   );
 }

@@ -77,7 +77,7 @@ const EXTRA_LINES = [
   "I build ERP systems, REST APIs, and AI-powered apps with PHP, Python & Next.js.",
   "From junior developer to Lead — 5+ years of shipping production software.",
   "Looking for a reliable Lead Application Developer? You’re in the right place.",
-  "CodeIgniter, MySQL, AWS, Gemini — I turn business needs into working products.",
+  "CodeIgniter, MySQL, Ollama/vLLM, LMS — I turn campus workflows into working products.",
   "Thanks for dropping by. Explore projects, skills, and my live world map below.",
   "I lead teams, review code, and ship secure enterprise applications.",
   "Let’s turn your product idea into a production-ready application.",

@@ -1,0 +1,200 @@
+INSERT INTO `menumapping` (`id`, `product_id`, `mastermenu`, `mastermenu_icon`, `sortorder`, `module_key`, `level1`, `level1_sortorder`, `level2`, `level2_sortorder`, `icon`, `level2alias`, `level3`, `level3_sortorder`, `level3alias`, `date_updated`, `session_logut_time`, `is_visible`, `access_fields`, `updated_by`) VALUES (NULL, '1', 'Academics', 'academic', '2', 'Timetable_utilization', 'eAcademics', '2', 'Term Settings', '2', 'icon-feather-home', 'Timetable_utilization', 'Timetable Utilization', '4', NULL, '2026-03-12 05:21:44', NULL, '1', 'view,create,modify,delete,unlimitedaccess,download', NULL);
+
+INSERT INTO `workflow_types` (`workflow_type_id`, `product_id`, `type`, `processing_type`, `description`, `status`, `module_class_name`, `approve_function_name`, `approve_val`, `reject_function_name`, `reject_val`, `revoke_function_name`, `need_clarity_val`, `module_master_table`, `master_column`, `created_by`, `created_date`, `updated_by`, `updated_date`) VALUES (NULL, '3', 'LIB-SUBS-EXPIRED', 'process_type', '', '1', '', NULL, '0', NULL, '0', NULL, '0', NULL, NULL, '0', '0', '0', '0');
+
+ALTER TABLE `fee_types`
+ADD COLUMN `specify_user_role_access` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '1=Restrict fee type access by user role' AFTER `is_active`,
+ADD COLUMN `allowed_user_roles` VARCHAR(255) NULL DEFAULT NULL COMMENT 'Comma-separated m_user_roles.user_role_id values' AFTER `specify_user_role_access`;
+
+UPDATE `inventory_type` SET `type` = 'Dispose' WHERE `inventory_type`.`inventory_type_id` = 3;
+UPDATE `inventory_tabs` SET `tab_name` = 'Dispose' WHERE `inventory_tabs`.`tab_id` = 4;
+
+ALTER TABLE `hostel_student_registration`
+ADD COLUMN `food_preference` VARCHAR(10) NULL DEFAULT NULL AFTER `selected_room_id`;
+
+ALTER TABLE `hostel_student_registration_history`
+ADD COLUMN `food_preference` VARCHAR(10) NULL DEFAULT NULL AFTER `selected_room_id`;
+
+UPDATE inventory_tabs SET tab_name = 'Issued' WHERE tab_name = 'Assigned';
+
+UPDATE inventory_stock_status SET product_status = 'To Issue' WHERE product_status = 'To Assign';
+
+ALTER TABLE inventory_stock_product
+ADD COLUMN serial_no VARCHAR(100) NULL DEFAULT NULL AFTER barcode_no;
+
+INSERT INTO menumapping (
+  product_id, mastermenu, mastermenu_icon, sortorder, 
+  module_key, level1, level1_sortorder, level2, level2_sortorder, 
+  icon, level2alias, level3, level3_sortorder, level3alias, 
+  date_updated, session_logut_time, is_visible, access_fields, updated_by
+) VALUES (
+  1, 'Academics', 'academic', 2, 
+  'Industrial_internship', 'eAcademics', 1, 'During Term', 1, 
+  'icon-feather-home', 'Industrial_internship', 'Industrial Internship', 15, '', 
+  NOW(), '00:00:00', 1, 'view,create,modify,download,delete,upload', 1
+);
+
+CREATE TABLE IF NOT EXISTS `industrial_internship_groups` (
+    `group_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `group_name` VARCHAR(255) NOT NULL,
+    `mentor_id` INT UNSIGNED NOT NULL DEFAULT 0,
+    `company` VARCHAR(255) DEFAULT NULL,
+    `batch_id` INT UNSIGNED NOT NULL DEFAULT 0,
+    `degree_type_id` INT UNSIGNED NOT NULL DEFAULT 0,
+    `degree_branch_id` INT UNSIGNED NOT NULL DEFAULT 0,
+    `section_id` INT UNSIGNED NOT NULL DEFAULT 0,
+    `end_date` DATE DEFAULT NULL,
+    `current_stage` VARCHAR(100) NOT NULL DEFAULT 'Student Updates',
+    `registration_open` TINYINT(1) NOT NULL DEFAULT 0,
+    `academic_term_id` INT UNSIGNED NOT NULL DEFAULT 0,
+    `created_by` INT UNSIGNED NOT NULL DEFAULT 0,
+    `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
+    `created_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_date` DATETIME DEFAULT NULL,
+    PRIMARY KEY (`group_id`),
+    KEY `idx_ii_groups_created_by` (`created_by`),
+    KEY `idx_ii_groups_academic_term` (`academic_term_id`),
+    KEY `idx_ii_groups_stage` (`current_stage`),
+    KEY `idx_ii_groups_deleted` (`is_deleted`),
+    KEY `idx_ii_groups_mentor` (`mentor_id`),
+    KEY `idx_ii_groups_term_deleted` (`academic_term_id`, `is_deleted`),
+    KEY `idx_ii_groups_mentor_deleted` (`mentor_id`, `is_deleted`),
+    KEY `idx_ii_groups_created_deleted` (`created_by`, `is_deleted`),
+    KEY `idx_ii_groups_stage_deleted` (`current_stage`, `is_deleted`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `industrial_internship_group_students` (
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `group_id` INT UNSIGNED NOT NULL,
+    `student_id` INT UNSIGNED NOT NULL,
+    `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
+    `created_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_ii_group_student` (`group_id`, `student_id`),
+    KEY `idx_ii_group_students_group` (`group_id`),
+    KEY `idx_ii_group_students_student` (`student_id`),
+    KEY `idx_ii_group_students_deleted` (`is_deleted`),
+    KEY `idx_ii_gs_group_deleted` (`group_id`, `is_deleted`),
+    KEY `idx_ii_gs_student_deleted` (`student_id`, `is_deleted`),
+    KEY `idx_ii_gs_group_student_deleted` (`group_id`, `student_id`, `is_deleted`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `industrial_internship_settings` (
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `academic_term_id` INT UNSIGNED NOT NULL DEFAULT 0,
+    `registration_open` TINYINT(1) NOT NULL DEFAULT 0,
+    `updated_by` INT UNSIGNED NOT NULL DEFAULT 0,
+    `updated_date` DATETIME DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_ii_settings_term` (`academic_term_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `industrial_internship_registrations` (
+    `registration_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `degree_branch_id` INT UNSIGNED NOT NULL DEFAULT 0,
+    `start_date` DATE NOT NULL,
+    `end_date` DATE NOT NULL,
+    `description` TEXT,
+    `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+    `academic_term_id` INT UNSIGNED NOT NULL DEFAULT 0,
+    `created_by` INT UNSIGNED NOT NULL DEFAULT 0,
+    `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
+    `created_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_date` DATETIME DEFAULT NULL,
+    PRIMARY KEY (`registration_id`),
+    KEY `idx_ii_reg_term` (`academic_term_id`),
+    KEY `idx_ii_reg_program` (`degree_branch_id`),
+    KEY `idx_ii_reg_active` (`is_active`),
+    KEY `idx_ii_reg_deleted` (`is_deleted`),
+    KEY `idx_ii_reg_open_lookup` (`is_deleted`, `is_active`, `start_date`, `end_date`),
+    KEY `idx_ii_reg_program_active` (`degree_branch_id`, `is_deleted`, `is_active`),
+    KEY `idx_ii_reg_term_deleted` (`academic_term_id`, `is_deleted`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `industrial_internship_requests` (
+    `request_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `group_id` INT UNSIGNED NOT NULL DEFAULT 0,
+    `student_id` INT UNSIGNED NOT NULL DEFAULT 0,
+    `group_name` VARCHAR(255) NOT NULL,
+    `student_name` VARCHAR(255) DEFAULT NULL,
+    `usn_number` VARCHAR(100) DEFAULT NULL,
+    `program_name` VARCHAR(255) DEFAULT NULL,
+    `preference` TINYINT UNSIGNED NOT NULL DEFAULT 1,
+    `industry_sector` VARCHAR(150) DEFAULT NULL,
+    `location` VARCHAR(150) DEFAULT NULL,
+    `company_institution` VARCHAR(255) DEFAULT NULL,
+    `status` VARCHAR(50) NOT NULL DEFAULT 'Pending',
+    `remarks` TEXT DEFAULT NULL,
+    `academic_term_id` INT UNSIGNED NOT NULL DEFAULT 0,
+    `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
+    `created_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_date` DATETIME DEFAULT NULL,
+    PRIMARY KEY (`request_id`),
+    KEY `idx_ii_req_group` (`group_id`),
+    KEY `idx_ii_req_student` (`student_id`),
+    KEY `idx_ii_req_status` (`status`),
+    KEY `idx_ii_req_term` (`academic_term_id`),
+    KEY `idx_ii_req_deleted` (`is_deleted`),
+    KEY `idx_ii_req_group_deleted_status` (`group_id`, `is_deleted`, `status`),
+    KEY `idx_ii_req_student_deleted` (`student_id`, `is_deleted`),
+    KEY `idx_ii_req_group_student_deleted` (`group_id`, `student_id`, `is_deleted`),
+    KEY `idx_ii_req_group_student_pref` (`group_id`, `student_id`, `is_deleted`, `preference`),
+    KEY `idx_ii_req_usn_deleted` (`usn_number`, `is_deleted`),
+    KEY `idx_ii_req_group_name_deleted` (`group_name`(191), `is_deleted`),
+    KEY `idx_ii_req_term_deleted` (`academic_term_id`, `is_deleted`),
+    KEY `idx_ii_req_pending` (`is_deleted`, `status`, `academic_term_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `industrial_internship_attendance` (
+    `attendance_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `group_id` INT UNSIGNED NOT NULL DEFAULT 0,
+    `student_id` INT UNSIGNED NOT NULL DEFAULT 0,
+    `attendance_date` DATE NOT NULL,
+    `status` VARCHAR(20) NOT NULL DEFAULT 'Present',
+    `academic_term_id` INT UNSIGNED NOT NULL DEFAULT 0,
+    `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
+    `created_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_date` DATETIME DEFAULT NULL,
+    PRIMARY KEY (`attendance_id`),
+    KEY `idx_ii_att_group` (`group_id`),
+    KEY `idx_ii_att_student` (`student_id`),
+    KEY `idx_ii_att_date` (`attendance_date`),
+    KEY `idx_ii_att_status` (`status`),
+    KEY `idx_ii_att_deleted` (`is_deleted`),
+    KEY `idx_ii_att_group_student_date` (`group_id`, `student_id`, `attendance_date`, `is_deleted`),
+    KEY `idx_ii_att_group_date_deleted` (`group_id`, `attendance_date`, `is_deleted`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `industrial_internship_weekly_reports` (
+    `report_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `request_id` INT UNSIGNED NOT NULL DEFAULT 0,
+    `week_start_date` DATE NOT NULL,
+    `week_end_date` DATE NOT NULL,
+    `description` TEXT,
+    `pdf_file` VARCHAR(255) DEFAULT NULL,
+    `excel_file` VARCHAR(255) DEFAULT NULL,
+    `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
+    `created_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_date` DATETIME DEFAULT NULL,
+    PRIMARY KEY (`report_id`),
+    KEY `idx_ii_weekly_request` (`request_id`),
+    KEY `idx_ii_weekly_deleted` (`is_deleted`),
+    KEY `idx_ii_weekly_request_deleted_start` (`request_id`, `is_deleted`, `week_start_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `industrial_internship_completion_details` (
+    `completion_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `request_id` INT UNSIGNED NOT NULL DEFAULT 0,
+    `start_date` DATE NOT NULL,
+    `end_date` DATE NOT NULL,
+    `description` TEXT,
+    `document_file` VARCHAR(255) DEFAULT NULL,
+    `certification_file` VARCHAR(255) DEFAULT NULL,
+    `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
+    `created_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_date` DATETIME DEFAULT NULL,
+    PRIMARY KEY (`completion_id`),
+    UNIQUE KEY `uk_ii_completion_request` (`request_id`),
+    KEY `idx_ii_completion_deleted` (`is_deleted`),
+    KEY `idx_ii_completion_request_deleted` (`request_id`, `is_deleted`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
