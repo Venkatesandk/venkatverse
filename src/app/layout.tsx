@@ -82,6 +82,12 @@ export default function RootLayout({
     <html lang="en" className={`${jakarta.variable} h-full`} data-theme="light" suppressHydrationWarning>
       <body className="min-h-full bg-background text-foreground antialiased" suppressHydrationWarning>
         <ThemeScript />
+        <script
+          id="strip-extension-attrs"
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var attrs=["fdprocessedid","data-cursor-ref"];function stripEl(el){if(!el||el.nodeType!==1)return;for(var a=0;a<attrs.length;a++){if(el.hasAttribute(attrs[a]))el.removeAttribute(attrs[a]);}}function strip(root){stripEl(root);if(!root||!root.querySelectorAll)return;var nodes=root.querySelectorAll("[fdprocessedid],[data-cursor-ref]");for(var i=0;i<nodes.length;i++)stripEl(nodes[i]);}var obs=new MutationObserver(function(records){for(var i=0;i<records.length;i++){var rec=records[i];if(rec.type==="attributes"){stripEl(rec.target);}else if(rec.addedNodes){for(var j=0;j<rec.addedNodes.length;j++)strip(rec.addedNodes[j]);}}});obs.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:attrs});strip(document.documentElement);setTimeout(function(){obs.disconnect();},8000);})();`,
+          }}
+        />
         <JsonLd />
         {children}
       </body>

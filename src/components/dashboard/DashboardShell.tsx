@@ -9,6 +9,11 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="dashboard-shell">
+      <div className="ambient-layer" aria-hidden>
+        <span className="ambient-orb ambient-orb-a" />
+        <span className="ambient-orb ambient-orb-b" />
+        <span className="ambient-orb ambient-orb-c" />
+      </div>
       <DashboardSidebar open={sidebarOpen} onOpenChange={setSidebarOpen} />
       <div className="dashboard-main">
         <DashboardHeader onMenuClick={() => setSidebarOpen(true)} />

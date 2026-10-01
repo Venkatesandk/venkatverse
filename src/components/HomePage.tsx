@@ -37,7 +37,7 @@ export function HomePage() {
   return (
     <>
       <DashboardShell>
-        <div className="dashboard-grid space-y-4">
+        <div className="dashboard-grid space-y-5 md:space-y-7">
           <DailyGreetingBanner />
           <DashboardHero />
           <Reveal>
@@ -101,7 +101,7 @@ export function HomePage() {
           </Reveal>
         </div>
 
-        <footer className="mt-4 border-t border-border py-4 pb-2 text-center text-xs text-muted md:mt-6 md:py-5">
+        <footer className="mt-8 border-t border-border py-6 text-center text-xs text-muted md:mt-10 md:py-8">
           <p suppressHydrationWarning>
             © {CURRENT_YEAR} {developer.name}. All rights reserved.
           </p>

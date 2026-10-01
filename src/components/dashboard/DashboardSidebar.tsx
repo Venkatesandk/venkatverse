@@ -52,8 +52,8 @@ export function DashboardSidebar({ open, onOpenChange }: DashboardSidebarProps) 
 
   const NavContent = () => (
     <>
-      <div className="flex h-[var(--header-height)] items-center gap-2.5 border-b border-border px-5">
-        <div className="relative h-9 w-9 overflow-hidden rounded-lg ring-2 ring-primary/30">
+      <div className="flex h-[var(--header-height)] items-center gap-3 border-b border-border px-5">
+        <div className="relative h-9 w-9 overflow-hidden rounded-md border border-border">
           <Image
             src={developer.photoUrl}
             alt={developer.name}
@@ -63,9 +63,12 @@ export function DashboardSidebar({ open, onOpenChange }: DashboardSidebarProps) 
             className="object-cover object-center"
           />
         </div>
-        <span className="text-lg font-bold tracking-tight">
-          Venkat<span className="text-primary">.dev</span>
-        </span>
+        <div className="min-w-0 leading-tight">
+          <p className="truncate text-sm font-semibold tracking-tight">Venkatesan D</p>
+          <p className="truncate text-[10px] font-medium uppercase tracking-[0.14em] text-muted">
+            Lead Developer
+          </p>
+        </div>
       </div>
       <nav className="flex-1 space-y-0.5 py-4">
         {navLinks.map((link) => {

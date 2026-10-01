@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Sun, Sunset, Moon, CloudSun } from "lucide-react";
 import { getSiteGreetingBundle, type TimeOfDay } from "@/lib/greetings";
-import { developer } from "@/data/portfolio";
 
 function TimeIcon({ tod }: { tod: TimeOfDay }) {
   if (tod === "morning") return <Sun size={14} className="text-amber-500" />;
@@ -39,18 +38,15 @@ export function DailyGreetingBanner() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35 }}
     >
-      <div className="flex flex-col gap-1.5 px-3 py-2.5 sm:flex-row sm:items-center sm:gap-3 sm:px-4">
-        <div className="flex shrink-0 items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-bold text-primary">
+      <div className="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-baseline sm:gap-4 sm:px-5">
+        <p className="flex shrink-0 items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
           <TimeIcon tod={bundle.timeOfDay} />
           {bundle.timeGreeting}
-        </div>
+        </p>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold text-foreground">
-            {developer.firstName} says:{" "}
-            <span className="font-medium text-foreground-muted">{bundle.dailyShort}</span>
-          </p>
-          <p className="mt-0.5 line-clamp-2 text-[11px] leading-snug text-muted sm:line-clamp-1">
-            {bundle.extraLine} · {bundle.weekday}
+          <p className="text-sm text-foreground-muted">
+            <span className="font-medium text-foreground">{bundle.dailyShort}</span>
+            <span className="hidden text-muted sm:inline"> · {bundle.weekday}</span>
           </p>
         </div>
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import type { LucideIcon } from "lucide-react";
+import { motion } from "framer-motion";
 import {
   FileText,
   Mic,
@@ -37,25 +38,37 @@ export function AISuitePanel() {
         <span className="panel-badge">Powered by AI</span>
       </div>
       <div className="panel-body">
-        <div className="grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 sm:grid-cols-4">
+        <motion.div
+          className="grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 sm:grid-cols-4"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={{ show: { transition: { staggerChildren: 0.06 } } }}
+        >
           {aiSuiteTools.map((tool) => {
             const Icon = iconMap[tool.icon] ?? Bot;
             return (
-              <button
+              <motion.button
                 key={tool.id}
                 type="button"
                 onClick={() => openAISuiteTool(tool.slug)}
-                className="group rounded-xl border border-border bg-surface-2 p-3 text-left transition hover:border-primary hover:shadow-md"
+                variants={{
+                  hidden: { opacity: 0, y: 16 },
+                  show: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+                }}
+                whileHover={{ y: -4 }}
+                whileTap={{ scale: 0.98 }}
+                className="group rounded-2xl border border-border bg-surface p-3.5 text-left hover:border-primary/40 hover:shadow-[0_12px_30px_-18px_rgba(91,92,230,0.7)]"
               >
-                <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white">
+                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition group-hover:bg-primary group-hover:text-white">
                   <Icon size={18} />
                 </div>
                 <p className="text-sm font-semibold">{tool.title}</p>
                 <p className="mt-0.5 text-[10px] leading-snug text-muted">{tool.description}</p>
-              </button>
+              </motion.button>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

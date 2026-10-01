@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import {
   Download,
@@ -28,6 +29,11 @@ interface DownloadItem {
   downloadedAt: string;
   downloadNumber: number;
 }
+
+const rise = {
+  hidden: { opacity: 0, y: 18 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const } },
+};
 
 function timeAgo(iso: string) {
   const diff = Date.now() - new Date(iso).getTime();
@@ -90,38 +96,49 @@ export function DashboardHero() {
       id="home"
       className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-stretch lg:gap-4"
     >
-      <article className="panel flex h-full flex-col overflow-hidden !p-0">
+      <motion.article
+        className="panel flex h-full flex-col overflow-hidden !p-0"
+        initial="hidden"
+        animate="show"
+        variants={{ show: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } } }}
+      >
         {/* Top status bar */}
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-surface-2/70 px-4 py-2 sm:px-5">
-          <span className="inline-flex items-center gap-2 text-[11px] font-semibold text-emerald-600">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-            </span>
-            Available for full-time & contract roles
+        <motion.div variants={rise} className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-surface-2/70 px-4 py-2 sm:px-5">
+          <span className="inline-flex items-center gap-2 rounded-full border border-emerald-600/15 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-700">
+            <span className="live-dot h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            Open to full-time and contract roles
           </span>
           <span className="text-[11px] text-muted" suppressHydrationWarning>
             {liveExp.mounted ? liveExp.label : "5+ Years"} · eNova Software · Since Jul 2021
           </span>
-        </div>
+        </motion.div>
 
-        <div className="flex flex-1 flex-col px-4 py-4 sm:px-5 sm:py-4">
+        <motion.div
+          className="flex flex-1 flex-col px-4 py-4 sm:px-5 sm:py-4"
+          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}
+        >
           {/* Profile header — compact single block */}
-          <div className="flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:gap-4">
-            <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full border-[3px] border-border bg-surface-2 sm:h-24 sm:w-24">
+          <motion.div
+            className="flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:gap-4"
+            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}
+          >
+            <motion.div
+              variants={rise}
+              className="relative h-[5.5rem] w-[5.5rem] shrink-0 overflow-hidden rounded-2xl border border-border bg-surface-2 shadow-sm sm:h-28 sm:w-28"
+            >
               <Image
                 src={developer.photoUrl}
                 alt={developer.name}
                 fill
                 priority
-                sizes="96px"
+                sizes="112px"
                 quality={100}
                 className="object-cover object-center"
               />
-            </div>
+            </motion.div>
 
-            <div className="min-w-0 flex-1 text-center sm:text-left">
-              <h1 className="text-[1.55rem] font-extrabold leading-tight tracking-tight text-foreground sm:text-[1.85rem]">
+            <motion.div variants={rise} className="min-w-0 flex-1 text-center sm:text-left">
+              <h1 className="text-[1.85rem] font-semibold leading-[1.05] tracking-[-0.03em] text-foreground sm:text-[2.35rem]">
                 {developer.name}
               </h1>
               <p className="mt-0.5 text-[14px] font-semibold text-primary">{developer.role}</p>
@@ -168,10 +185,10 @@ export function DashboardHero() {
                   <GitHubIcon width={13} height={13} />
                 </a>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
-          <div className="mt-3 border-t border-border pt-3">
+          <motion.div variants={rise} className="mt-3 border-t border-border pt-3">
             <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-muted">
               Professional Summary
             </p>
@@ -180,9 +197,9 @@ export function DashboardHero() {
               Skilled in REST APIs, workflow automation, AWS deployment, and AI-enabled education
               systems.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="mt-3 grid grid-cols-2 gap-y-2.5 border-t border-border pt-3 sm:grid-cols-4">
+          <motion.div variants={rise} className="mt-3 grid grid-cols-2 gap-y-2.5 border-t border-border pt-3 sm:grid-cols-4">
             {[
               { value: "5+", label: "Years Experience" },
               { value: "3×", label: "Promotions" },
@@ -201,9 +218,9 @@ export function DashboardHero() {
                 </p>
               </div>
             ))}
-          </div>
+          </motion.div>
 
-          <div className="mt-auto flex flex-col gap-2 border-t border-border pt-3 sm:flex-row sm:flex-wrap">
+          <motion.div variants={rise} className="mt-auto flex flex-col gap-2 border-t border-border pt-3 sm:flex-row sm:flex-wrap">
             <ResumeDownloadButton className="btn btn-primary !w-full sm:!w-auto">
               <Download size={16} />
               Download Resume
@@ -224,9 +241,9 @@ export function DashboardHero() {
             <a href="/recruiter" className="btn btn-glass !w-full sm:!w-auto">
               Recruiter Brief
             </a>
-          </div>
-        </div>
-      </article>
+          </motion.div>
+        </motion.div>
+      </motion.article>
 
       {/* Right rail — stretches to match profile card height */}
       <aside className="flex h-full min-h-0 flex-col gap-3">
