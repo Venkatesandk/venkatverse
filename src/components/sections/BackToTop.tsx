@@ -50,7 +50,7 @@ export function BackToTop() {
     <button
       type="button"
       onClick={scrollToTop}
-      className="fixed bottom-36 left-4 z-40 flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-surface text-foreground-muted shadow-md hover:text-primary active:scale-95 md:bottom-6"
+      className="fixed bottom-[calc(var(--mobile-bar)+env(safe-area-inset-bottom,0px)+0.75rem)] left-3 z-40 flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-surface text-foreground-muted shadow-md hover:text-primary active:scale-95 md:bottom-6 md:left-4"
       aria-label="Back to top"
     >
       <ArrowUp size={18} />

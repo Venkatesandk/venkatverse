@@ -533,13 +533,39 @@ function ContactPanel() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (status === "loading") return;
+
+    const cleanName = form.name.trim();
+    const cleanEmail = form.email.trim();
+    const cleanMsg = form.message.trim();
+    if (cleanName.length < 2) {
+      setStatus("error");
+      setErrorMsg("Please enter at least 2 characters for your name.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+      setStatus("error");
+      setErrorMsg("Please enter a valid email address.");
+      return;
+    }
+    if (cleanMsg.length < 10) {
+      setStatus("error");
+      setErrorMsg("Please provide at least 10 characters in your message.");
+      return;
+    }
+
     setStatus("loading");
     setErrorMsg("");
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          name: cleanName,
+          email: cleanEmail,
+          message: cleanMsg,
+        }),
       });
       const data = await res.json();
       if (res.ok) {
@@ -573,18 +599,18 @@ function ContactPanel() {
             <CheckCircle2 size={12} />
             {developer.responseTime}
           </span>
-          <div className="mb-5 flex flex-wrap gap-2">
-            <a href={`mailto:${developer.email}`} className="btn btn-primary !w-auto">
+          <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+            <a href={`mailto:${developer.email}`} className="btn btn-primary sm:!w-auto">
               <Mail size={16} /> Email Direct
             </a>
-            <RequestInterviewButton className="btn btn-glass !w-auto">
+            <RequestInterviewButton className="btn btn-glass sm:!w-auto">
               <Calendar size={16} /> Request Interview
             </RequestInterviewButton>
             <a
               href={developer.social.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn btn-whatsapp !w-auto"
+              className="btn btn-whatsapp sm:!w-auto"
             >
               <WhatsAppIcon width={16} height={16} /> WhatsApp
             </a>
@@ -592,7 +618,7 @@ function ContactPanel() {
               href={developer.social.linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn btn-glass !w-auto"
+              className="btn btn-glass sm:!w-auto"
             >
               <LinkedInIcon width={16} height={16} /> LinkedIn
             </a>

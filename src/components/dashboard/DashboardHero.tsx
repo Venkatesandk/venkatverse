@@ -35,7 +35,7 @@ export function DashboardHero() {
   return (
     <section
       id="home"
-      className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_310px] lg:items-stretch lg:gap-4"
+      className="grid min-w-0 grid-cols-1 gap-3 lg:grid-cols-[minmax(0,1fr)_310px] lg:items-stretch lg:gap-4"
     >
       <motion.article
         className="panel flex h-full flex-col overflow-hidden !p-0"
@@ -82,15 +82,17 @@ export function DashboardHero() {
             </motion.div>
 
             <motion.div variants={rise} className="min-w-0 flex-1 text-center sm:text-left">
-              <h1 className="text-[1.85rem] font-semibold leading-[1.08] tracking-[-0.03em] text-foreground sm:text-[2.35rem]">
+              <h1 className="text-[clamp(1.65rem,4.5vw,2.35rem)] font-semibold leading-[1.08] tracking-[-0.03em] text-foreground">
                 {developer.name}
               </h1>
               <p className="mt-0.5 text-[15px] font-bold text-primary">{developer.role}</p>
               <p className="mt-1 text-xs font-medium text-foreground-muted sm:text-[13px]">
-                <span className="font-semibold text-foreground">Core:</span> PHP 7/8 · CodeIgniter 3/4 · MySQL · Enterprise ERP · LMS · HRMS &amp; Biometrics
+                <span className="font-semibold text-foreground">Core:</span>{" "}
+                PHP 7/8 · CodeIgniter 3/4 · MySQL · Enterprise ERP · LMS · HRMS &amp; Biometrics
               </p>
               <p className="mt-0.5 text-xs text-muted">
-                <span className="font-medium text-foreground-muted">Additional:</span> React · Next.js · Python · Private AI (Ollama / vLLM) · AWS
+                <span className="font-medium text-foreground-muted">Additional:</span>{" "}
+                React · Next.js · Python · Private AI (Ollama / vLLM) · AWS
               </p>
 
               <div className="mt-2.5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs text-muted sm:justify-start">
@@ -117,19 +119,19 @@ export function DashboardHero() {
                   href={developer.social.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border text-muted transition hover:border-primary hover:text-primary"
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-border text-muted transition hover:border-primary hover:text-primary sm:h-9 sm:w-9"
                   aria-label="LinkedIn profile"
                 >
-                  <LinkedInIcon width={13} height={13} />
+                  <LinkedInIcon width={14} height={14} />
                 </a>
                 <a
                   href={developer.social.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border text-muted transition hover:border-primary hover:text-primary"
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-border text-muted transition hover:border-primary hover:text-primary sm:h-9 sm:w-9"
                   aria-label="GitHub profile"
                 >
-                  <GitHubIcon width={13} height={13} />
+                  <GitHubIcon width={14} height={14} />
                 </a>
               </div>
             </motion.div>
@@ -214,7 +216,7 @@ export function DashboardHero() {
             )}
           </div>
 
-          <div className="panel-body flex min-h-0 flex-1 flex-col justify-between gap-3 !pt-2.5">
+          <div className="panel-body flex min-h-0 flex-1 flex-col justify-start gap-3 !pt-3">
             <div className="grid grid-cols-2 gap-2">
               <div className="rounded-lg border border-primary/20 bg-primary/10 px-2.5 py-2">
                 <p className="text-[9px] font-bold uppercase tracking-wide text-primary">Online Now</p>

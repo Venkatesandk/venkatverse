@@ -21,36 +21,36 @@ export function MobileActionBar() {
           href={developer.social.whatsapp}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex flex-col items-center justify-center gap-0.5 text-[#25d366] active:opacity-70"
+          className="flex min-h-11 flex-col items-center justify-center gap-0.5 text-[#25d366] active:opacity-70"
         >
           <WhatsAppIcon width={20} height={20} />
-          <span className="text-[10px] font-medium">WhatsApp</span>
+          <span className="text-[11px] font-medium">WhatsApp</span>
         </a>
 
         <a
           href={`tel:${developer.phone}`}
-          className="flex flex-col items-center justify-center gap-0.5 text-foreground-muted active:opacity-70"
+          className="flex min-h-11 flex-col items-center justify-center gap-0.5 text-foreground-muted active:opacity-70"
         >
           <Phone size={20} />
-          <span className="text-[10px] font-medium">Call</span>
+          <span className="text-[11px] font-medium">Call</span>
         </a>
 
         <button
           type="button"
           onClick={openResumeDownload}
-          className="flex flex-col items-center justify-center gap-0.5 text-primary active:opacity-70"
+          className="flex min-h-11 flex-col items-center justify-center gap-0.5 text-primary active:opacity-70"
         >
           <Download size={20} />
-          <span className="text-[10px] font-medium">Resume</span>
+          <span className="text-[11px] font-medium">Resume</span>
         </button>
 
         <button
           type="button"
           onClick={openAi}
-          className="flex flex-col items-center justify-center gap-0.5 text-foreground-muted active:opacity-70"
+          className="flex min-h-11 flex-col items-center justify-center gap-0.5 text-foreground-muted active:opacity-70"
         >
           <Bot size={20} />
-          <span className="text-[10px] font-medium">AI Chat</span>
+          <span className="text-[11px] font-medium">AI Chat</span>
         </button>
       </div>
     </nav>

@@ -29,8 +29,9 @@ export function ThemePicker() {
       <motion.button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex h-9 w-9 items-center justify-center rounded-lg border border-border hover:bg-surface-2"
+        className="flex h-11 w-11 items-center justify-center rounded-lg border border-border hover:bg-surface-2"
         aria-label="Choose theme"
+        aria-expanded={open}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         title={`Theme: ${mounted ? current.name : "Themes"}`}

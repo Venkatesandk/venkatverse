@@ -130,7 +130,7 @@ export function NotificationBell() {
       <motion.button
         type="button"
         onClick={toggleOpen}
-        className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-border hover:bg-surface-2"
+        className="relative flex h-11 w-11 items-center justify-center rounded-lg border border-border hover:bg-surface-2"
         aria-label="Notifications"
         aria-expanded={open}
         whileHover={{ scale: 1.05 }}

@@ -132,7 +132,7 @@ export function ProjectsPanel() {
               role="tab"
               aria-selected={category === cat}
               onClick={() => setCategory(cat)}
-              className={`rounded-full px-2.5 py-1 text-[11px] font-semibold transition ${category === cat
+              className={`min-h-10 rounded-full px-3 py-1.5 text-xs font-semibold transition sm:min-h-9 ${category === cat
                   ? "bg-primary text-white"
                   : "border border-border bg-surface-2/60 text-foreground-muted hover:border-primary/40"
                 }`}
@@ -211,12 +211,27 @@ export function ProjectsPanel() {
                 )}
                 <div className="mb-3 flex flex-wrap gap-1">
                   {project.technologies.slice(0, 4).map((t) => (
-                    <span key={t} className="rounded bg-surface-2 px-1.5 py-0.5 text-[9px] font-medium text-muted">
+                    <span key={t} className="rounded bg-surface-2 px-1.5 py-0.5 text-[10px] font-medium text-muted">
                       {t}
                     </span>
                   ))}
                 </div>
-                <div className="mt-auto flex items-center justify-between border-t border-border/60 pt-2.5">
+                <details className="mb-3 rounded-xl border border-border/70 bg-surface-2/40 px-3 py-2 text-xs">
+                  <summary className="cursor-pointer select-none font-semibold text-foreground">
+                    Architecture &amp; Ownership
+                  </summary>
+                  <div className="mt-2 space-y-1.5 text-[11px] leading-relaxed text-foreground-muted">
+                    <p>
+                      <strong className="text-foreground">Stack &amp; Flow: </strong>
+                      {project.architecture}
+                    </p>
+                    <p>
+                      <strong className="text-foreground">{project.ownership}: </strong>
+                      {project.ownershipDetails}
+                    </p>
+                  </div>
+                </details>
+                <div className="mt-auto flex items-center justify-between gap-2 border-t border-border/60 pt-2.5">
                   <Link
                     href={`/projects/${project.slug}`}
                     className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
