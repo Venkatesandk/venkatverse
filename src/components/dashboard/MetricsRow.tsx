@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import dynamic from "next/dynamic";
-import { BASE_VISITOR_COUNT } from "@/lib/counters";
-import { fetchAnalyticsStats } from "@/hooks/useRecordVisit";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { useLiveExperience } from "@/hooks/useLiveExperience";
+import { useLiveStats } from "@/hooks/useLiveStats";
 import {
   Users,
   Briefcase,
@@ -27,7 +26,7 @@ const LiveGlobePanel = dynamic(
     ssr: false,
     loading: () => (
       <div className="panel flex h-44 items-center justify-center text-xs text-muted">
-        Loading interactive 3D visitor globe…
+        Loading live visitor world map…
       </div>
     ),
   }
@@ -35,81 +34,64 @@ const LiveGlobePanel = dynamic(
 
 interface HighlightDef {
   label: string;
-  value: number;
+  value?: number | null;
   display?: string;
   sublabel: string;
-  animated: boolean;
+  loading?: boolean;
+  isError?: boolean;
+  animated?: boolean;
   icon: LucideIcon;
   accent: string;
 }
 
 export function MetricsRow() {
-  const [live, setLive] = useState({ total: BASE_VISITOR_COUNT, today: 0 });
   const [showGlobe, setShowGlobe] = useState(false);
   const exp = useLiveExperience(1000);
-
-  useEffect(() => {
-    void fetchAnalyticsStats().then(setLive);
-    const refresh = () => void fetchAnalyticsStats().then(setLive);
-    window.addEventListener("visit-recorded", refresh);
-    const poll = window.setInterval(refresh, 15_000);
-    return () => {
-      window.removeEventListener("visit-recorded", refresh);
-      window.clearInterval(poll);
-    };
-  }, []);
+  const { total, isLoading, isError, isLive } = useLiveStats();
 
   const highlights: HighlightDef[] = [
     {
       label: "Live Tenure",
-      value: 0,
-      display: exp.mounted ? exp.label : "5+ Years",
-      sublabel: exp.mounted ? `Since Jul 2021 · ${exp.clock}` : "Since Jul 2021",
-      animated: false,
+      display: exp.label,
+      sublabel: `Joined Jul 2021 · ${exp.days}d ${exp.clock}`,
       icon: Briefcase,
       accent: "from-violet-500/12 to-transparent",
     },
     {
       label: "Promotions",
-      value: 3,
       display: "3×",
       sublabel: "Junior → Lead",
-      animated: false,
       icon: Award,
       accent: "from-emerald-500/12 to-transparent",
     },
     {
       label: "ERP Modules",
-      value: 20,
       display: "20+",
       sublabel: "Production systems",
-      animated: false,
       icon: FolderKanban,
       accent: "from-amber-500/12 to-transparent",
     },
     {
       label: "Institutional Users",
-      value: 5000,
       display: "5,000+",
       sublabel: "Across Tamil Nadu",
-      animated: false,
       icon: Users,
       accent: "from-cyan-500/12 to-transparent",
     },
     {
       label: "Exam Concurrency",
-      value: 1000,
       display: "1,000+",
       sublabel: "Proctored candidates",
-      animated: false,
       icon: Server,
       accent: "from-rose-500/12 to-transparent",
     },
     {
       label: "Portfolio Visitors",
-      value: live.total,
-      sublabel: live.today > 0 ? `Live · ${live.today} today` : "Live analytics",
+      value: total,
+      loading: isLoading,
+      isError,
       animated: true,
+      sublabel: isError ? "Stats unavailable" : isLive ? "Live · Redis verified" : "All-time unique sessions",
       icon: Eye,
       accent: "from-sky-500/12 to-transparent",
     },
@@ -151,13 +133,23 @@ export function MetricsRow() {
                   </p>
                   <Icon size={13} className="shrink-0 text-primary/75" />
                 </div>
-                <p className="mt-1.5 text-lg font-bold leading-none sm:text-xl" suppressHydrationWarning>
-                  {metric.animated ? (
-                    <AnimatedCounter value={Number(metric.value)} />
-                  ) : (
-                    metric.display ?? metric.value
-                  )}
-                </p>
+
+                {metric.loading ? (
+                  <div className="mt-2 h-6 w-16 animate-pulse rounded bg-surface-2" />
+                ) : (
+                  <p className="mt-1.5 text-lg font-bold leading-none sm:text-xl" suppressHydrationWarning>
+                    {metric.animated ? (
+                      metric.isError || metric.value === null || metric.value === undefined ? (
+                        "—"
+                      ) : (
+                        <AnimatedCounter value={metric.value} />
+                      )
+                    ) : (
+                      metric.display
+                    )}
+                  </p>
+                )}
+
                 <p className="mt-1.5 truncate text-[10px] font-medium text-emerald-700" suppressHydrationWarning>
                   {metric.sublabel}
                 </p>

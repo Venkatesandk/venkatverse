@@ -1,20 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   Download,
   MapPin,
-  Eye,
-  Users,
+  Activity,
   ShieldCheck,
-  Sparkles,
   Mail,
   Phone,
   Calendar,
   FileText,
+  Users,
 } from "lucide-react";
 import { developer } from "@/data/portfolio";
 import { ResumeDownloadButton } from "@/components/sections/ResumeDownloadModal";
@@ -23,76 +21,16 @@ import { DashboardAIWidget } from "./DashboardAIWidget";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { GitHubIcon, LinkedInIcon } from "@/components/ui/SocialIcons";
 import { useLiveExperience } from "@/hooks/useLiveExperience";
-import { BASE_DOWNLOAD_COUNT, BASE_VISITOR_COUNT } from "@/lib/counters";
-import { fetchAnalyticsStats, useRecordVisit } from "@/hooks/useRecordVisit";
-
-interface DownloadItem {
-  name: string;
-  emailMasked: string;
-  downloadedAt: string;
-  downloadNumber: number;
-}
+import { useLiveStats } from "@/hooks/useLiveStats";
 
 const rise = {
   hidden: { opacity: 0, y: 14 },
   show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] as const } },
 };
 
-function timeAgo(iso: string) {
-  const diff = Date.now() - new Date(iso).getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return "just now";
-  if (mins < 60) return `${mins}m ago`;
-  const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs}h ago`;
-  return `${Math.floor(hrs / 24)}d ago`;
-}
-
 export function DashboardHero() {
   const liveExp = useLiveExperience(60_000);
-  const [visitors, setVisitors] = useState({ total: BASE_VISITOR_COUNT, today: 0 });
-  const [downloads, setDownloads] = useState({
-    total: BASE_DOWNLOAD_COUNT,
-    recent: [] as DownloadItem[],
-  });
-
-  useEffect(() => {
-    fetch("/api/resume/downloads")
-      .then((r) => r.json())
-      .then((d) =>
-        setDownloads({
-          total: d.total ?? BASE_DOWNLOAD_COUNT,
-          recent: Array.isArray(d.recent) ? d.recent : [],
-        })
-      )
-      .catch(() => {});
-
-    const refresh = () => {
-      fetch("/api/resume/downloads")
-        .then((r) => r.json())
-        .then((d) =>
-          setDownloads({
-            total: d.total ?? BASE_DOWNLOAD_COUNT,
-            recent: Array.isArray(d.recent) ? d.recent : [],
-          })
-        )
-        .catch(() => {});
-    };
-    window.addEventListener("resume-downloaded", refresh);
-    return () => window.removeEventListener("resume-downloaded", refresh);
-  }, []);
-
-  useRecordVisit((stats) => setVisitors(stats));
-
-  useEffect(() => {
-    const onVisit = (e: Event) => {
-      const detail = (e as CustomEvent<{ total: number; today: number }>).detail;
-      if (detail) setVisitors(detail);
-      else void fetchAnalyticsStats().then(setVisitors);
-    };
-    window.addEventListener("visit-recorded", onVisit);
-    return () => window.removeEventListener("visit-recorded", onVisit);
-  }, []);
+  const { today, online, downloads, isLoading, isError, isLive } = useLiveStats();
 
   return (
     <section
@@ -115,7 +53,7 @@ export function DashboardHero() {
             Open to Lead &amp; Senior Engineering Roles
           </span>
           <span className="text-[11px] font-medium text-muted" suppressHydrationWarning>
-            {liveExp.mounted ? liveExp.label : developer.experience} · eNova Software · Since Jul 2021
+            {liveExp.label} · eNova Software · Since Jul 2021
           </span>
         </motion.div>
 
@@ -211,10 +149,7 @@ export function DashboardHero() {
             className="mt-4 grid grid-cols-2 gap-y-2.5 border-t border-border pt-3.5 sm:grid-cols-4"
           >
             {[
-              {
-                value: liveExp.mounted ? `${liveExp.years}y ${liveExp.months}m` : developer.experiencePlus,
-                label: "Experience",
-              },
+              { value: `${liveExp.years}y ${liveExp.months}m`, label: "Experience" },
               { value: "3×", label: "Promotions" },
               { value: "20+", label: "ERP Modules" },
               { value: "5,000+", label: "Platform Users" },
@@ -257,71 +192,79 @@ export function DashboardHero() {
         </motion.div>
       </motion.article>
 
-      {/* Right rail — AI Assistant + Live Visitors & Verified Resume Downloads */}
+      {/* Right rail — AI Assistant + Real-Time Activity (no duplicated Total Visitors card) */}
       <aside className="flex h-full min-h-0 flex-col gap-3">
         <DashboardAIWidget />
 
         <div className="panel flex min-h-0 flex-1 flex-col">
           <div className="panel-header !py-2.5 !pb-2">
             <div className="flex items-center gap-2">
-              <Eye size={15} className="text-primary" />
-              <p className="panel-title text-sm">Portfolio Activity</p>
+              <Activity size={15} className="text-primary" />
+              <p className="panel-title text-sm">Live Activity</p>
             </div>
-            <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-600">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
-              Live
-            </span>
-          </div>
-          <div className="panel-body flex min-h-0 flex-1 flex-col !pt-2">
-            <div className="mb-2.5 grid grid-cols-2 gap-2">
-              <div className="rounded-lg border border-border bg-surface-2 px-2.5 py-2">
-                <p className="text-[9px] font-bold uppercase tracking-wide text-muted">Visitors</p>
-                <p className="mt-0.5 text-xl font-extrabold tracking-tight">
-                  <AnimatedCounter value={visitors.total} />
-                </p>
-              </div>
-              <div className="rounded-lg border border-primary/20 bg-primary/10 px-2.5 py-2">
-                <p className="text-[9px] font-bold uppercase tracking-wide text-primary">Today</p>
-                <p className="mt-0.5 text-xl font-extrabold tracking-tight text-primary">
-                  <AnimatedCounter value={visitors.today} />
-                </p>
-              </div>
-            </div>
-
-            <div className="mb-2 flex items-center gap-1.5 text-xs font-semibold">
-              <Users size={13} className="text-primary" />
-              Recent resume downloads
-              <span className="ml-auto rounded-full bg-surface-2 px-2 py-0.5 text-[10px] font-bold text-muted">
-                #<AnimatedCounter value={downloads.total} />
+            {isLive ? (
+              <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-700">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+                Live
               </span>
+            ) : (
+              <span className="text-[10px] font-medium text-muted">
+                {isLoading ? "Syncing" : "Offline"}
+              </span>
+            )}
+          </div>
+
+          <div className="panel-body flex min-h-0 flex-1 flex-col justify-between gap-3 !pt-2.5">
+            <div className="grid grid-cols-2 gap-2">
+              <div className="rounded-lg border border-primary/20 bg-primary/10 px-2.5 py-2">
+                <p className="text-[9px] font-bold uppercase tracking-wide text-primary">Online Now</p>
+                {isLoading ? (
+                  <div className="mt-1 h-6 w-12 animate-pulse rounded bg-primary/20" />
+                ) : (
+                  <p className="mt-0.5 text-xl font-extrabold tracking-tight text-primary">
+                    {isError || online === null ? "—" : <AnimatedCounter value={online} />}
+                  </p>
+                )}
+              </div>
+
+              <div className="rounded-lg border border-border bg-surface-2 px-2.5 py-2">
+                <p className="text-[9px] font-bold uppercase tracking-wide text-muted">Today&apos;s Visits</p>
+                {isLoading ? (
+                  <div className="mt-1 h-6 w-12 animate-pulse rounded bg-border" />
+                ) : (
+                  <p className="mt-0.5 text-xl font-extrabold tracking-tight text-foreground">
+                    {isError || today === null ? "—" : <AnimatedCounter value={today} />}
+                  </p>
+                )}
+              </div>
             </div>
 
-            {downloads.recent.length === 0 ? (
-              <p className="flex flex-1 items-center gap-1.5 rounded-lg border border-dashed border-border px-3 py-3 text-xs text-muted">
-                <Sparkles size={12} /> Verified OTP downloads appear here
-              </p>
-            ) : (
-              <ul className="min-h-0 flex-1 space-y-2 overflow-y-auto pr-0.5">
-                {downloads.recent.slice(0, 4).map((d) => (
-                  <li
-                    key={`${d.downloadNumber}-${d.downloadedAt}`}
-                    className="flex items-start gap-2 rounded-lg border border-border/60 bg-surface-2/50 px-2.5 py-2 text-xs"
-                  >
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/15 text-[10px] font-bold text-primary">
-                      {d.name.slice(0, 1).toUpperCase()}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate font-semibold">{d.name}</p>
-                      <p className="truncate text-muted">{d.emailMasked}</p>
-                    </div>
-                    <div className="shrink-0 text-right">
-                      <p className="font-medium text-primary">#{d.downloadNumber}</p>
-                      <p className="text-[10px] text-muted">{timeAgo(d.downloadedAt)}</p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
+            <div className="rounded-xl border border-border bg-surface-2/50 p-3">
+              <div className="flex items-center justify-between gap-2">
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground">
+                  <Users size={13} className="text-primary" />
+                  Resume Downloads
+                </span>
+                <span className="rounded bg-emerald-500/12 px-1.5 py-0.5 text-[9px] font-bold text-emerald-700">
+                  OTP Verified
+                </span>
+              </div>
+
+              {isLoading ? (
+                <div className="mt-2 h-6 w-24 animate-pulse rounded bg-border" />
+              ) : isError || downloads === null ? (
+                <p className="mt-1.5 text-lg font-bold text-muted">—</p>
+              ) : downloads === 0 ? (
+                <p className="mt-1.5 text-xs font-medium text-muted">No downloads yet</p>
+              ) : (
+                <div className="mt-1 flex items-baseline gap-2">
+                  <p className="text-2xl font-extrabold tracking-tight text-foreground">
+                    <AnimatedCounter value={downloads} />
+                  </p>
+                  <p className="text-[11px] text-muted">verified downloads</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </aside>

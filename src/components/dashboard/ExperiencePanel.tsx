@@ -22,7 +22,7 @@ export function ExperiencePanel() {
           <p className="mt-0.5 text-xs text-muted">{experienceCompany.heading}</p>
         </div>
         <span className="panel-badge" suppressHydrationWarning>
-          {live.mounted ? live.label : "…"}
+          {live.label}
         </span>
       </div>
 
@@ -52,7 +52,7 @@ export function ExperiencePanel() {
               </p>
             </div>
             <span className="shrink-0 self-start rounded-full bg-primary px-3 py-1 text-xs font-bold text-white" suppressHydrationWarning>
-              {live.mounted ? live.label : experienceCompany.tenureLabel}
+              {live.label}
             </span>
           </div>
           <div className="mt-3">
@@ -74,11 +74,10 @@ export function ExperiencePanel() {
                 <div className="absolute left-[7px] top-4 h-full w-0.5 bg-border sm:left-[9px]" />
               )}
               <div
-                className={`relative z-10 mt-1.5 h-3.5 w-3.5 shrink-0 rounded-full border-2 sm:h-4 sm:w-4 ${
-                  exp.current
+                className={`relative z-10 mt-1.5 h-3.5 w-3.5 shrink-0 rounded-full border-2 sm:h-4 sm:w-4 ${exp.current
                     ? "border-primary bg-primary shadow-[0_0_0_4px] shadow-primary/20"
                     : "border-primary bg-surface"
-                }`}
+                  }`}
               />
               <div className="min-w-0 flex-1 rounded-xl border border-border bg-surface-2/40 p-3 sm:p-4">
                 <div className="flex flex-wrap items-center gap-2">

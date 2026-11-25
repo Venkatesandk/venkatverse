@@ -1,7 +1,6 @@
-import { appendFile, mkdir, readFile, writeFile } from "fs/promises";
+import { appendFile, mkdir, readFile } from "fs/promises";
 import path from "path";
 import type { VisitorMeta } from "@/lib/otp-store";
-import { BASE_DOWNLOAD_COUNT } from "@/lib/counters";
 import { buildResumeThanksEmail } from "@/lib/email-templates";
 import { maskEmail, sendMail } from "@/lib/mailer";
 import {
@@ -9,15 +8,10 @@ import {
   sendWhatsAppThanksToDownloader,
 } from "@/lib/whatsapp-greeting";
 import { developer } from "@/data/portfolio";
-import { getSeedDataDir, getWritableDataDir } from "@/lib/data-path";
-import { isValidCoord, validCoords } from "@/lib/geo";
-import { recordMapPin } from "@/lib/map-pins-store";
+import { getWritableDataDir } from "@/lib/data-path";
+import { getLiveStatsData, incrementResumeDownloadStat } from "@/lib/redis-stats";
 
 const LEADS_FILE = () => path.join(getWritableDataDir(), "resume-leads.jsonl");
-const META_WRITE = () => path.join(getWritableDataDir(), "resume-meta.json");
-const META_SEED = () => path.join(getSeedDataDir(), "resume-meta.json");
-
-export { BASE_DOWNLOAD_COUNT };
 
 export interface ResumeLead {
   name: string;
@@ -26,46 +20,6 @@ export interface ResumeLead {
   downloadedAt: string;
   downloadNumber: number;
   meta?: VisitorMeta;
-}
-
-interface ResumeMeta {
-  totalDownloads: number;
-}
-
-let metaMemory: ResumeMeta | null = null;
-
-async function readMeta(): Promise<ResumeMeta> {
-  if (metaMemory) return metaMemory;
-
-  for (const file of [META_WRITE(), META_SEED()]) {
-    try {
-      const raw = await readFile(file, "utf8");
-      const parsed = JSON.parse(raw) as ResumeMeta;
-      if (
-        typeof parsed.totalDownloads === "number" &&
-        parsed.totalDownloads >= BASE_DOWNLOAD_COUNT
-      ) {
-        metaMemory = parsed;
-        return metaMemory;
-      }
-    } catch {
-      /* try next */
-    }
-  }
-
-  metaMemory = { totalDownloads: BASE_DOWNLOAD_COUNT };
-  return metaMemory;
-}
-
-async function writeMeta(meta: ResumeMeta) {
-  metaMemory = meta;
-  try {
-    const dir = getWritableDataDir();
-    await mkdir(dir, { recursive: true });
-    await writeFile(META_WRITE(), JSON.stringify(meta, null, 2), "utf8");
-  } catch (error) {
-    console.warn("[resume-meta] persist skipped:", error);
-  }
 }
 
 async function sendThanksEmail(name: string, email: string, downloadNumber: number) {
@@ -83,10 +37,10 @@ async function sendThanksEmail(name: string, email: string, downloadNumber: numb
 }
 
 export async function getDownloadStats() {
-  const meta = await readMeta();
+  const stats = await getLiveStatsData();
   const recent = await getRecentDownloads(8);
   return {
-    total: meta.totalDownloads,
+    total: stats ? stats.downloads : null,
     recent,
   };
 }
@@ -130,9 +84,8 @@ export async function logResumeLead(data: {
   phone: string;
   meta?: VisitorMeta;
 }) {
-  const metaFile = await readMeta();
-  metaFile.totalDownloads += 1;
-  await writeMeta(metaFile);
+  const redisCount = await incrementResumeDownloadStat();
+  const downloadNumber = redisCount ?? 1;
 
   const lead: ResumeLead = {
     name: data.name,
@@ -140,7 +93,7 @@ export async function logResumeLead(data: {
     phone: data.phone,
     meta: data.meta,
     downloadedAt: new Date().toISOString(),
-    downloadNumber: metaFile.totalDownloads,
+    downloadNumber,
   };
 
   try {
@@ -150,18 +103,6 @@ export async function logResumeLead(data: {
   } catch (error) {
     console.warn("[resume-leads] persist skipped:", error);
   }
-
-  if (isValidCoord(data.meta?.lat, data.meta?.lng)) {
-    const coords = validCoords(data.meta!.lat, data.meta!.lng)!;
-    await recordMapPin({
-      type: "download",
-      lat: coords.lat,
-      lng: coords.lng,
-      label: "Resume download",
-    });
-  }
-
-  console.log("[Resume Download]", lead);
 
   await Promise.allSettled([
     sendThanksEmail(lead.name, lead.email, lead.downloadNumber),

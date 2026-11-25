@@ -37,6 +37,7 @@ import { WhyHireMePanel } from "@/components/dashboard/WhyHireMePanel";
 import { AdvancedFeaturesPanel } from "@/components/dashboard/AdvancedFeaturesPanel";
 import { Reveal } from "@/components/animations/Motion";
 import { developer, navLinks } from "@/data/portfolio";
+import { LiveStatsTracker } from "@/hooks/useLiveStats";
 import Link from "next/link";
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -168,6 +169,7 @@ export function HomePage() {
       <AIAssistant />
       <CommandPalette />
       <ClientOnly>
+        <LiveStatsTracker />
         <ResumeDownloadModal />
         <InterviewRequestModal />
         <FeedbackPopup />

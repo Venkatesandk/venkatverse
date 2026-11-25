@@ -1,5 +1,18 @@
-/** Career start — July 2021 */
-export const CAREER_START = new Date(2021, 6, 1); // month is 0-indexed → July
+/** Career start — 2021-07-01 00:00:00 IST (Asia/Kolkata) */
+export const CAREER_START_IST = {
+  year: 2021,
+  month: 7,
+  day: 1,
+  hour: 0,
+  minute: 0,
+  second: 0,
+} as const;
+
+/**
+ * Deterministic snapshot matching server render so initial client state
+ * never mismatches SSR or displays "Calculating…" / "--:--:--".
+ */
+export const INITIAL_EXPERIENCE_SNAPSHOT = new Date("2026-11-25T00:00:00+05:30");
 
 export interface ExperienceBreakdown {
   years: number;
@@ -15,7 +28,7 @@ export interface ExperienceBreakdown {
   detailedLabel: string;
   /** decimal years for charts, e.g. 5.4 */
   decimalYears: number;
-  /** compact "5+ yrs" */
+  /** compact "5+ Years" */
   plusYearsLabel: string;
 }
 
@@ -23,13 +36,50 @@ function pad(n: number) {
   return String(n).padStart(2, "0");
 }
 
-export function getExperienceBreakdown(now = new Date()): ExperienceBreakdown {
-  let years = now.getFullYear() - CAREER_START.getFullYear();
-  let months = now.getMonth() - CAREER_START.getMonth();
-  let days = now.getDate() - CAREER_START.getDate();
-  let hours = now.getHours() - CAREER_START.getHours();
-  let minutes = now.getMinutes() - CAREER_START.getMinutes();
-  let seconds = now.getSeconds() - CAREER_START.getSeconds();
+function getIstParts(date: Date) {
+  const formatter = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: false,
+  });
+
+  const parts = formatter.formatToParts(date);
+  const num = (type: Intl.DateTimeFormatPartTypes) => {
+    const raw = parts.find((p) => p.type === type)?.value ?? "0";
+    return Number.parseInt(raw, 10) || 0;
+  };
+
+  let hour = num("hour");
+  if (hour === 24) hour = 0;
+
+  return {
+    year: num("year"),
+    month: num("month"),
+    day: num("day"),
+    hour,
+    minute: num("minute"),
+    second: num("second"),
+  };
+}
+
+function daysInMonth(year: number, month1To12: number): number {
+  return new Date(Date.UTC(year, month1To12, 0)).getUTCDate();
+}
+
+export function getExperienceBreakdown(now: Date = INITIAL_EXPERIENCE_SNAPSHOT): ExperienceBreakdown {
+  const current = getIstParts(now);
+
+  let years = current.year - CAREER_START_IST.year;
+  let months = current.month - CAREER_START_IST.month;
+  let days = current.day - CAREER_START_IST.day;
+  let hours = current.hour - CAREER_START_IST.hour;
+  let minutes = current.minute - CAREER_START_IST.minute;
+  let seconds = current.second - CAREER_START_IST.second;
 
   if (seconds < 0) {
     seconds += 60;
@@ -44,8 +94,9 @@ export function getExperienceBreakdown(now = new Date()): ExperienceBreakdown {
     days -= 1;
   }
   if (days < 0) {
-    const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
-    days += prevMonth.getDate();
+    const prevMonth = current.month === 1 ? 12 : current.month - 1;
+    const prevYear = current.month === 1 ? current.year - 1 : current.year;
+    days += daysInMonth(prevYear, prevMonth);
     months -= 1;
   }
   if (months < 0) {
@@ -80,32 +131,32 @@ export function getExperienceBreakdown(now = new Date()): ExperienceBreakdown {
 }
 
 /** e.g. "5 Years 4 Months" */
-export function getExperienceLabel(now = new Date()): string {
+export function getExperienceLabel(now = INITIAL_EXPERIENCE_SNAPSHOT): string {
   return getExperienceBreakdown(now).label;
 }
 
 /** e.g. "5+ Years" */
-export function getExperiencePlusLabel(now = new Date()): string {
+export function getExperiencePlusLabel(now = INITIAL_EXPERIENCE_SNAPSHOT): string {
   return getExperienceBreakdown(now).plusYearsLabel;
 }
 
 /** Shorter badge text e.g. "5y 4m" */
-export function getExperienceShort(now = new Date()): string {
+export function getExperienceShort(now = INITIAL_EXPERIENCE_SNAPSHOT): string {
   const { years, months } = getExperienceBreakdown(now);
   return `${years}y ${months}m`;
 }
 
 /** Decimal years for numeric stats */
-export function getExperienceValue(now = new Date()): number {
+export function getExperienceValue(now = INITIAL_EXPERIENCE_SNAPSHOT): number {
   return getExperienceBreakdown(now).decimalYears;
 }
 
 /** Live clock string HH:MM:SS for the experience ticker */
-export function getExperienceClock(now = new Date()): string {
+export function getExperienceClock(now = INITIAL_EXPERIENCE_SNAPSHOT): string {
   const { hours, minutes, seconds } = getExperienceBreakdown(now);
   return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
 }
 
-export function getExperienceYears(now = new Date()): number {
+export function getExperienceYears(now = INITIAL_EXPERIENCE_SNAPSHOT): number {
   return getExperienceBreakdown(now).decimalYears;
 }

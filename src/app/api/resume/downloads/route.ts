@@ -1,11 +1,20 @@
 import { NextResponse } from "next/server";
-import { BASE_DOWNLOAD_COUNT, getDownloadStats } from "@/lib/resume-leads";
+import { getDownloadStats } from "@/lib/resume-leads";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
     const stats = await getDownloadStats();
-    return NextResponse.json(stats);
-  } catch {
-    return NextResponse.json({ total: BASE_DOWNLOAD_COUNT, recent: [] });
+    return NextResponse.json(stats, {
+      headers: { "Cache-Control": "no-store" },
+    });
+  } catch (err) {
+    console.error("[api/resume/downloads]", err);
+    return NextResponse.json(
+      { total: null, recent: [] },
+      { status: 503, headers: { "Cache-Control": "no-store" } }
+    );
   }
 }

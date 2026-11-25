@@ -48,7 +48,7 @@ export function AboutPanel() {
             <div className="mt-4 flex flex-wrap gap-4 text-sm">
               <span className="flex items-center gap-1.5 text-muted" suppressHydrationWarning>
                 <Calendar size={14} className="text-primary" />
-                {liveExp.mounted ? liveExp.label : developer.experience} · Since Jul 2021
+                {liveExp.label} · Since Jul 2021
               </span>
               <span className="text-muted">{developer.location}</span>
             </div>

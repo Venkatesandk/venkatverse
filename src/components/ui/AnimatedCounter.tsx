@@ -8,8 +8,8 @@ interface AnimatedCounterProps {
   className?: string;
 }
 
-/** Clear, stable number display — avoids flashing 0 and keeps updates readable */
-export function AnimatedCounter({ value, duration = 700, className }: AnimatedCounterProps) {
+/** Animates numeric updates smoothly while respecting prefers-reduced-motion. */
+export function AnimatedCounter({ value, duration = 650, className }: AnimatedCounterProps) {
   const [display, setDisplay] = useState(value);
   const prevRef = useRef(value);
 
@@ -18,15 +18,13 @@ export function AnimatedCounter({ value, duration = 700, className }: AnimatedCo
     const to = value;
     prevRef.current = value;
 
-    if (to === from) {
-      setDisplay(to);
-      return;
-    }
+    const prefersReduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // Small jumps: show instantly for clarity
-    if (Math.abs(to - from) <= 3) {
-      setDisplay(to);
-      return;
+    if (to === from || Math.abs(to - from) <= 2 || prefersReduced) {
+      const raf = window.requestAnimationFrame(() => setDisplay(to));
+      return () => window.cancelAnimationFrame(raf);
     }
 
     let frame = 0;
@@ -36,11 +34,11 @@ export function AnimatedCounter({ value, duration = 700, className }: AnimatedCo
       const progress = Math.min(1, (now - start) / duration);
       const eased = 1 - Math.pow(1 - progress, 3);
       setDisplay(Math.round(from + (to - from) * eased));
-      if (progress < 1) frame = requestAnimationFrame(tick);
+      if (progress < 1) frame = window.requestAnimationFrame(tick);
     };
 
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
+    frame = window.requestAnimationFrame(tick);
+    return () => window.cancelAnimationFrame(frame);
   }, [value, duration]);
 
   return (
