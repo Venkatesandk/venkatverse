@@ -3,9 +3,24 @@ import { otpKey, verifyOtp } from "@/lib/otp-store";
 import { logResumeLead } from "@/lib/resume-leads";
 import { notifyOwnerOtpVerified } from "@/lib/owner-alerts";
 import { normalizePhone, parseVisitorMeta } from "@/lib/request-meta";
+import { checkRateLimit, getRateLimitClientKey } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
   try {
+    const ip = getRateLimitClientKey(request);
+    const limit = checkRateLimit({
+      namespace: "otp-verify",
+      key: ip,
+      maxRequests: 10,
+      windowMs: 10 * 60 * 1000,
+    });
+    if (!limit.allowed) {
+      return NextResponse.json(
+        { error: `Too many verification attempts. Try again in ${limit.retryAfterSec}s.` },
+        { status: 429, headers: { "Retry-After": String(limit.retryAfterSec) } }
+      );
+    }
+
     const body = await request.json();
     const { name, email, phone, otp, meta: bodyMeta } = body;
 
@@ -32,7 +47,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Prefer stored name; fall back to submitted name
     const finalName = entry.name || cleanName || "Visitor";
     const meta = parseVisitorMeta(request, bodyMeta ?? entry.meta);
 

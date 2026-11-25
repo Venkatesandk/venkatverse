@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { ArrowUp } from "lucide-react";
 
 function getScrollY() {
@@ -30,19 +30,19 @@ function scrollToTop() {
 export function BackToTop() {
   const [visible, setVisible] = useState(false);
 
-  const onScroll = useCallback(() => {
-    setVisible(getScrollY() > 320);
-  }, []);
-
   useEffect(() => {
-    onScroll();
+    const onScroll = () => {
+      setVisible(getScrollY() > 320);
+    };
+    const raf = window.requestAnimationFrame(onScroll);
     window.addEventListener("scroll", onScroll, { passive: true });
     document.addEventListener("scroll", onScroll, { passive: true, capture: true });
     return () => {
+      window.cancelAnimationFrame(raf);
       window.removeEventListener("scroll", onScroll);
       document.removeEventListener("scroll", onScroll, true);
     };
-  }, [onScroll]);
+  }, []);
 
   if (!visible) return null;
 

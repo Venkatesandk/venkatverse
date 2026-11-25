@@ -18,51 +18,103 @@ function themeFor(title: string) {
   return THEMES[h % THEMES.length];
 }
 
-function AbstractUI({
+function DomainPreview({
   project,
   compact,
-  theme,
 }: {
   project: Project;
   compact: boolean;
-  theme: (typeof THEMES)[number];
 }) {
-  return (
-    <div
-      className={`relative grid gap-2 p-3 ${compact ? "grid-cols-3" : "grid-cols-[0.9fr_1.4fr]"}`}
-      style={{
-        background: `linear-gradient(145deg, ${theme.panel}, #0b1220)`,
-        minHeight: compact ? 96 : 150,
-      }}
-    >
-      {!compact && (
-        <div className="space-y-1.5 rounded-lg bg-black/25 p-2">
-          {[1, 0.85, 0.7, 0.9, 0.55].map((w, i) => (
-            <div
-              key={i}
-              className="h-2 rounded"
-              style={{ width: `${w * 100}%`, background: `${theme.accent}55` }}
-            />
+  const variant = project.previewVariant;
+  const aspect = compact ? "aspect-[16/10]" : "aspect-[16/9]";
+
+  if (variant === "lms-sync") {
+    return (
+      <div className={`relative flex flex-col justify-between bg-gradient-to-br from-slate-900 via-cyan-950 to-slate-900 p-3 text-white ${aspect}`}>
+        <div className="flex items-center justify-between text-[10px]">
+          <span className="rounded bg-cyan-500/20 px-2 py-0.5 font-semibold text-cyan-300">
+            ERP ⇄ LMS REST Sync
+          </span>
+          <span className="text-emerald-400">Idempotent · Active</span>
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          {[
+            { label: "Course Catalog", sub: "Batch Sync" },
+            { label: "Enrollments", sub: "ERP Truth" },
+            { label: "Progress Hooks", sub: "Mentor View" },
+          ].map((b) => (
+            <div key={b.label} className="rounded-lg border border-white/10 bg-white/5 p-2">
+              <p className="truncate text-[10px] font-bold text-cyan-200">{b.label}</p>
+              <p className="mt-0.5 truncate text-[9px] text-white/70">{b.sub}</p>
+            </div>
           ))}
         </div>
-      )}
-      <div className="space-y-2">
-        <div className="flex gap-2">
-          <div className="h-10 flex-1 rounded-lg bg-white/10" />
-          <div className="h-10 w-16 rounded-lg" style={{ background: theme.accent, opacity: 0.85 }} />
-        </div>
-        <div className={`grid gap-1.5 ${compact ? "grid-cols-2" : "grid-cols-3"}`}>
-          {Array.from({ length: compact ? 2 : 3 }).map((_, i) => (
-            <div key={i} className="h-12 rounded-lg bg-white/8 ring-1 ring-white/10" />
-          ))}
+        <div className="flex items-center justify-between rounded-lg border border-white/10 bg-black/30 px-2.5 py-1.5 text-[9px] text-white/80">
+          <span>Nightly Reconciliation Job</span>
+          <span className="font-mono text-emerald-300">200 OK · Synced</span>
         </div>
       </div>
-      <span className="sr-only">{project.title} preview</span>
-    </div>
-  );
+    );
+  }
+
+  if (variant === "admission-ai") {
+    return (
+      <div className={`relative flex flex-col justify-between bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 p-3 text-white ${aspect}`}>
+        <div className="flex items-center justify-between text-[10px]">
+          <span className="rounded bg-indigo-500/25 px-2 py-0.5 font-semibold text-indigo-200">
+            On-Prem LLM Gateway
+          </span>
+          <span className="text-emerald-400">Ollama · vLLM</span>
+        </div>
+        <div className="space-y-1.5 rounded-lg border border-white/10 bg-white/5 p-2.5 text-[10px]">
+          <p className="text-white/70">Enquiry: &ldquo;Eligibility &amp; fee slab for BCA?&rdquo;</p>
+          <p className="font-medium text-cyan-200">
+            Grounded ERP Reply: Verified course criteria + document checklist (campus-hosted inference).
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-1.5 text-[9px]">
+          <span className="rounded bg-emerald-500/20 px-1.5 py-0.5 text-emerald-300">No Public Cloud Leakage</span>
+          <span className="rounded bg-white/10 px-1.5 py-0.5 text-white/80">Counsellor Escalation</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (variant === "biometric") {
+    return (
+      <div className={`relative flex flex-col justify-between bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-950 p-3 text-white ${aspect}`}>
+        <div className="flex items-center justify-between text-[10px]">
+          <span className="rounded bg-emerald-500/20 px-2 py-0.5 font-semibold text-emerald-300">
+            Biometric Pipeline
+          </span>
+          <span className="text-cyan-300">4 Branches · 200+ Staff</span>
+        </div>
+        <div className="grid grid-cols-3 gap-1.5 text-center text-[9px]">
+          <div className="rounded-lg border border-white/10 bg-white/5 p-2">
+            <p className="font-bold text-white">.NET Listener</p>
+            <p className="text-white/65">Device Punches</p>
+          </div>
+          <div className="rounded-lg border border-white/10 bg-white/5 p-2">
+            <p className="font-bold text-emerald-300">CI REST API</p>
+            <p className="text-white/65">Idempotent Keys</p>
+          </div>
+          <div className="rounded-lg border border-white/10 bg-white/5 p-2">
+            <p className="font-bold text-cyan-300">Payroll Feed</p>
+            <p className="text-white/65">Shift Rules</p>
+          </div>
+        </div>
+        <div className="flex items-center justify-between rounded-lg border border-white/10 bg-black/30 px-2.5 py-1.5 text-[9px] text-white/80">
+          <span>Duplicate Punch Guard</span>
+          <span className="font-mono text-emerald-300">Nightly Reconciled</span>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
 }
 
-/** Browser-frame project preview — sharp real screenshots, no 3D blur */
+/** Browser-frame project preview — sharp screenshots or domain architecture views */
 export function ProjectMockup3D({
   project,
   compact = false,
@@ -72,50 +124,59 @@ export function ProjectMockup3D({
 }) {
   const [imgFailed, setImgFailed] = useState(false);
   const theme = themeFor(project.title);
-  const showScreenshot = Boolean(project.image) && !imgFailed;
+  const isCustomPreview =
+    project.previewVariant === "lms-sync" ||
+    project.previewVariant === "admission-ai" ||
+    project.previewVariant === "biometric";
+  const showScreenshot = !isCustomPreview && Boolean(project.image) && !imgFailed;
+
+  const urlSlug =
+    project.slug === "educational-erp"
+      ? "eduerp.internal/dashboard"
+      : project.slug === "hrms-payroll"
+        ? "hrms.internal/payroll"
+        : project.slug === "online-examination"
+          ? "examportal.internal/proctor"
+          : project.slug === "ticket-management"
+            ? "supportdesk.internal/sla"
+            : project.slug === "website-cms"
+              ? "sitecms.internal/admin"
+              : `${project.slug}.internal/overview`;
 
   return (
-    <div className={`relative ${compact ? "min-h-[8rem]" : "min-h-[16rem] sm:min-h-[18rem]"}`}>
-      <div className="relative h-full overflow-hidden rounded-xl border border-border bg-surface shadow-md">
+    <div className={`relative ${compact ? "min-h-[8rem]" : "min-h-[15rem] sm:min-h-[17rem]"}`}>
+      <div className="relative h-full overflow-hidden rounded-xl border border-border bg-surface shadow-sm">
         <div className="flex items-center gap-1.5 px-3 py-2" style={{ background: theme.bar }}>
           <span className="h-2 w-2 rounded-full bg-red-400/90" />
           <span className="h-2 w-2 rounded-full bg-amber-300/90" />
           <span className="h-2 w-2 rounded-full bg-emerald-400/90" />
-          <span className="ml-2 truncate rounded bg-black/25 px-2 py-0.5 text-[9px] text-white/85">
-            {project.title === "Educational ERP"
-              ? "eduerp.app/dashboard"
-              : project.title.includes("HRMS")
-                ? "hrms.app/dashboard"
-                : project.title.includes("Examination")
-                  ? "examportal.app/dashboard"
-                  : project.title.includes("Ticket")
-                    ? "supportdesk.app/dashboard"
-                    : project.title.includes("Website")
-                      ? "sitecms.app/admin"
-                      : `${project.title.toLowerCase().replace(/\s+/g, "-")}.app`}
+          <span className="ml-2 truncate rounded bg-black/25 px-2 py-0.5 text-[9px] text-white/90">
+            {urlSlug}
           </span>
         </div>
 
-        {showScreenshot ? (
-          <div
-            className={`relative w-full bg-white ${
-              compact ? "aspect-[16/10]" : "aspect-[16/9]"
-            }`}
-          >
+        {isCustomPreview ? (
+          <DomainPreview project={project} compact={compact} />
+        ) : showScreenshot ? (
+          <div className={`relative w-full bg-white ${compact ? "aspect-[16/10]" : "aspect-[16/9]"}`}>
             <Image
               src={project.image}
-              alt={`${project.title} dashboard screenshot`}
+              alt={`${project.title} anonymized dashboard preview`}
               fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1280px) 60vw, 900px"
+              sizes="(max-width: 768px) 100vw, (max-width: 1280px) 55vw, 720px"
               className="object-contain object-top"
-              quality={100}
-              unoptimized
-              priority={Boolean(project.featured)}
+              quality={85}
+              priority={Boolean(project.featured && project.slug === "educational-erp")}
               onError={() => setImgFailed(true)}
             />
           </div>
         ) : (
-          <AbstractUI project={project} compact={compact} theme={theme} />
+          <div
+            className={`relative flex items-center justify-center bg-slate-900 p-4 text-xs text-white/80 ${compact ? "aspect-[16/10]" : "aspect-[16/9]"
+              }`}
+          >
+            {project.title}
+          </div>
         )}
       </div>
     </div>

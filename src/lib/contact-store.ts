@@ -3,6 +3,7 @@ import path from "path";
 import { sendMail } from "@/lib/mailer";
 import { developer } from "@/data/portfolio";
 import { getWritableDataDir } from "@/lib/data-path";
+import { escapeHtml } from "@/lib/html";
 
 const FILE = () => path.join(getWritableDataDir(), "contact-messages.jsonl");
 
@@ -20,7 +21,7 @@ export async function saveContactMessage(input: {
   email: string;
   message: string;
   purpose?: string;
-}): Promise<ContactMessage> {
+}): Promise<ContactMessage & { emailSent?: boolean }> {
   const entry: ContactMessage = {
     id: `msg_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
     name: input.name.trim(),
@@ -41,26 +42,34 @@ export async function saveContactMessage(input: {
   const ownerEmail =
     process.env.OWNER_EMAIL ?? process.env.CONTACT_EMAIL ?? developer.email;
 
+  const safeName = escapeHtml(entry.name);
+  const safeEmail = escapeHtml(entry.email);
+  const safePurpose = entry.purpose ? escapeHtml(entry.purpose) : "";
+  const safeMessageHtml = escapeHtml(entry.message).replace(/\n/g, "<br/>");
+  const isInterview = entry.purpose === "interview";
+
   const sent = await sendMail({
     to: ownerEmail,
-    subject: `New contact message — ${entry.name}`,
+    subject: isInterview
+      ? `Interview Request — ${entry.name}`
+      : `New contact message — ${entry.name}`,
     html: `
       <div style="font-family:Segoe UI,Arial,sans-serif;line-height:1.6;color:#0c1a2a;max-width:560px;">
-        <h2 style="color:#0e7490;margin:0 0 16px;">New portfolio contact message</h2>
+        <h2 style="color:#0e7490;margin:0 0 16px;">${isInterview ? "New Interview Request" : "New portfolio contact message"}</h2>
         <table style="width:100%;border-collapse:collapse;font-size:14px;">
-          <tr><td style="padding:8px 0;color:#64748b;width:100px;">Name</td><td style="padding:8px 0;font-weight:600;">${entry.name}</td></tr>
-          <tr><td style="padding:8px 0;color:#64748b;">Email</td><td style="padding:8px 0;"><a href="mailto:${entry.email}">${entry.email}</a></td></tr>
-          ${entry.purpose ? `<tr><td style="padding:8px 0;color:#64748b;">Purpose</td><td style="padding:8px 0;">${entry.purpose}</td></tr>` : ""}
-          <tr><td style="padding:8px 0;color:#64748b;vertical-align:top;">Message</td><td style="padding:8px 0;">${entry.message.replace(/\n/g, "<br/>")}</td></tr>
+          <tr><td style="padding:8px 0;color:#64748b;width:100px;">Name</td><td style="padding:8px 0;font-weight:600;">${safeName}</td></tr>
+          <tr><td style="padding:8px 0;color:#64748b;">Email</td><td style="padding:8px 0;"><a href="mailto:${safeEmail}">${safeEmail}</a></td></tr>
+          ${safePurpose ? `<tr><td style="padding:8px 0;color:#64748b;">Purpose</td><td style="padding:8px 0;">${safePurpose}</td></tr>` : ""}
+          <tr><td style="padding:8px 0;color:#64748b;vertical-align:top;">Message</td><td style="padding:8px 0;">${safeMessageHtml}</td></tr>
           <tr><td style="padding:8px 0;color:#64748b;">Time</td><td style="padding:8px 0;">${new Date(entry.createdAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })} IST</td></tr>
         </table>
-        <p style="margin-top:20px;font-size:12px;color:#64748b;">Reply directly to ${entry.email} to respond.</p>
+        <p style="margin-top:20px;font-size:12px;color:#64748b;">Reply directly to ${safeEmail} to respond.</p>
       </div>
     `,
-    text: `New contact from ${entry.name} (${entry.email}):\n\n${entry.message}`,
+    text: `${isInterview ? "Interview Request" : "New contact"} from ${entry.name} (${entry.email}):\n\n${entry.message}`,
   });
 
-  return { ...entry, emailSent: Boolean(sent) } as ContactMessage & { emailSent?: boolean };
+  return { ...entry, emailSent: Boolean(sent) };
 }
 
 export async function listContactMessages(limit = 20): Promise<ContactMessage[]> {

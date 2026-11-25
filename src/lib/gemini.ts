@@ -4,6 +4,9 @@ import {
   skills,
   experiences,
   services,
+  professionalCerts,
+  certificates,
+  learningActivities,
 } from "@/data/portfolio";
 
 export interface GeminiMessage {
@@ -27,7 +30,6 @@ function getApiKey(): string | null {
 
 function getPreferredModels(): string[] {
   const preferred = process.env.GEMINI_MODEL?.trim();
-  // Prefer current Gemini 3.x — 2.5 is blocked for many new API keys
   const defaults = [
     "gemini-3.5-flash",
     "gemini-3.1-flash-lite",
@@ -44,13 +46,16 @@ function getPreferredModels(): string[] {
 /** Make Gemini quota/auth errors easier to act on */
 export function simplifyGeminiError(message: string): string {
   if (/limit:\s*0/i.test(message) || /free_tier.*limit:\s*0/i.test(message)) {
-    return "Gemini free-tier quota is 0 for this API key/project. Create a new key in a new Google AI Studio project, or enable billing: https://aistudio.google.com/apikey";
+    return "Gemini free-tier quota is 0 for this API key/project.";
   }
   if (/quota|rate.?limit/i.test(message)) {
-    return "Gemini quota exceeded. Check usage: https://ai.dev/rate-limit — or enable billing / wait and retry.";
+    return "Gemini quota exceeded. Please try again shortly.";
   }
   if (/API key|UNAUTHENTICATED|PERMISSION|invalid/i.test(message)) {
-    return "Gemini API key is invalid. Create a new key at https://aistudio.google.com/apikey";
+    return "Gemini API authentication error.";
+  }
+  if (/abort|timeout/i.test(message)) {
+    return "AI request timed out.";
   }
   return message;
 }
@@ -58,14 +63,13 @@ export function simplifyGeminiError(message: string): string {
 export function buildPortfolioContext(): string {
   const topSkills = [...skills]
     .sort((a, b) => b.level - a.level)
-    .slice(0, 12)
     .map((s) => `${s.name} (${s.level}%, ${s.category})`)
     .join(", ");
 
   const projectLines = projects
     .map(
       (p) =>
-        `- ${p.title}: ${p.description} | Tech: ${p.technologies.join(", ")}`
+        `- ${p.title} (${p.ownership}): ${p.description} | Impact: ${p.impact ?? ""} | Tech: ${p.technologies.join(", ")}`
     )
     .join("\n");
 
@@ -80,6 +84,18 @@ export function buildPortfolioContext(): string {
     .map((s) => `- ${s.title}: ${s.description}`)
     .join("\n");
 
+  const certLines = professionalCerts
+    .map((c) => `- ${c.title} (${c.issuer}, ${c.date}, ${c.kind})`)
+    .join("\n");
+
+  const eduLines = certificates
+    .map((c) => `- ${c.title} — ${c.issuer} (${c.date})`)
+    .join("\n");
+
+  const learningLines = learningActivities
+    .map((l) => `- ${l.title} (${l.provider}, ${l.status})`)
+    .join("\n");
+
   return `You are the AI assistant for ${developer.name}'s portfolio website (Venkatverse).
 
 PROFILE
@@ -92,31 +108,39 @@ PROFILE
 - Bio: ${developer.bio}
 - GitHub: ${developer.social.github}
 - LinkedIn: ${developer.social.linkedin}
-- Instagram: ${developer.social.instagram}
 - WhatsApp: ${developer.social.whatsapp}
 
-SKILLS
+SKILLS (PHP & Enterprise ERP Primary; AI & Modern Web Additional)
 ${topSkills}
 
-EXPERIENCE
+EXPERIENCE (3x Promoted at eNova Software)
 ${expLines}
 
-PROJECTS
+CASE STUDIES
 ${projectLines}
 
 SERVICES
 ${serviceLines}
 
-RULES
-- Answer only about Venkat, his work, skills, projects, hiring, and this portfolio.
-- Be friendly, professional, and concise.
+VERIFIED CERTIFICATIONS & ASSESSMENTS
+${certLines}
+
+EDUCATION
+${eduLines}
+
+CONTINUOUS LEARNING (NOT COMPLETED CERTIFICATIONS)
+${learningLines}
+
+STRICT GROUNDING RULES
+- Answer ONLY using the verified portfolio facts above.
+- NEVER fabricate employers, degrees, certifications, client names, or unverified metrics.
+- Do NOT claim Venkat has Laravel certifications or completed AWS certifications (AWS Cloud Practitioner is currently in-progress learning).
+- Present PHP 7/8, CodeIgniter 3/4, MySQL, and Enterprise ERP/HRMS as his primary specialization, and React/Next.js, Python, and Private AI (Ollama/vLLM) as additional specializations.
 - Use clear formatting: numbered lists (1. 2. 3.) or bullet lines starting with "• ".
-- Put each project/skill/step on its own line. Do not write dense single paragraphs for lists.
-- You may use **bold** for project or section titles.
-- If asked how to download the resume: OTP flow (name, email, mobile → verify OTP → download).
-- For hire/contact, share email, phone, WhatsApp, and LinkedIn.
-- If something is outside this portfolio, politely redirect to WhatsApp or the contact form.
-- Do not invent employers, degrees, or projects not listed above.`;
+- Put each item on its own line and use **bold** for titles.
+- If asked how to download the resume: OTP flow (name, email, mobile → verify 6-digit email OTP → download).
+- For hiring/interviews: share email, phone, WhatsApp, LinkedIn, or the /recruiter brief and Request Interview modal.
+- If a question asks about something not in the portfolio, say so honestly and redirect to WhatsApp or the contact form.`;
 }
 
 async function callModel(options: {
@@ -135,6 +159,7 @@ async function callModel(options: {
       "Content-Type": "application/json",
       "x-goog-api-key": options.apiKey,
     },
+    signal: AbortSignal.timeout(15_000),
     body: JSON.stringify({
       systemInstruction: {
         parts: [{ text: options.systemInstruction }],
@@ -165,8 +190,8 @@ async function callModel(options: {
   if (!res.ok) {
     const msg = simplifyGeminiError(
       data.error?.message ||
-        data.error?.status ||
-        `Gemini HTTP ${res.status}`
+      data.error?.status ||
+      `Gemini HTTP ${res.status}`
     );
     return { text: null, error: msg };
   }
@@ -195,7 +220,7 @@ export async function generateWithGemini(options: {
   if (!apiKey) {
     return {
       text: null,
-      error: "GEMINI_API_KEY is missing in .env.local",
+      error: "GEMINI_API_KEY is not configured on the server",
     };
   }
 
@@ -230,7 +255,6 @@ export async function generateWithGemini(options: {
 
       if (result.error) {
         errors.push(`${model}: ${result.error}`);
-        // Stop only on real auth/quota failures — keep trying if a model is deprecated
         const hardFail =
           /API key not valid|PERMISSION_DENIED|UNAUTHENTICATED|quota|billing|limit:\s*0/i.test(
             result.error
@@ -241,7 +265,7 @@ export async function generateWithGemini(options: {
         continue;
       }
     } catch (error) {
-      const msg = error instanceof Error ? error.message : "Network error";
+      const msg = error instanceof Error ? simplifyGeminiError(error.message) : "Network error";
       errors.push(`${model}: ${msg}`);
     }
   }

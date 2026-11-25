@@ -14,10 +14,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = blogPosts.find((p) => p.slug === slug);
   if (!post) return { title: "Post not found" };
+
+  const canonical = `/blog/${post.slug}`;
   return {
     title: post.title,
     description: post.excerpt,
-    openGraph: { title: post.title, description: post.excerpt, type: "article" },
+    alternates: { canonical },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      url: `${developer.siteUrl}${canonical}`,
+      type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt,
+    },
   };
 }
 
@@ -26,8 +39,28 @@ export default async function BlogPostPage({ params }: Props) {
   const post = blogPosts.find((p) => p.slug === slug);
   if (!post) notFound();
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.date,
+    author: {
+      "@type": "Person",
+      name: developer.name,
+      url: developer.siteUrl,
+    },
+    url: `${developer.siteUrl}/blog/${post.slug}`,
+  };
+
   return (
-    <main className="min-h-screen bg-background text-foreground">
+    <main id="main-content" className="min-h-screen bg-background text-foreground">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:py-14">
         <Link
           href="/#blog"

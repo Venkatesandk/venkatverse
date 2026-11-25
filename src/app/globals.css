@@ -6,8 +6,8 @@
   --surface: #0f1a24;
   --surface-2: #152433;
   --foreground: #e8f1f5;
-  --foreground-muted: #8aa3b5;
-  --muted: #647a8b;
+  --foreground-muted: #9eb5c7;
+  --muted: #8fa6b8;
   --primary: #22d3ee;
   --primary-dark: #06b6d4;
   --primary-light: #67e8f9;
@@ -34,7 +34,7 @@
   --surface-2: #f3f4f6;
   --foreground: #0c0d10;
   --foreground-muted: #3f4451;
-  --muted: #6d7380;
+  --muted: #565d6a;
   --primary: #5b5ce6;
   --primary-dark: #4546c9;
   --primary-light: #7a7cf0;
@@ -233,7 +233,7 @@ body {
   font-weight: 600;
   border-radius: 9999px;
   background: color-mix(in srgb, var(--primary) 12%, transparent);
-  color: var(--primary-light);
+  color: var(--primary);
   border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent);
   max-width: 100%;
   text-align: left;

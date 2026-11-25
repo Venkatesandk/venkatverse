@@ -9,12 +9,14 @@ export interface ExperienceBreakdown {
   minutes: number;
   seconds: number;
   totalMonths: number;
-  /** e.g. "5 Years 1 Month" */
+  /** e.g. "5 Years 4 Months" */
   label: string;
-  /** e.g. "5 Years 1 Month 19 Days" */
+  /** e.g. "5 Years 4 Months 24 Days" */
   detailedLabel: string;
-  /** decimal years for charts, e.g. 5.1 */
+  /** decimal years for charts, e.g. 5.4 */
   decimalYears: number;
+  /** compact "5+ yrs" */
+  plusYearsLabel: string;
 }
 
 function pad(n: number) {
@@ -73,15 +75,21 @@ export function getExperienceBreakdown(now = new Date()): ExperienceBreakdown {
     label: `${yearPart} ${monthPart}`,
     detailedLabel: `${yearPart} ${monthPart} ${dayPart}`,
     decimalYears,
+    plusYearsLabel: `${years}+ Years`,
   };
 }
 
-/** e.g. "5 Years 1 Month" */
+/** e.g. "5 Years 4 Months" */
 export function getExperienceLabel(now = new Date()): string {
   return getExperienceBreakdown(now).label;
 }
 
-/** Shorter badge text e.g. "5y 1m" */
+/** e.g. "5+ Years" */
+export function getExperiencePlusLabel(now = new Date()): string {
+  return getExperienceBreakdown(now).plusYearsLabel;
+}
+
+/** Shorter badge text e.g. "5y 4m" */
 export function getExperienceShort(now = new Date()): string {
   const { years, months } = getExperienceBreakdown(now);
   return `${years}y ${months}m`;

@@ -1,3 +1,5 @@
+import { getExperiencePlusLabel } from "@/lib/experience";
+
 /** Shared greetings — time of day + daily rotating messages (Asia/Kolkata). */
 
 export type TimeOfDay = "morning" | "afternoon" | "evening" | "night";
@@ -73,20 +75,24 @@ export function getDailyGreeting(date = getIndiaNow()) {
 }
 
 /** Extra rotating lines by day-of-year so content feels fresh */
-const EXTRA_LINES = [
-  "I build ERP systems, REST APIs, and AI-powered apps with PHP, Python & Next.js.",
-  "From junior developer to Lead — 5+ years of shipping production software.",
-  "Looking for a reliable Lead Application Developer? You’re in the right place.",
-  "CodeIgniter, MySQL, Ollama/vLLM, LMS — I turn campus workflows into working products.",
-  "Thanks for dropping by. Explore projects, skills, and my live world map below.",
-  "I lead teams, review code, and ship secure enterprise applications.",
-  "Let’s turn your product idea into a production-ready application.",
-];
+function getExtraLines(): string[] {
+  const exp = getExperiencePlusLabel();
+  return [
+    "I architect ERP systems, REST APIs, and private AI workflows with PHP, CodeIgniter & Next.js.",
+    `From Junior Developer to Lead — ${exp} of shipping production enterprise software.`,
+    "Looking for a Lead PHP / Enterprise ERP Application Developer? You're in the right place.",
+    "CodeIgniter, MySQL, Ollama/vLLM, LMS & HRMS — turning complex campus workflows into reliable systems.",
+    "Explore enterprise case studies, architecture skills, and the 60-second Recruiter Brief.",
+    "I lead engineering teams, review code, and ship secure enterprise applications.",
+    "Let's turn complex business requirements into scalable, maintainable software.",
+  ];
+}
 
 export function getDailyExtraLine(date = getIndiaNow()) {
   const start = new Date(date.getFullYear(), 0, 0);
   const dayOfYear = Math.floor((date.getTime() - start.getTime()) / 86_400_000);
-  return EXTRA_LINES[dayOfYear % EXTRA_LINES.length];
+  const lines = getExtraLines();
+  return lines[dayOfYear % lines.length];
 }
 
 export function getSiteGreetingBundle(date = getIndiaNow()) {
@@ -120,7 +126,7 @@ export function buildIntroScript(name = "Venkatesan D", role = "Lead Application
     spoken: [
       `${time}!`,
       `Hi, I’m ${name}.`,
-      `I’m a ${role} with over five years of experience building enterprise applications.`,
+      `I’m a ${role} with ${getExperiencePlusLabel()} of experience building enterprise applications.`,
       daily.message,
       "Come on in — let me show you my screen. You’ll find my projects, skills, and career journey right here on Venkatverse.",
     ].join(" "),

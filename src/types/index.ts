@@ -20,19 +20,43 @@ export interface FAQ {
   answer: string;
 }
 
+export type ProjectCategory =
+  | "Enterprise ERP"
+  | "AI & EdTech"
+  | "HR & Operations"
+  | "Web Platforms";
+
+export type OwnershipType =
+  | "Technical Leadership"
+  | "Individual Ownership"
+  | "Team Contribution";
+
 export interface Project {
   id: string;
+  slug: string;
+  category: ProjectCategory;
   title: string;
   description: string;
+  overview: string;
   image: string;
+  previewVariant?: "screenshot" | "lms-sync" | "admission-ai" | "biometric";
   technologies: string[];
   architecture: string;
   problem: string;
+  existingLimitations: string[];
   solution: string;
   role?: string;
+  ownership: OwnershipType;
+  ownershipDetails: string;
+  responsibilities: string[];
+  databaseArchitecture: string[];
+  apiIntegrations: string[];
+  securityConsiderations: string[];
+  performanceImprovements: string[];
   impact?: string;
   /** Quantified outcomes for recruiters */
   metrics?: string[];
+  confidentialityNote?: string;
   liveUrl?: string;
   githubUrl?: string;
   caseStudyUrl?: string;
@@ -66,14 +90,23 @@ export interface Certificate {
   url?: string;
 }
 
-/** Professional / platform certifications (separate from education) */
+/** Platform / verified certifications & assessments (separate from education & learning) */
 export interface ProfessionalCert {
   id: string;
   title: string;
   issuer: string;
   date: string;
   badge: string;
+  kind: "Skill Assessment" | "Course Completion";
   url?: string;
+}
+
+export interface LearningActivity {
+  id: string;
+  title: string;
+  provider: string;
+  status: "In Progress" | "Ongoing Practice";
+  focus: string;
 }
 
 export interface BlogPost {
@@ -105,15 +138,6 @@ export interface NavItem {
   badge?: string;
 }
 
-export interface AnalyticsMetric {
-  label: string;
-  value: string;
-  sublabel?: string;
-  change?: string;
-  positive?: boolean;
-  sparkline: number[];
-}
-
 export interface AISuiteTool {
   id: string;
   slug: AISuiteToolSlug;
@@ -143,11 +167,4 @@ export interface RoadmapPhase {
   period: string;
   status: "completed" | "in-progress" | "upcoming";
   items: string[];
-}
-
-export interface LiveVisitorCountry {
-  country: string;
-  flag: string;
-  count: number;
-  percent: number;
 }

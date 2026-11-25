@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
+import { useMounted } from "@/hooks/useMounted";
 
 interface ClientOnlyProps {
   children: ReactNode;
@@ -9,10 +10,7 @@ interface ClientOnlyProps {
 
 /** Renders children only after mount — avoids hydration mismatches from browser extensions. */
 export function ClientOnly({ children, fallback = null }: ClientOnlyProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
-
+  const mounted = useMounted();
   if (!mounted) return fallback;
   return children;
 }

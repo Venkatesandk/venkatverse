@@ -6,14 +6,13 @@ import {
   getExperienceClock,
   type ExperienceBreakdown,
 } from "@/lib/experience";
+import { useMounted } from "@/hooks/useMounted";
 
 export function useLiveExperience(tickMs = 1000) {
+  const mounted = useMounted();
   const [now, setNow] = useState(() => new Date());
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    setNow(new Date());
     const id = window.setInterval(() => setNow(new Date()), tickMs);
     return () => window.clearInterval(id);
   }, [tickMs]);

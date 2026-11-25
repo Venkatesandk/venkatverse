@@ -22,7 +22,10 @@ export function useRecordVisit(
   onStats?: (stats: { total: number; today: number }) => void
 ) {
   const onStatsRef = useRef(onStats);
-  onStatsRef.current = onStats;
+
+  useEffect(() => {
+    onStatsRef.current = onStats;
+  }, [onStats]);
 
   useEffect(() => {
     let cancelled = false;
@@ -66,8 +69,7 @@ export function useRecordVisit(
         });
     }
 
-    // Keep Visitors panel live without requiring a full page refresh
-    const poll = window.setInterval(load, 12_000);
+    const poll = window.setInterval(load, 15_000);
     const onFocus = () => void load();
     const onVisibility = () => {
       if (document.visibilityState === "visible") void load();

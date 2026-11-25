@@ -98,6 +98,15 @@ export function AIAssistant() {
   }, []);
 
   useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
@@ -144,6 +153,9 @@ export function AIAssistant() {
 
         {open && (
           <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Venkat AI Assistant"
             className="fixed inset-0 z-[70] flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4 md:justify-end md:pr-4 md:pb-20"
             onClick={() => setOpen(false)}
           >

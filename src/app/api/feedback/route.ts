@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { addFeedback, listFeedback } from "@/lib/feedback-store";
+import { isValidEmail } from "@/lib/html";
+import { checkRateLimit, getRateLimitClientKey } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -22,6 +24,20 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const ip = getRateLimitClientKey(request);
+    const limit = checkRateLimit({
+      namespace: "feedback",
+      key: ip,
+      maxRequests: 5,
+      windowMs: 5 * 60 * 1000,
+    });
+    if (!limit.allowed) {
+      return NextResponse.json(
+        { error: `Too many submissions. Please wait ${limit.retryAfterSec}s.` },
+        { status: 429, headers: { "Retry-After": String(limit.retryAfterSec) } }
+      );
+    }
+
     const body = await request.json();
     const name = String(body.name ?? "").trim();
     const message = String(body.message ?? "").trim();
@@ -32,11 +48,14 @@ export async function POST(request: Request) {
         ? body.photoBase64
         : undefined;
 
-    if (!name || name.length < 2) {
-      return NextResponse.json({ error: "Please enter your name." }, { status: 400 });
+    if (name.length < 2 || name.length > 80) {
+      return NextResponse.json({ error: "Please enter a valid name (2–80 characters)." }, { status: 400 });
     }
-    if (!message || message.length < 8) {
-      return NextResponse.json({ error: "Please write a short feedback message." }, { status: 400 });
+    if (email && !isValidEmail(email)) {
+      return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });
+    }
+    if (message.length < 8 || message.length > 1200) {
+      return NextResponse.json({ error: "Feedback must be 8–1200 characters." }, { status: 400 });
     }
     if (!Number.isFinite(rating) || rating < 1 || rating > 5) {
       return NextResponse.json({ error: "Rating must be between 1 and 5." }, { status: 400 });

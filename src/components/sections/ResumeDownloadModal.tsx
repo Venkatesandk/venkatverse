@@ -180,6 +180,15 @@ export function ResumeDownloadModal() {
   }, []);
 
   useEffect(() => {
+    if (!open) return;
+    const onKey = (e: globalThis.KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  useEffect(() => {
     if (resendIn <= 0) return;
     const t = window.setTimeout(() => setResendIn((s) => s - 1), 1000);
     return () => window.clearTimeout(t);
@@ -269,6 +278,9 @@ export function ResumeDownloadModal() {
     <AnimatePresence>
       {open && (
         <motion.div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Download resume with OTP verification"
           className="fixed inset-0 z-[80] flex items-end justify-center bg-black/60 p-0 sm:items-center sm:p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

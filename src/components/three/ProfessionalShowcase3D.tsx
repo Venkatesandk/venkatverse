@@ -3,7 +3,7 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Html, OrbitControls, Torus, RoundedBox } from "@react-three/drei";
 import { useMemo, useRef } from "react";
-import type { Mesh } from "three";
+import type { Group, Mesh } from "three";
 
 function OrbitingCards() {
   const cards = useMemo(
@@ -15,14 +15,14 @@ function OrbitingCards() {
     []
   );
 
-  const groupRef = useRef<Mesh>(null);
+  const groupRef = useRef<Group>(null);
   useFrame((state) => {
     if (!groupRef.current) return;
     groupRef.current.rotation.y = state.clock.getElapsedTime() * 0.35;
   });
 
   return (
-    <group ref={groupRef as any}>
+    <group ref={groupRef}>
       {cards.map((card) => {
         const x = Math.cos(card.angle) * 2.35;
         const z = Math.sin(card.angle) * 2.35;
@@ -55,7 +55,7 @@ function AnimatedCore() {
 
   return (
     <group>
-      <mesh ref={coreRef as any}>
+      <mesh ref={coreRef}>
         <icosahedronGeometry args={[0.9, 1]} />
         <meshStandardMaterial color="#60a5fa" emissive="#2563eb" emissiveIntensity={0.25} />
       </mesh>
@@ -71,7 +71,7 @@ function AnimatedCore() {
 
 export function ProfessionalShowcase3D() {
   return (
-    <div className="relative h-[250px] w-full overflow-hidden rounded-xl border border-border/70 bg-surface-2/40">
+    <div className="relative h-[240px] w-full overflow-hidden rounded-xl border border-border/70 bg-surface-2/40">
       <Canvas camera={{ position: [0, 0, 5.4], fov: 47 }}>
         <ambientLight intensity={0.7} />
         <directionalLight position={[3, 2.5, 3]} intensity={1.1} />
@@ -81,7 +81,7 @@ export function ProfessionalShowcase3D() {
         <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.55} />
       </Canvas>
       <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-background/80 to-transparent p-2 text-center text-[11px] font-medium text-muted">
-        Enterprise Architecture · AI · API Systems
+        Enterprise Architecture · Private AI · REST APIs
       </div>
     </div>
   );

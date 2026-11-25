@@ -74,29 +74,52 @@ export function NotificationBell() {
   }, []);
 
   useEffect(() => {
-    load();
+    let active = true;
+    fetch("/api/notifications")
+      .then((r) => r.json())
+      .then((data) => {
+        if (active) setItems(Array.isArray(data.notifications) ? data.notifications : []);
+      })
+      .catch(() => { });
+
     const events = ["feedback-submitted", "contact-submitted", "resume-downloaded"];
-    const handler = () => load();
+    const handler = () => {
+      void load();
+    };
     events.forEach((e) => window.addEventListener(e, handler));
-    const interval = setInterval(load, 60000);
+    const interval = setInterval(() => void load(), 60000);
     return () => {
+      active = false;
       events.forEach((e) => window.removeEventListener(e, handler));
       clearInterval(interval);
     };
   }, [load]);
 
   useEffect(() => {
+    if (!open) return;
     const close = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
     };
-    if (open) {
-      document.addEventListener("mousedown", close);
-      load();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", close);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", close);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  const toggleOpen = () => {
+    const next = !open;
+    setOpen(next);
+    if (next) {
+      void load();
     } else {
       setShowAll(false);
     }
-    return () => document.removeEventListener("mousedown", close);
-  }, [open, load]);
+  };
 
   const unread = items.length;
   const visible = showAll ? items : items.slice(0, PREVIEW_LIMIT);
@@ -106,9 +129,10 @@ export function NotificationBell() {
     <div className="relative" ref={ref}>
       <motion.button
         type="button"
-        onClick={() => setOpen(!open)}
+        onClick={toggleOpen}
         className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-border hover:bg-surface-2"
         aria-label="Notifications"
+        aria-expanded={open}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
@@ -191,7 +215,7 @@ export function NotificationBell() {
                 )}
                 <button
                   type="button"
-                  onClick={load}
+                  onClick={() => void load()}
                   className="w-full rounded-lg py-2 text-xs font-medium text-muted hover:bg-surface-2"
                 >
                   Refresh

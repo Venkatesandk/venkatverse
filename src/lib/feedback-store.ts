@@ -4,6 +4,7 @@ import { sendMail } from "@/lib/mailer";
 import { developer } from "@/data/portfolio";
 import { getSeedDataDir, getWritableDataDir } from "@/lib/data-path";
 import { saveFeedbackPhoto } from "@/lib/feedback-photo";
+import { escapeHtml } from "@/lib/html";
 
 const FILE = () => path.join(getWritableDataDir(), "feedback.jsonl");
 const SEED_FILE = () => path.join(getSeedDataDir(), "feedback.seed.jsonl");
@@ -80,16 +81,20 @@ export async function addFeedback(input: {
   }
 
   const ownerEmail = process.env.OWNER_EMAIL ?? developer.email;
+  const safeName = escapeHtml(entry.name);
+  const safeEmail = escapeHtml(entry.email || "Not provided");
+  const safeMessage = escapeHtml(entry.message).replace(/\n/g, "<br/>");
+
   void sendMail({
     to: ownerEmail,
     subject: `New portfolio feedback — ${entry.rating}★ from ${entry.name}`,
     html: `
       <div style="font-family:Segoe UI,Arial,sans-serif;line-height:1.5;color:#0c1a2a;">
         <h2 style="color:#0e7490;margin:0 0 12px;">New visitor feedback</h2>
-        <p><strong>Name:</strong> ${entry.name}</p>
-        <p><strong>Email:</strong> ${entry.email || "Not provided"}</p>
+        <p><strong>Name:</strong> ${safeName}</p>
+        <p><strong>Email:</strong> ${safeEmail}</p>
         <p><strong>Rating:</strong> ${"★".repeat(entry.rating)}${"☆".repeat(5 - entry.rating)}</p>
-        <p><strong>Message:</strong><br/>${entry.message.replace(/\n/g, "<br/>")}</p>
+        <p><strong>Message:</strong><br/>${safeMessage}</p>
         <p style="color:#64748b;font-size:12px;">${new Date(entry.createdAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })} IST</p>
       </div>
     `,
@@ -144,7 +149,9 @@ export async function updateFeedback(
         : current.rating,
   };
 
-  if (next.name.length < 2 || next.message.length < 8) return null;
+  if (next.name.length < 2 || next.name.length > 80 || next.message.length < 8 || next.message.length > 1200) {
+    return null;
+  }
 
   all[idx] = next;
   await writeAll(all);

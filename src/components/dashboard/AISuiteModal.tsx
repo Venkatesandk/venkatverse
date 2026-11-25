@@ -14,7 +14,6 @@ interface AISuiteResult {
   content: string;
   source?: string;
   model?: string;
-  geminiError?: string;
 }
 
 interface AISuiteModalProps {
@@ -22,8 +21,17 @@ interface AISuiteModalProps {
   onClose: () => void;
 }
 
+function getInitialForm(tool: AISuiteToolSlug | null): Record<string, string> {
+  if (tool === "project-explainer" && projects[0]) return { projectId: projects[0].id };
+  if (tool === "interview-coach") return { focus: "full-stack", level: "senior" };
+  if (tool === "email-writer") return { tone: "professional" };
+  if (tool === "career-advisor") return { currentLevel: "senior" };
+  if (tool === "code-reviewer") return { language: "php" };
+  return {};
+}
+
 export function AISuiteModal({ tool, onClose }: AISuiteModalProps) {
-  const [form, setForm] = useState<Record<string, string>>({});
+  const [form, setForm] = useState<Record<string, string>>(() => getInitialForm(tool));
   const [result, setResult] = useState<AISuiteResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -34,26 +42,12 @@ export function AISuiteModal({ tool, onClose }: AISuiteModalProps) {
 
   useEffect(() => {
     if (!tool) return;
-    setForm({});
-    setResult(null);
-    setError("");
-    setCopied(false);
-    if (tool === "project-explainer" && projects[0]) {
-      setForm({ projectId: projects[0].id });
-    }
-    if (tool === "interview-coach") {
-      setForm({ focus: "full-stack", level: "senior" });
-    }
-    if (tool === "email-writer") {
-      setForm({ tone: "professional" });
-    }
-    if (tool === "career-advisor") {
-      setForm({ currentLevel: "mid-level" });
-    }
-    if (tool === "code-reviewer") {
-      setForm({ language: "php" });
-    }
-  }, [tool]);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [tool, onClose]);
 
   const runTool = useCallback(
     async (input: Record<string, string>) => {
@@ -72,8 +66,8 @@ export function AISuiteModal({ tool, onClose }: AISuiteModalProps) {
         if (tool === "voice-assistant") {
           speech.speak(data.content);
         }
-      } catch {
-        setError("Something went wrong. Please try again.");
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
       } finally {
         setLoading(false);
       }
@@ -83,12 +77,12 @@ export function AISuiteModal({ tool, onClose }: AISuiteModalProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    runTool(form);
+    void runTool(form);
   };
 
   const handleVoiceSubmit = () => {
     if (!speech.transcript.trim()) return;
-    runTool({ transcript: speech.transcript });
+    void runTool({ transcript: speech.transcript });
   };
 
   const copyResult = async () => {
@@ -115,6 +109,9 @@ export function AISuiteModal({ tool, onClose }: AISuiteModalProps) {
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="ai-suite-modal-title"
       className="fixed inset-0 z-[80] flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4"
       onClick={onClose}
     >
@@ -126,7 +123,9 @@ export function AISuiteModal({ tool, onClose }: AISuiteModalProps) {
           <div className="flex items-center gap-2">
             <Sparkles size={18} className="text-primary" />
             <div>
-              <p className="panel-title">{toolMeta.title}</p>
+              <h2 id="ai-suite-modal-title" className="panel-title">
+                {toolMeta.title}
+              </h2>
               <p className="text-[11px] text-muted">{toolMeta.description}</p>
             </div>
           </div>
@@ -148,7 +147,7 @@ export function AISuiteModal({ tool, onClose }: AISuiteModalProps) {
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
                     <label htmlFor="projectId" className="mb-1.5 block text-sm font-medium">
-                      Select Project
+                      Select Case Study
                     </label>
                     <select
                       id="projectId"
@@ -164,7 +163,7 @@ export function AISuiteModal({ tool, onClose }: AISuiteModalProps) {
                       ))}
                     </select>
                   </div>
-                  <SubmitButton loading={loading} label="Generate Client Brief" />
+                  <SubmitButton loading={loading} label="Generate Case Study Brief" />
                 </form>
               ) : (
                 <ClientOnly
@@ -269,8 +268,7 @@ export function AISuiteModal({ tool, onClose }: AISuiteModalProps) {
               )}
               {result.source === "local" && (
                 <p className="mb-2 text-[10px] text-amber-600">
-                  Local template
-                  {result.geminiError ? ` — Gemini: ${result.geminiError}` : " (Gemini unavailable)"}
+                  Deterministic grounded profile generator
                 </p>
               )}
               <div className="rounded-xl border border-border bg-surface-2 p-4 sm:p-5">
@@ -320,11 +318,10 @@ function VoiceAssistantUI({
           <button
             type="button"
             onClick={speech.listening ? speech.stop : speech.start}
-            className={`mb-4 flex h-20 w-20 items-center justify-center rounded-full transition ${
-              speech.listening
+            className={`mb-4 flex h-20 w-20 items-center justify-center rounded-full transition ${speech.listening
                 ? "animate-pulse bg-red-500 text-white"
                 : "bg-primary text-white hover:bg-primary-dark"
-            }`}
+              }`}
             aria-label={speech.listening ? "Stop listening" : "Start listening"}
           >
             {speech.listening ? <MicOff size={32} /> : <Mic size={32} />}

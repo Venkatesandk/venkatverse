@@ -21,8 +21,24 @@ export function useAdminSession() {
   }, []);
 
   useEffect(() => {
-    refresh();
-  }, [refresh]);
+    let active = true;
+    fetch("/api/admin/session")
+      .then((r) => r.json())
+      .then((data) => {
+        if (!active) return;
+        setIsAdmin(Boolean(data.admin));
+        setConfigured(Boolean(data.configured));
+      })
+      .catch(() => {
+        if (active) setIsAdmin(false);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const login = async (secret: string) => {
     const res = await fetch("/api/admin/session", {

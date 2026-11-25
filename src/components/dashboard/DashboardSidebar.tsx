@@ -43,14 +43,8 @@ interface DashboardSidebarProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function DashboardSidebar({ open, onOpenChange }: DashboardSidebarProps) {
-  useEffect(() => {
-    if (!open) return;
-    document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
-  }, [open]);
-
-  const NavContent = () => (
+function SidebarNavContent({ onNavigate }: { onNavigate: () => void }) {
+  return (
     <>
       <div className="flex h-[var(--header-height)] items-center gap-3 border-b border-border px-5">
         <div className="relative h-9 w-9 overflow-hidden rounded-md border border-border">
@@ -64,21 +58,21 @@ export function DashboardSidebar({ open, onOpenChange }: DashboardSidebarProps) 
           />
         </div>
         <div className="min-w-0 leading-tight">
-          <p className="truncate text-sm font-semibold tracking-tight">Venkatesan D</p>
+          <p className="truncate text-sm font-semibold tracking-tight">{developer.name}</p>
           <p className="truncate text-[10px] font-medium uppercase tracking-[0.14em] text-muted">
             Lead Developer
           </p>
         </div>
       </div>
-      <nav className="flex-1 space-y-0.5 py-4">
+      <nav className="flex-1 space-y-0.5 py-4" aria-label="Portfolio sections">
         {navLinks.map((link) => {
           const Icon = iconMap[link.icon] ?? Home;
           const isRoute = link.href.startsWith("/");
           const className = "sidebar-link";
           const children = (
             <>
-              <Icon size={18} />
-              <span className="flex-1">{link.label}</span>
+              <Icon size={17} />
+              <span className="flex-1 truncate">{link.label}</span>
               {"badge" in link && link.badge && (
                 <span className="rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-bold text-white">
                   {link.badge}
@@ -87,11 +81,11 @@ export function DashboardSidebar({ open, onOpenChange }: DashboardSidebarProps) 
             </>
           );
           return isRoute ? (
-            <Link key={link.href} href={link.href} onClick={() => onOpenChange(false)} className={className}>
+            <Link key={link.href} href={link.href} onClick={onNavigate} className={className}>
               {children}
             </Link>
           ) : (
-            <a key={link.href} href={link.href} onClick={() => onOpenChange(false)} className={className}>
+            <a key={link.href} href={link.href} onClick={onNavigate} className={className}>
               {children}
             </a>
           );
@@ -99,15 +93,30 @@ export function DashboardSidebar({ open, onOpenChange }: DashboardSidebarProps) 
       </nav>
     </>
   );
+}
+
+export function DashboardSidebar({ open, onOpenChange }: DashboardSidebarProps) {
+  useEffect(() => {
+    if (!open) return;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onOpenChange(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open, onOpenChange]);
 
   return (
     <>
       <aside className="dashboard-sidebar hidden lg:flex lg:flex-col">
-        <NavContent />
+        <SidebarNavContent onNavigate={() => onOpenChange(false)} />
       </aside>
 
       {open && (
-        <div className="fixed inset-0 z-[60] lg:hidden">
+        <div className="fixed inset-0 z-[60] lg:hidden" role="dialog" aria-modal="true" aria-label="Navigation menu">
           <div className="absolute inset-0 bg-black/40" onClick={() => onOpenChange(false)} />
           <aside className="absolute left-0 top-0 flex h-full w-[min(85vw,var(--sidebar-width))] max-w-full flex-col bg-surface shadow-xl">
             <button
@@ -118,7 +127,7 @@ export function DashboardSidebar({ open, onOpenChange }: DashboardSidebarProps) 
             >
               <X size={20} />
             </button>
-            <NavContent />
+            <SidebarNavContent onNavigate={() => onOpenChange(false)} />
           </aside>
         </div>
       )}

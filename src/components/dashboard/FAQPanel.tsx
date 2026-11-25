@@ -13,17 +13,20 @@ export function FAQPanel() {
       <div className="panel-header">
         <div className="flex items-center gap-2">
           <HelpCircle size={16} className="text-primary" />
-          <p className="panel-title">FAQ</p>
+          <h2 className="panel-title">FAQ</h2>
         </div>
         <span className="panel-badge">Recruiter answers</span>
       </div>
       <div className="panel-body space-y-2">
         {faqs.map((faq) => {
           const open = openId === faq.id;
+          const panelId = `faq-answer-${faq.id}`;
           return (
             <div key={faq.id} className="overflow-hidden rounded-xl border border-border">
               <button
                 type="button"
+                aria-expanded={open}
+                aria-controls={panelId}
                 onClick={() => setOpenId(open ? null : faq.id)}
                 className="flex w-full items-center justify-between gap-3 px-3.5 py-3 text-left"
               >
@@ -36,6 +39,7 @@ export function FAQPanel() {
               <AnimatePresence initial={false}>
                 {open && (
                   <motion.div
+                    id={panelId}
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}

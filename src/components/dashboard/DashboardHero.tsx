@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
+import { motion } from "framer-motion";
 import {
   Download,
   MapPin,
@@ -13,9 +14,11 @@ import {
   Mail,
   Phone,
   Calendar,
+  FileText,
 } from "lucide-react";
 import { developer } from "@/data/portfolio";
 import { ResumeDownloadButton } from "@/components/sections/ResumeDownloadModal";
+import { RequestInterviewButton } from "@/components/sections/InterviewRequestModal";
 import { DashboardAIWidget } from "./DashboardAIWidget";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { GitHubIcon, LinkedInIcon } from "@/components/ui/SocialIcons";
@@ -31,8 +34,8 @@ interface DownloadItem {
 }
 
 const rise = {
-  hidden: { opacity: 0, y: 18 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const } },
+  hidden: { opacity: 0, y: 14 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] as const } },
 };
 
 function timeAgo(iso: string) {
@@ -85,7 +88,7 @@ export function DashboardHero() {
     const onVisit = (e: Event) => {
       const detail = (e as CustomEvent<{ total: number; today: number }>).detail;
       if (detail) setVisitors(detail);
-      else fetchAnalyticsStats().then(setVisitors);
+      else void fetchAnalyticsStats().then(setVisitors);
     };
     window.addEventListener("visit-recorded", onVisit);
     return () => window.removeEventListener("visit-recorded", onVisit);
@@ -94,33 +97,36 @@ export function DashboardHero() {
   return (
     <section
       id="home"
-      className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-stretch lg:gap-4"
+      className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_310px] lg:items-stretch lg:gap-4"
     >
       <motion.article
         className="panel flex h-full flex-col overflow-hidden !p-0"
         initial="hidden"
         animate="show"
-        variants={{ show: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } } }}
+        variants={{ show: { transition: { staggerChildren: 0.06, delayChildren: 0.04 } } }}
       >
         {/* Top status bar */}
-        <motion.div variants={rise} className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-surface-2/70 px-4 py-2 sm:px-5">
-          <span className="inline-flex items-center gap-2 rounded-full border border-emerald-600/15 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-700">
+        <motion.div
+          variants={rise}
+          className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-surface-2/70 px-4 py-2 sm:px-5"
+        >
+          <span className="inline-flex items-center gap-2 rounded-full border border-emerald-600/20 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-700">
             <span className="live-dot h-1.5 w-1.5 rounded-full bg-emerald-500" />
-            Open to full-time and contract roles
+            Open to Lead &amp; Senior Engineering Roles
           </span>
-          <span className="text-[11px] text-muted" suppressHydrationWarning>
-            {liveExp.mounted ? liveExp.label : "5+ Years"} · eNova Software · Since Jul 2021
+          <span className="text-[11px] font-medium text-muted" suppressHydrationWarning>
+            {liveExp.mounted ? liveExp.label : developer.experience} · eNova Software · Since Jul 2021
           </span>
         </motion.div>
 
         <motion.div
-          className="flex flex-1 flex-col px-4 py-4 sm:px-5 sm:py-4"
-          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}
+          className="flex flex-1 flex-col px-4 py-4 sm:px-5 sm:py-5"
+          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.06 } } }}
         >
-          {/* Profile header — compact single block */}
+          {/* Profile header */}
           <motion.div
-            className="flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:gap-4"
-            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}
+            className="flex flex-col items-center gap-3.5 sm:flex-row sm:items-center sm:gap-4"
+            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.06 } } }}
           >
             <motion.div
               variants={rise}
@@ -128,25 +134,28 @@ export function DashboardHero() {
             >
               <Image
                 src={developer.photoUrl}
-                alt={developer.name}
+                alt={`${developer.name} — ${developer.role}`}
                 fill
                 priority
                 sizes="112px"
-                quality={100}
+                quality={95}
                 className="object-cover object-center"
               />
             </motion.div>
 
             <motion.div variants={rise} className="min-w-0 flex-1 text-center sm:text-left">
-              <h1 className="text-[1.85rem] font-semibold leading-[1.05] tracking-[-0.03em] text-foreground sm:text-[2.35rem]">
+              <h1 className="text-[1.85rem] font-semibold leading-[1.08] tracking-[-0.03em] text-foreground sm:text-[2.35rem]">
                 {developer.name}
               </h1>
-              <p className="mt-0.5 text-[14px] font-semibold text-primary">{developer.role}</p>
-              <p className="mt-0.5 text-xs text-foreground-muted sm:text-sm">
-                PHP · CodeIgniter · MySQL · Next.js · LMS · Ollama / vLLM
+              <p className="mt-0.5 text-[15px] font-bold text-primary">{developer.role}</p>
+              <p className="mt-1 text-xs font-medium text-foreground-muted sm:text-[13px]">
+                <span className="font-semibold text-foreground">Core:</span> PHP 7/8 · CodeIgniter 3/4 · MySQL · Enterprise ERP · LMS · HRMS &amp; Biometrics
+              </p>
+              <p className="mt-0.5 text-xs text-muted">
+                <span className="font-medium text-foreground-muted">Additional:</span> React · Next.js · Python · Private AI (Ollama / vLLM) · AWS
               </p>
 
-              <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs text-muted sm:justify-start">
+              <div className="mt-2.5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs text-muted sm:justify-start">
                 <span className="inline-flex items-center gap-1">
                   <MapPin size={12} className="text-primary" />
                   {developer.location}
@@ -171,7 +180,7 @@ export function DashboardHero() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border text-muted transition hover:border-primary hover:text-primary"
-                  aria-label="LinkedIn"
+                  aria-label="LinkedIn profile"
                 >
                   <LinkedInIcon width={13} height={13} />
                 </a>
@@ -180,7 +189,7 @@ export function DashboardHero() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border text-muted transition hover:border-primary hover:text-primary"
-                  aria-label="GitHub"
+                  aria-label="GitHub profile"
                 >
                   <GitHubIcon width={13} height={13} />
                 </a>
@@ -188,29 +197,33 @@ export function DashboardHero() {
             </motion.div>
           </motion.div>
 
-          <motion.div variants={rise} className="mt-3 border-t border-border pt-3">
+          <motion.div variants={rise} className="mt-4 border-t border-border pt-3.5">
             <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-muted">
-              Professional Summary
+              Enterprise Engineering Summary
             </p>
             <p className="text-sm leading-relaxed text-foreground-muted">
-              {developer.heroDescription} Promoted three times from Junior Developer to Lead.
-              Skilled in REST APIs, workflow automation, AWS deployment, and AI-enabled education
-              systems.
+              {developer.heroDescription} Promoted three consecutive times from Junior Software Developer to Lead Application Developer, owning architecture, MySQL performance, REST APIs, and team delivery.
             </p>
           </motion.div>
 
-          <motion.div variants={rise} className="mt-3 grid grid-cols-2 gap-y-2.5 border-t border-border pt-3 sm:grid-cols-4">
+          <motion.div
+            variants={rise}
+            className="mt-4 grid grid-cols-2 gap-y-2.5 border-t border-border pt-3.5 sm:grid-cols-4"
+          >
             {[
-              { value: "5+", label: "Years Experience" },
+              {
+                value: liveExp.mounted ? `${liveExp.years}y ${liveExp.months}m` : developer.experiencePlus,
+                label: "Experience",
+              },
               { value: "3×", label: "Promotions" },
               { value: "20+", label: "ERP Modules" },
-              { value: "1k+", label: "Exam Users" },
+              { value: "5,000+", label: "Platform Users" },
             ].map((item, i) => (
               <div
                 key={item.label}
                 className={`px-2 text-center ${i > 0 ? "sm:border-l sm:border-border" : ""}`}
               >
-                <p className="text-lg font-extrabold tracking-tight text-foreground sm:text-xl">
+                <p className="text-lg font-extrabold tracking-tight text-foreground sm:text-xl" suppressHydrationWarning>
                   {item.value}
                 </p>
                 <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted">
@@ -220,32 +233,31 @@ export function DashboardHero() {
             ))}
           </motion.div>
 
-          <motion.div variants={rise} className="mt-auto flex flex-col gap-2 border-t border-border pt-3 sm:flex-row sm:flex-wrap">
+          <motion.div
+            variants={rise}
+            className="mt-auto flex flex-col gap-2 border-t border-border pt-4 sm:flex-row sm:flex-wrap"
+          >
             <ResumeDownloadButton className="btn btn-primary !w-full sm:!w-auto">
               <Download size={16} />
               Download Resume
-              <ShieldCheck size={14} className="opacity-80" />
+              <ShieldCheck size={14} className="opacity-85" />
             </ResumeDownloadButton>
-            <a
-              href={developer.calendarUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-glass !w-full sm:!w-auto"
-            >
+            <RequestInterviewButton className="btn btn-glass !w-full sm:!w-auto">
               <Calendar size={15} />
-              Schedule Interview
-            </a>
+              Request Interview
+            </RequestInterviewButton>
             <a href="#projects" className="btn btn-glass !w-full sm:!w-auto">
               View Case Studies
             </a>
-            <a href="/recruiter" className="btn btn-glass !w-full sm:!w-auto">
+            <Link href="/recruiter" className="btn btn-glass !w-full sm:!w-auto">
+              <FileText size={15} />
               Recruiter Brief
-            </a>
+            </Link>
           </motion.div>
         </motion.div>
       </motion.article>
 
-      {/* Right rail — stretches to match profile card height */}
+      {/* Right rail — AI Assistant + Live Visitors & Verified Resume Downloads */}
       <aside className="flex h-full min-h-0 flex-col gap-3">
         <DashboardAIWidget />
 
@@ -253,7 +265,7 @@ export function DashboardHero() {
           <div className="panel-header !py-2.5 !pb-2">
             <div className="flex items-center gap-2">
               <Eye size={15} className="text-primary" />
-              <p className="panel-title text-sm">Visitors</p>
+              <p className="panel-title text-sm">Portfolio Activity</p>
             </div>
             <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-600">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
@@ -263,7 +275,7 @@ export function DashboardHero() {
           <div className="panel-body flex min-h-0 flex-1 flex-col !pt-2">
             <div className="mb-2.5 grid grid-cols-2 gap-2">
               <div className="rounded-lg border border-border bg-surface-2 px-2.5 py-2">
-                <p className="text-[9px] font-bold uppercase tracking-wide text-muted">All Time</p>
+                <p className="text-[9px] font-bold uppercase tracking-wide text-muted">Visitors</p>
                 <p className="mt-0.5 text-xl font-extrabold tracking-tight">
                   <AnimatedCounter value={visitors.total} />
                 </p>
@@ -286,11 +298,11 @@ export function DashboardHero() {
 
             {downloads.recent.length === 0 ? (
               <p className="flex flex-1 items-center gap-1.5 rounded-lg border border-dashed border-border px-3 py-3 text-xs text-muted">
-                <Sparkles size={12} /> Be the next to download
+                <Sparkles size={12} /> Verified OTP downloads appear here
               </p>
             ) : (
               <ul className="min-h-0 flex-1 space-y-2 overflow-y-auto pr-0.5">
-                {downloads.recent.map((d) => (
+                {downloads.recent.slice(0, 4).map((d) => (
                   <li
                     key={`${d.downloadNumber}-${d.downloadedAt}`}
                     className="flex items-start gap-2 rounded-lg border border-border/60 bg-surface-2/50 px-2.5 py-2 text-xs"

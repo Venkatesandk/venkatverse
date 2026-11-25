@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { TrendingUp, Trophy, Rocket, Briefcase } from "lucide-react";
 import { Reveal, Stagger, StaggerItem } from "@/components/animations/Motion";
 import { experiences } from "@/data/portfolio";
+import { useLiveExperience } from "@/hooks/useLiveExperience";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -19,6 +20,8 @@ const growthSteps = [...experiences].reverse().map((e) => {
 });
 
 export function CareerGrowthCard() {
+  const liveExp = useLiveExperience(60_000);
+
   return (
     <Reveal variant="scale" className="panel relative overflow-hidden p-5 sm:p-6">
       <div
@@ -37,15 +40,15 @@ export function CareerGrowthCard() {
           Career Growth
         </motion.div>
 
-        <h3 className="text-lg font-bold leading-tight sm:text-xl">
+        <h3 className="text-lg font-bold leading-tight sm:text-xl" suppressHydrationWarning>
           Junior → Lead in{" "}
-          <span className="bg-gradient-to-r from-primary to-cyan-400 bg-clip-text text-transparent">
-            5 Years
+          <span className="bg-gradient-to-r from-primary to-cyan-500 bg-clip-text text-transparent">
+            {liveExp.mounted ? liveExp.plusYearsLabel : "5+ Years"}
           </span>
         </h3>
         <p className="mt-2 text-sm leading-relaxed text-foreground-muted">
           Promoted <strong className="text-foreground">three times</strong> at eNova Software — from Junior
-          Developer to Lead Application Developer.
+          Software Developer to Lead Application Developer.
         </p>
 
         {/* Visual year ladder */}
@@ -85,7 +88,7 @@ export function CareerGrowthCard() {
                   <p className="text-xs font-semibold text-foreground">{step.role}</p>
                   <p className="mt-0.5 text-[10px] text-muted">{step.period}</p>
                   {step.current && (
-                    <p className="mt-1 flex items-center gap-1 text-[10px] font-medium text-emerald-600">
+                    <p className="mt-1 flex items-center gap-1 text-[10px] font-medium text-emerald-700">
                       <Briefcase size={10} /> Current role
                     </p>
                   )}
@@ -98,12 +101,18 @@ export function CareerGrowthCard() {
         <div className="mt-4 grid grid-cols-3 gap-2 border-t border-border/60 pt-4">
           {[
             { label: "Promotions", value: "3×", icon: Trophy },
-            { label: "Experience", value: "5 yr", icon: TrendingUp },
+            {
+              label: "Experience",
+              value: liveExp.mounted ? `${liveExp.years}y ${liveExp.months}m` : "5+ yr",
+              icon: TrendingUp,
+            },
             { label: "Current", value: "Lead", icon: Rocket },
           ].map(({ label, value, icon: Icon }) => (
             <div key={label} className="rounded-xl bg-surface-2/60 px-2 py-2 text-center">
               <Icon size={14} className="mx-auto mb-1 text-primary/70" />
-              <p className="text-sm font-bold">{value}</p>
+              <p className="text-sm font-bold" suppressHydrationWarning>
+                {value}
+              </p>
               <p className="text-[9px] text-muted">{label}</p>
             </div>
           ))}

@@ -1,9 +1,9 @@
 import {
   developer,
   experiences,
+  getResumeSummary,
   keyAchievements,
   projects,
-  resumeSummary,
   skills,
   skillCategories,
 } from "@/data/portfolio";
@@ -23,7 +23,7 @@ const STOP_WORDS = new Set([
   "from", "as", "is", "are", "be", "this", "that", "will", "you", "your", "we",
   "our", "their", "have", "has", "had", "can", "must", "should", "able", "using",
   "use", "used", "work", "working", "experience", "experiences", "role", "roles",
-  "job", "team", "teams", "strong", "good", "etc", "including", "etc",
+  "job", "team", "teams", "strong", "good", "etc", "including",
 ]);
 
 const ALIASES: Record<string, string[]> = {
@@ -40,13 +40,14 @@ const ALIASES: Record<string, string[]> = {
   aws: ["aws", "ec2", "s3", "bedrock", "amazon web services"],
   rest: ["rest", "restful", "api", "apis"],
   erp: ["erp", "enterprise resource"],
+  lms: ["lms", "learning management", "scorm"],
   hrms: ["hrms", "payroll", "biometric", "attendance"],
   leadership: ["lead", "leadership", "mentor", "mentoring", "team lead"],
   devops: ["devops", "ci/cd", "deployment", "git"],
   bootstrap: ["bootstrap"],
   html: ["html", "html5"],
   css: ["css", "css3"],
-  ai: ["ai", "gemini", "genai", "llm", "machine learning"],
+  ai: ["ai", "gemini", "genai", "llm", "ollama", "vllm"],
 };
 
 function normalize(text: string) {
@@ -90,6 +91,7 @@ function portfolioKeywordBag(): Map<string, string> {
   add("Next.js", "next.js", "nextjs");
   add("CodeIgniter", "codeigniter", "ci3", "ci4");
   add("REST API", "rest api", "restful");
+  add("LMS Integration", "lms", "scorm");
   add("Team Leadership", "leadership", "mentor", "mentoring");
 
   return bag;
@@ -105,19 +107,18 @@ function detectJdRequirements(jd: string): string[] {
     }
   }
 
-  // Capture common phrase skills
-  const phrases = [
-    ["codeigniter", "CodeIgniter"],
-    ["next.js", "Next.js"],
-    ["rest api", "REST API"],
-    ["system design", "System Design"],
-    ["database design", "Database Design"],
-    ["performance optimization", "Performance Optimization"],
-    ["team lead", "Team Leadership"],
+  const extraNeedles = [
+    ["docker", "docker"],
+    ["kubernetes", "kubernetes"],
+    ["laravel", "laravel"],
+    ["postgresql", "postgresql"],
+    ["mongodb", "mongodb"],
+    ["redis", "redis"],
+    ["graphql", "graphql"],
   ] as const;
 
-  for (const [needle, label] of phrases) {
-    if (lower.includes(needle)) found.add(label.toLowerCase().replace(/\s+/g, ""));
+  for (const [needle, key] of extraNeedles) {
+    if (lower.includes(needle)) found.add(key);
   }
 
   return [...found];
@@ -132,7 +133,9 @@ export function reviewResumeAgainstJd(jobDescription: string): ResumeReviewResul
       matched: [],
       gaps: [],
       strengths: [],
-      recommendations: ["Paste a fuller job description (role, required skills, responsibilities) for an accurate ATS match."],
+      recommendations: [
+        "Paste a fuller job description (role, required skills, responsibilities) for an accurate ATS match.",
+      ],
       summary: "Need more JD detail to score this role.",
     };
   }
@@ -144,26 +147,27 @@ export function reviewResumeAgainstJd(jobDescription: string): ResumeReviewResul
   const matchedLabels = new Set<string>();
   const gapLabels = new Set<string>();
 
-  // Score known requirement aliases
+  const verifiedKeys = new Set([
+    "php", "codeigniter", "mysql", "javascript", "rest", "erp", "lms", "hrms",
+    "leadership", "ai", "aws", "jquery", "ajax", "html", "css", "bootstrap",
+    "nextjs", "react", "python", "typescript", "devops",
+  ]);
+
   for (const req of jdReqs) {
     const aliases = ALIASES[req] ?? [req];
-    const has = aliases.some((a) => {
-      const n = normalize(a);
-      return [...bag.keys()].some((k) => k.includes(n) || n.includes(k));
-    });
-    // Portfolio always has these core skills if in ALIASES and in skills/projects
     const portfolioHas =
+      verifiedKeys.has(req) ||
       skills.some((s) => aliases.some((a) => normalize(s.name).includes(normalize(a).split(" ")[0]))) ||
       projects.some((p) =>
         p.technologies.some((t) => aliases.some((a) => normalize(t).includes(normalize(a).split(" ")[0])))
-      ) ||
-      ["php", "codeigniter", "mysql", "javascript", "rest", "erp", "hrms", "leadership", "ai", "aws", "jquery", "ajax", "html", "css", "bootstrap", "nextjs", "react"].includes(req);
+      );
 
     const display =
       req === "nextjs" ? "Next.js" :
       req === "codeigniter" ? "CodeIgniter" :
       req === "rest" ? "REST API" :
-      req === "ai" ? "AI Integration" :
+      req === "lms" ? "LMS Integration" :
+      req === "ai" ? "AI / LLM (Ollama, vLLM, Gemini)" :
       req === "leadership" ? "Team Leadership" :
       req.charAt(0).toUpperCase() + req.slice(1);
 
@@ -171,7 +175,6 @@ export function reviewResumeAgainstJd(jobDescription: string): ResumeReviewResul
     else gapLabels.add(display);
   }
 
-  // Token overlap boost
   let hit = 0;
   let considered = 0;
   for (const token of jdTokens) {
@@ -185,12 +188,11 @@ export function reviewResumeAgainstJd(jobDescription: string): ResumeReviewResul
   }
 
   const reqScore = jdReqs.length
-    ? (matchedLabels.size / Math.max(jdReqs.length, 1)) * 70
+    ? (matchedLabels.size / Math.max(jdReqs.length + gapLabels.size, 1)) * 70
     : 45;
   const overlapScore = considered ? (hit / considered) * 30 : 15;
   let score = Math.round(Math.min(98, Math.max(35, reqScore + overlapScore)));
 
-  // Senior/lead JD bonus if portfolio has leadership
   if (/lead|senior|architect/i.test(jd) && /lead|mentor|promoted/i.test(developer.bio + keyAchievements.join(" "))) {
     score = Math.min(98, score + 4);
   }
@@ -204,21 +206,19 @@ export function reviewResumeAgainstJd(jobDescription: string): ResumeReviewResul
 
   const recommendations: string[] = [];
   if (score >= 85) {
-    recommendations.push("Strong match — book an interview and send the resume PDF with this JD noted.");
-    recommendations.push("Lead with Educational ERP + HRMS + Online Exam metrics in the first conversation.");
+    recommendations.push("Strong alignment — request an interview and download the latest resume PDF.");
+    recommendations.push("Focus discussion on Educational ERP (20+ modules), HRMS/Biometrics, and private Ollama/vLLM AI.");
   } else if (score >= 70) {
-    recommendations.push("Good match — emphasize overlapping tech and quantify impact in your cover note.");
-    recommendations.push("Mirror 3–5 exact keywords from the JD in your resume summary.");
+    recommendations.push("Good match — highlight overlapping PHP/CodeIgniter, MySQL, and REST API architecture.");
+    recommendations.push("Review relevant enterprise case studies for architectural depth.");
   } else {
-    recommendations.push("Partial match — highlight transferable ERP/API experience and address skill gaps honestly.");
-    recommendations.push("Consider a short cover letter explaining adjacent experience for missing keywords.");
+    recommendations.push("Partial match — evaluate transferable ERP, REST API, and MySQL optimization experience.");
+    recommendations.push("Address unlisted stack items honestly during technical screening.");
   }
 
   if (gapLabels.size) {
-    recommendations.push(`Address gaps: ${[...gapLabels].slice(0, 4).join(", ")} — note learning status or related work.`);
+    recommendations.push(`Not in verified stack: ${[...gapLabels].slice(0, 4).join(", ")} — discuss adjacent experience.`);
   }
-
-  recommendations.push(`Use portfolio AI Cover Letter tool with this JD for a tailored outreach email.`);
 
   const verdict =
     score >= 90 ? "Excellent Fit" :
@@ -227,7 +227,7 @@ export function reviewResumeAgainstJd(jobDescription: string): ResumeReviewResul
     score >= 55 ? "Partial Fit" :
     "Weak Fit";
 
-  const summary = `${verdict} (${score}/100) for ${developer.name}. Matched ${matchedLabels.size} key requirements against ${resumeSummary.slice(0, 120)}…`;
+  const summary = `${verdict} (${score}/100) for ${developer.name}. Matched ${matchedLabels.size} key areas against ${getResumeSummary().slice(0, 120)}…`;
 
   return {
     score,

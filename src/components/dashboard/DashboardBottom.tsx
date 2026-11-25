@@ -3,15 +3,31 @@
 import Link from "next/link";
 import { useEffect, useState, useRef, useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Star, Calendar, ArrowRight, Mail, Phone, Clock, Quote, Pencil, Trash2, Lock, LogOut, CheckCircle2 } from "lucide-react";
+import {
+  Star,
+  Calendar,
+  ArrowRight,
+  Mail,
+  Phone,
+  Clock,
+  Quote,
+  Pencil,
+  Trash2,
+  Lock,
+  LogOut,
+  CheckCircle2,
+  Send,
+  CheckCircle,
+  AlertCircle,
+} from "lucide-react";
 import { testimonials, blogPosts, developer } from "@/data/portfolio";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 import { WhatsAppIcon, LinkedInIcon } from "@/components/ui/SocialIcons";
 import { ClientOnly } from "@/components/ui/ClientOnly";
 import { TitleCover } from "@/components/ui/TitleCover";
-import { Send, CheckCircle, AlertCircle } from "lucide-react";
 import { useAdminSession } from "@/hooks/useAdminSession";
 import { FeedbackAdminLogin, FeedbackEditModal } from "@/components/dashboard/FeedbackAdmin";
+import { RequestInterviewButton } from "@/components/sections/InterviewRequestModal";
 
 interface LiveFeedback {
   id: string;
@@ -49,30 +65,26 @@ function ReviewAvatar({ name, photo }: { name: string; photo?: string }) {
 
   if (photo && !failed) {
     return (
-      <motion.img
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
         src={photo}
         alt={name}
         onError={() => setFailed(true)}
         className="h-10 w-10 shrink-0 rounded-full object-cover shadow-md ring-2 ring-primary/20"
-        whileHover={{ scale: 1.08 }}
       />
     );
   }
 
   return (
-    <motion.div
-      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/70 text-sm font-bold text-white shadow-md shadow-primary/20"
-      whileHover={{ scale: 1.08, rotate: 4 }}
-      transition={{ type: "spring", stiffness: 400, damping: 14 }}
-    >
+    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/70 text-sm font-bold text-white shadow-md shadow-primary/20">
       {initials(name)}
-    </motion.div>
+    </div>
   );
 }
 
 function StarRow({ rating, delay = 0 }: { rating: number; delay?: number }) {
   return (
-    <div className="flex gap-0.5">
+    <div className="flex gap-0.5" aria-label={`${rating} out of 5 stars`}>
       {Array.from({ length: 5 }).map((_, i) => (
         <motion.span
           key={i}
@@ -80,7 +92,7 @@ function StarRow({ rating, delay = 0 }: { rating: number; delay?: number }) {
           whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
           viewport={{ once: true }}
           transition={{
-            delay: delay + i * 0.06,
+            delay: delay + i * 0.05,
             type: "spring",
             stiffness: 420,
             damping: 16,
@@ -116,94 +128,74 @@ function ReviewCard({
   className?: string;
 }) {
   return (
-      <motion.article
-        layout
-        initial={{ opacity: 0, x: 20 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.45, delay: index * 0.05, ease }}
-        whileHover={{ y: -4 }}
-        className={`group relative flex h-full min-h-[240px] flex-col overflow-hidden rounded-2xl border border-border bg-surface p-5 shadow-sm transition-shadow duration-300 hover:border-primary/25 hover:shadow-lg hover:shadow-primary/5 ${
-          review.live ? "ring-1 ring-primary/20" : ""
-        } ${className}`}
+    <motion.article
+      layout
+      initial={{ opacity: 0, x: 20 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.4, delay: index * 0.04, ease }}
+      whileHover={{ y: -3 }}
+      className={`group relative flex h-full min-h-[230px] flex-col overflow-hidden rounded-2xl border border-border bg-surface p-5 shadow-sm transition-shadow duration-300 hover:border-primary/25 hover:shadow-lg hover:shadow-primary/5 ${
+        review.live ? "ring-1 ring-primary/20" : ""
+      } ${className}`}
+    >
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-3 -top-3 text-primary/10 transition-colors duration-300 group-hover:text-primary/20"
       >
-        <motion.div
-          aria-hidden
-          className="pointer-events-none absolute -right-3 -top-3 text-primary/10 transition-colors duration-300 group-hover:text-primary/20"
-          initial={{ opacity: 0, scale: 0.6, rotate: -12 }}
-          whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: index * 0.07 + 0.15, duration: 0.45, ease }}
-        >
-          <Quote size={44} strokeWidth={1.5} />
-        </motion.div>
+        <Quote size={44} strokeWidth={1.5} />
+      </div>
 
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/[0.04] via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-        />
-
-        <div className="relative z-[1] flex h-full flex-col">
-          <div className="mb-3 flex items-start justify-between gap-2">
-            <StarRow rating={review.rating} delay={index * 0.07 + 0.1} />
-            <div className="flex items-center gap-1">
-              {review.live && isAdmin && (
-                <div className="flex gap-0.5">
-                  <button
-                    type="button"
-                    onClick={onEdit}
-                    className="rounded-lg p-1.5 text-muted transition hover:bg-primary/10 hover:text-primary"
-                    aria-label="Edit feedback"
-                    title="Edit (owner only)"
-                  >
-                    <Pencil size={13} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={onDelete}
-                    className="rounded-lg p-1.5 text-muted transition hover:bg-red-500/10 hover:text-red-500"
-                    aria-label="Delete feedback"
-                    title="Delete (owner only)"
-                  >
-                    <Trash2 size={13} />
-                  </button>
-                </div>
-              )}
-              {review.live && (
-                <motion.span
-                  initial={{ opacity: 0, x: 8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className="relative rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold text-primary"
+      <div className="relative z-[1] flex h-full flex-col">
+        <div className="mb-3 flex items-start justify-between gap-2">
+          <StarRow rating={review.rating} delay={index * 0.05 + 0.08} />
+          <div className="flex items-center gap-1">
+            {review.live && isAdmin && (
+              <div className="flex gap-0.5">
+                <button
+                  type="button"
+                  onClick={onEdit}
+                  className="rounded-lg p-1.5 text-muted transition hover:bg-primary/10 hover:text-primary"
+                  aria-label="Edit feedback"
+                  title="Edit (owner only)"
                 >
-                  <span className="absolute inset-0 animate-ping rounded-full bg-primary/20 opacity-75" />
-                  <span className="relative">Live</span>
-                </motion.span>
-              )}
-            </div>
-          </div>
-
-          <motion.p
-            className="mb-5 flex-1 text-sm leading-relaxed text-foreground-muted"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: index * 0.07 + 0.2, duration: 0.45 }}
-          >
-            &ldquo;{review.content}&rdquo;
-          </motion.p>
-
-          <div className="mt-auto flex items-center gap-3 border-t border-border/60 pt-4">
-            <ReviewAvatar name={review.name} photo={review.photo} />
-            <div className="min-w-0">
-              <p className="truncate text-sm font-semibold text-foreground">{review.name}</p>
-              <p className="truncate text-xs text-muted">
-                {review.role}
-                {review.company ? ` · ${review.company}` : ""}
-              </p>
-            </div>
+                  <Pencil size={13} />
+                </button>
+                <button
+                  type="button"
+                  onClick={onDelete}
+                  className="rounded-lg p-1.5 text-muted transition hover:bg-red-500/10 hover:text-red-500"
+                  aria-label="Delete feedback"
+                  title="Delete (owner only)"
+                >
+                  <Trash2 size={13} />
+                </button>
+              </div>
+            )}
+            {review.live && (
+              <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold text-primary">
+                Visitor
+              </span>
+            )}
           </div>
         </div>
-      </motion.article>
+
+        <p className="mb-5 flex-1 text-sm leading-relaxed text-foreground-muted">
+          &ldquo;{review.content}&rdquo;
+        </p>
+
+        <div className="mt-auto flex items-center gap-3 border-t border-border/60 pt-4">
+          <ReviewAvatar name={review.name} photo={review.photo} />
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold text-foreground">{review.name}</p>
+            <p className="truncate text-xs text-muted">
+              {review.role}
+              {review.company ? ` · ${review.company}` : ""}
+            </p>
+          </div>
+        </div>
+      </div>
+    </motion.article>
   );
 }
 
@@ -229,13 +221,14 @@ function ReviewScrollRow({
   const loopItems = useMemo(() => (items.length > 1 ? [...items, ...items] : items), [items]);
 
   useEffect(() => {
-    if (!autoScroll || items.length <= 1) return;
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!autoScroll || items.length <= 1 || prefersReduced) return;
 
     const el = trackRef.current;
     if (!el) return;
 
     let raf = 0;
-    const speed = 0.85;
+    const speed = 0.7;
 
     const animate = () => {
       if (!pausedRef.current) {
@@ -275,7 +268,7 @@ function ReviewScrollRow({
       >
         <div
           ref={trackRef}
-          className="flex gap-4 overflow-x-hidden pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex gap-4 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {loopItems.map((review, i) => {
             const liveItem = live.find((f) => f.id === review.id);
@@ -391,17 +384,17 @@ function FeedbackSection() {
     <section id="testimonials" className="panel overflow-hidden">
       <div className="panel-header">
         <div>
-          <p className="panel-title">Reviews & Feedback</p>
+          <h2 className="panel-title">Endorsements &amp; Visitor Feedback</h2>
           <p className="mt-0.5 text-[11px] text-muted">
-            All reviews — auto-scroll · hover to pause
+            Colleague recommendations &amp; verified visitor reviews
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {isAdmin && (
             <button
               type="button"
-              onClick={() => logout()}
-              className="flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[10px] font-semibold text-emerald-600"
+              onClick={() => void logout()}
+              className="flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[10px] font-semibold text-emerald-700"
               title="Owner mode active"
             >
               <LogOut size={12} />
@@ -422,7 +415,7 @@ function FeedbackSection() {
           <motion.button
             type="button"
             className="rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-white"
-            whileHover={{ scale: 1.04 }}
+            whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             onClick={() => window.dispatchEvent(new CustomEvent("open-feedback-popup"))}
           >
@@ -439,7 +432,7 @@ function FeedbackSection() {
             <p className="mt-1 text-xs text-muted">Be the first to share feedback on this portfolio.</p>
             <button
               type="button"
-              className="btn btn-primary mt-4"
+              className="btn btn-primary mt-4 !w-auto"
               onClick={() => window.dispatchEvent(new CustomEvent("open-feedback-popup"))}
             >
               Write a review
@@ -484,8 +477,10 @@ export function DashboardBottom() {
       <section id="blog" className="panel">
         <div className="panel-header">
           <div>
-            <p className="panel-title">Latest Blog Posts</p>
-            <p className="mt-0.5 text-[11px] text-muted">Real articles — click Read more</p>
+            <h2 className="panel-title">Engineering Articles</h2>
+            <p className="mt-0.5 text-[11px] text-muted">
+              Production lessons from CodeIgniter ERP, biometric sync, AWS S3 &amp; Ollama / vLLM
+            </p>
           </div>
         </div>
         <div className="panel-body">
@@ -493,10 +488,10 @@ export function DashboardBottom() {
             {blogPosts.map((post, i) => (
               <motion.article
                 key={post.id}
-                initial={{ opacity: 0, y: 14 }}
+                initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.06 }}
+                transition={{ delay: i * 0.05 }}
                 whileHover={{ y: -3 }}
                 className="overflow-hidden rounded-xl border border-border bg-surface"
               >
@@ -517,7 +512,7 @@ export function DashboardBottom() {
                     href={`/blog/${post.slug}`}
                     className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
                   >
-                    Read more <ArrowRight size={12} />
+                    Read article <ArrowRight size={12} />
                   </Link>
                 </div>
               </motion.article>
@@ -532,12 +527,14 @@ export function DashboardBottom() {
 }
 
 function ContactPanel() {
-  const [form, setForm] = useState({ name: "", email: "", purpose: "job", message: "" });
+  const [form, setForm] = useState({ name: "", email: "", purpose: "job", message: "", website: "" });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("loading");
+    setErrorMsg("");
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
@@ -547,14 +544,15 @@ function ContactPanel() {
       const data = await res.json();
       if (res.ok) {
         setStatus("success");
-        setForm({ name: "", email: "", purpose: "job", message: "" });
+        setForm({ name: "", email: "", purpose: "job", message: "", website: "" });
         window.dispatchEvent(new CustomEvent("contact-submitted"));
       } else {
         setStatus("error");
-        console.error("[contact]", data.error);
+        setErrorMsg(data.error ?? "Failed to send message.");
       }
     } catch {
       setStatus("error");
+      setErrorMsg("Network error. Try email or WhatsApp directly.");
     }
   };
 
@@ -569,56 +567,44 @@ function ContactPanel() {
         >
           <h2 className="mb-2 text-xl font-bold sm:text-2xl">Let&apos;s Work Together</h2>
           <p className="mb-2 text-sm text-foreground-muted">
-            Hiring for a senior role or need an ERP specialist? I&apos;d love to hear from you.
+            Hiring for a Lead/Senior PHP &amp; ERP role or planning an enterprise architecture engagement? Reach out directly.
           </p>
-          <span className="mb-5 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-600">
+          <span className="mb-5 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
             <CheckCircle2 size={12} />
             {developer.responseTime}
           </span>
           <div className="mb-5 flex flex-wrap gap-2">
-            <motion.a
-              href={`mailto:${developer.email}`}
-              className="btn btn-primary !w-auto"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-            >
-              <Mail size={16} /> Get in Touch
-            </motion.a>
-            <motion.a
+            <a href={`mailto:${developer.email}`} className="btn btn-primary !w-auto">
+              <Mail size={16} /> Email Direct
+            </a>
+            <RequestInterviewButton className="btn btn-glass !w-auto">
+              <Calendar size={16} /> Request Interview
+            </RequestInterviewButton>
+            <a
               href={developer.social.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-whatsapp !w-auto"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
             >
               <WhatsAppIcon width={16} height={16} /> WhatsApp
-            </motion.a>
-            <motion.a
-              href={developer.calendarUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-glass !w-auto"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-            >
-              <Calendar size={16} /> Book Interview
-            </motion.a>
-            <motion.a
+            </a>
+            <a
               href={developer.social.linkedin}
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-glass !w-auto"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
             >
               <LinkedInIcon width={16} height={16} /> LinkedIn
-            </motion.a>
+            </a>
           </div>
           <SocialLinks size="md" />
           <div className="mt-4 space-y-1 text-sm text-muted">
-            <p className="flex items-center gap-2 break-all"><Mail size={14} className="shrink-0" /> {developer.email}</p>
-            <p className="flex items-center gap-2"><Phone size={14} className="shrink-0" /> {developer.phone}</p>
+            <p className="flex items-center gap-2 break-all">
+              <Mail size={14} className="shrink-0" /> {developer.email}
+            </p>
+            <p className="flex items-center gap-2">
+              <Phone size={14} className="shrink-0" /> {developer.phone}
+            </p>
           </div>
         </motion.div>
 
@@ -640,12 +626,25 @@ function ContactPanel() {
             viewport={{ once: true }}
             className="p-4 sm:p-6"
           >
+            {/* Honeypot */}
+            <input
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+              value={form.website}
+              onChange={(e) => setForm({ ...form, website: e.target.value })}
+              className="hidden"
+              aria-hidden="true"
+            />
             <div className="mb-3">
-              <label htmlFor="dash-name" className="mb-1 block text-xs font-medium">Name</label>
+              <label htmlFor="dash-name" className="mb-1 block text-xs font-medium">
+                Name
+              </label>
               <input
                 id="dash-name"
                 type="text"
                 required
+                minLength={2}
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 className="input-field !py-2 text-sm transition-shadow focus:shadow-md focus:shadow-primary/10"
@@ -653,7 +652,9 @@ function ContactPanel() {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="dash-email" className="mb-1 block text-xs font-medium">Email</label>
+              <label htmlFor="dash-email" className="mb-1 block text-xs font-medium">
+                Email
+              </label>
               <input
                 id="dash-email"
                 type="email"
@@ -661,33 +662,39 @@ function ContactPanel() {
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 className="input-field !py-2 text-sm transition-shadow focus:shadow-md focus:shadow-primary/10"
-                placeholder="you@email.com"
+                placeholder="you@company.com"
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="dash-purpose" className="mb-1 block text-xs font-medium">Purpose</label>
+              <label htmlFor="dash-purpose" className="mb-1 block text-xs font-medium">
+                Purpose
+              </label>
               <select
                 id="dash-purpose"
                 value={form.purpose}
                 onChange={(e) => setForm({ ...form, purpose: e.target.value })}
                 className="input-field !py-2 text-sm transition-shadow focus:shadow-md focus:shadow-primary/10"
               >
-                <option value="job">Job Opportunity</option>
-                <option value="freelance">Freelance Project</option>
-                <option value="collaboration">Collaboration</option>
+                <option value="job">Job / Senior Role Opportunity</option>
+                <option value="interview">Schedule Interview</option>
+                <option value="freelance">ERP / Web Architecture Project</option>
+                <option value="collaboration">Technical Collaboration</option>
                 <option value="other">Other</option>
               </select>
             </div>
             <div className="mb-4">
-              <label htmlFor="dash-message" className="mb-1 block text-xs font-medium">Message</label>
+              <label htmlFor="dash-message" className="mb-1 block text-xs font-medium">
+                Message
+              </label>
               <textarea
                 id="dash-message"
                 required
+                minLength={10}
                 rows={5}
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
                 className="input-field min-h-[120px] resize-y !py-2 text-sm transition-shadow focus:shadow-md focus:shadow-primary/10"
-                placeholder="Your message..."
+                placeholder="Share role details, project scope, or preferred interview times..."
               />
             </div>
             <AnimatePresence mode="wait">
@@ -697,7 +704,7 @@ function ContactPanel() {
                   initial={{ opacity: 0, y: -6 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
-                  className="mb-3 flex items-center gap-1 text-xs text-emerald-600"
+                  className="mb-3 flex items-center gap-1 text-xs text-emerald-700"
                 >
                   <CheckCircle size={14} /> Message sent! You&apos;ll receive a reply at your email.
                 </motion.p>
@@ -710,7 +717,7 @@ function ContactPanel() {
                   exit={{ opacity: 0 }}
                   className="mb-3 flex items-center gap-1 text-xs text-red-500"
                 >
-                  <AlertCircle size={14} /> Failed. Try WhatsApp or email directly.
+                  <AlertCircle size={14} /> {errorMsg || "Failed. Try WhatsApp or email directly."}
                 </motion.p>
               )}
             </AnimatePresence>
@@ -718,8 +725,8 @@ function ContactPanel() {
               type="submit"
               className="btn btn-primary w-full"
               disabled={status === "loading"}
-              whileHover={{ scale: status === "loading" ? 1 : 1.02 }}
-              whileTap={{ scale: status === "loading" ? 1 : 0.98 }}
+              whileHover={{ scale: status === "loading" ? 1 : 1.01 }}
+              whileTap={{ scale: status === "loading" ? 1 : 0.99 }}
             >
               <Send size={16} />
               {status === "loading" ? "Sending..." : "Send Message"}

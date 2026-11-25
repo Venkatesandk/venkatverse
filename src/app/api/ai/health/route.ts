@@ -7,7 +7,7 @@ export async function GET() {
     return NextResponse.json({
       ok: false,
       configured: false,
-      error: "GEMINI_API_KEY missing in .env.local",
+      status: "fallback-only",
     });
   }
 
@@ -22,7 +22,6 @@ export async function GET() {
     ok: Boolean(result.text),
     configured: true,
     model: result.model ?? null,
-    reply: result.text,
-    error: result.error,
+    status: result.text ? "live" : "degraded",
   });
 }

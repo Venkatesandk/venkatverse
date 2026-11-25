@@ -12,8 +12,8 @@ export interface ToolField {
 
 export const toolFields: Record<AISuiteToolSlug, ToolField[]> = {
   "resume-builder": [
-    { name: "targetRole", label: "Target Role", type: "text", placeholder: "e.g. Senior Laravel Developer" },
-    { name: "highlights", label: "Extra Highlights (optional)", type: "textarea", rows: 3, placeholder: "Certifications, awards, languages..." },
+    { name: "targetRole", label: "Target Role", type: "text", placeholder: "e.g. Lead PHP & ERP Application Developer" },
+    { name: "highlights", label: "Extra Highlights (optional)", type: "textarea", rows: 3, placeholder: "Specific domain focus, ERP/AI modules..." },
   ],
   "interview-coach": [
     {
@@ -22,8 +22,8 @@ export const toolFields: Record<AISuiteToolSlug, ToolField[]> = {
       type: "select",
       required: true,
       options: [
-        { value: "full-stack", label: "Full Stack" },
-        { value: "php", label: "PHP / Laravel" },
+        { value: "full-stack", label: "Full Stack / ERP & AI" },
+        { value: "php", label: "PHP / CodeIgniter / MySQL" },
         { value: "react", label: "React / Next.js" },
       ],
     },
@@ -33,9 +33,9 @@ export const toolFields: Record<AISuiteToolSlug, ToolField[]> = {
       type: "select",
       required: true,
       options: [
-        { value: "junior", label: "Junior" },
         { value: "mid", label: "Mid-Level" },
         { value: "senior", label: "Senior" },
+        { value: "lead", label: "Lead" },
       ],
     },
   ],
@@ -56,14 +56,14 @@ export const toolFields: Record<AISuiteToolSlug, ToolField[]> = {
   ],
   "project-explainer": [],
   "cover-letter": [
-    { name: "company", label: "Company Name", type: "text", required: true, placeholder: "Acme Corp" },
-    { name: "jobTitle", label: "Job Title", type: "text", required: true, placeholder: "Senior Full Stack Developer" },
+    { name: "company", label: "Company Name", type: "text", required: true, placeholder: "Company Name" },
+    { name: "jobTitle", label: "Job Title", type: "text", required: true, placeholder: "Lead / Senior PHP Application Developer" },
     { name: "motivation", label: "Why this company? (optional)", type: "textarea", rows: 2, placeholder: "What excites you about this role..." },
   ],
   "voice-assistant": [],
   "email-writer": [
-    { name: "recipient", label: "Recipient", type: "text", required: true, placeholder: "Client name or team" },
-    { name: "purpose", label: "Email Purpose", type: "text", required: true, placeholder: "Project proposal follow-up" },
+    { name: "recipient", label: "Recipient", type: "text", required: true, placeholder: "Hiring Manager or Engineering Lead" },
+    { name: "purpose", label: "Email Purpose", type: "text", required: true, placeholder: "Interview follow-up or ERP consulting" },
     {
       name: "tone",
       label: "Tone",
@@ -83,9 +83,9 @@ export const toolFields: Record<AISuiteToolSlug, ToolField[]> = {
       options: [
         { value: "junior", label: "Junior (0–2 yrs)" },
         { value: "mid-level", label: "Mid-Level (2–4 yrs)" },
-        { value: "senior", label: "Senior (4+ yrs)" },
+        { value: "senior", label: "Senior / Lead (4+ yrs)" },
       ],
     },
-    { name: "goals", label: "Career Goals", type: "textarea", required: true, rows: 3, placeholder: "e.g. Become a tech lead, specialize in AI..." },
+    { name: "goals", label: "Career Goals", type: "textarea", required: true, rows: 3, placeholder: "e.g. Advance to Lead Application Developer or Enterprise Architect..." },
   ],
 };

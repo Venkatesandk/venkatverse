@@ -1,7 +1,19 @@
 import { NextResponse } from "next/server";
 import { runAISuiteTool, validToolSlugs } from "@/lib/ai-suite/handlers";
 import { buildPortfolioContext, generateWithGemini } from "@/lib/gemini";
+import { checkRateLimit, getRateLimitClientKey } from "@/lib/rate-limit";
 import type { AISuiteToolSlug } from "@/types";
+
+function sanitizeInput(raw: unknown): Record<string, string> {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
+  const out: Record<string, string> = {};
+  for (const [key, val] of Object.entries(raw)) {
+    if (typeof val === "string") {
+      out[key.slice(0, 40)] = val.slice(0, 6000);
+    }
+  }
+  return out;
+}
 
 async function callGemini(
   tool: AISuiteToolSlug,
@@ -16,20 +28,20 @@ Format rules (important):
 - Use bullet lists with "- " for each item (one item per line)
 - Use **bold** only for key terms or titles inside lines
 - Put a blank line between sections
-- Do NOT write dense single paragraphs for roadmaps or lists
-- Personalize strictly from the user's input (level, goals, etc.) — do NOT give beginner advice to seniors
+- Do NOT invent employers, certifications, Laravel claims, or unverified metrics
+- Personalize strictly from the user's input
 Return only the final content the user should read — no preamble about being an AI.`;
 
   const userPrompt = `Tool: ${tool}
 Input JSON:
 ${JSON.stringify(input, null, 2)}
 
-Generate the best result for this tool using Venkat's real portfolio data and the user's stated goals.`;
+Generate the best result for this tool using Venkat's verified portfolio data and the user's stated inputs.`;
 
   return generateWithGemini({
     systemInstruction,
     userPrompt,
-    temperature: 0.7,
+    temperature: 0.6,
     maxOutputTokens: 1400,
   });
 }
@@ -38,7 +50,7 @@ async function callOpenAI(tool: AISuiteToolSlug, input: Record<string, string>):
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) return null;
 
-  const systemPrompt = `You are Venkat's portfolio AI assistant. Tool: ${tool}. Use professional tone. Be concise and actionable. Personalize to the user's level and goals.`;
+  const systemPrompt = `${buildPortfolioContext()}\n\nTool: ${tool}. Be concise, factual, and never fabricate experience or certifications.`;
   const userPrompt = JSON.stringify({ tool, input });
 
   try {
@@ -48,6 +60,7 @@ async function callOpenAI(tool: AISuiteToolSlug, input: Record<string, string>):
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
+      signal: AbortSignal.timeout(15_000),
       body: JSON.stringify({
         model: process.env.OPENAI_MODEL || "gpt-4o-mini",
         messages: [
@@ -55,7 +68,7 @@ async function callOpenAI(tool: AISuiteToolSlug, input: Record<string, string>):
           { role: "user", content: userPrompt },
         ],
         max_tokens: 1200,
-        temperature: 0.7,
+        temperature: 0.6,
       }),
     });
 
@@ -69,9 +82,23 @@ async function callOpenAI(tool: AISuiteToolSlug, input: Record<string, string>):
 
 export async function POST(request: Request) {
   try {
+    const ip = getRateLimitClientKey(request);
+    const limit = checkRateLimit({
+      namespace: "ai-suite",
+      key: ip,
+      maxRequests: 15,
+      windowMs: 5 * 60 * 1000,
+    });
+    if (!limit.allowed) {
+      return NextResponse.json(
+        { error: `Rate limit reached. Please wait ${limit.retryAfterSec}s.` },
+        { status: 429, headers: { "Retry-After": String(limit.retryAfterSec) } }
+      );
+    }
+
     const body = await request.json();
     const tool = body.tool as AISuiteToolSlug;
-    const input = (body.input ?? {}) as Record<string, string>;
+    const input = sanitizeInput(body.input);
 
     if (!tool || !validToolSlugs.includes(tool)) {
       return NextResponse.json({ error: "Invalid tool" }, { status: 400 });
@@ -95,14 +122,16 @@ export async function POST(request: Request) {
         title: localResult.title,
         content: openaiContent,
         source: "openai",
-        geminiError: gemini.error,
       });
+    }
+
+    if (gemini.error) {
+      console.warn(`[ai-suite:${tool}] falling back to local template:`, gemini.error);
     }
 
     return NextResponse.json({
       ...localResult,
       source: "local",
-      geminiError: gemini.error,
     });
   } catch {
     return NextResponse.json({ error: "Internal error" }, { status: 500 });

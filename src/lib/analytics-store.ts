@@ -67,7 +67,6 @@ function mergeDaily(
 
 function reconcile(data: AnalyticsData, seed: AnalyticsData): AnalyticsData {
   const today = todayKeyIST();
-  const todayCount = data.daily[today] ?? 0;
   const seedToday = seed.daily[today] ?? 0;
 
   const daily = mergeDaily(seed.daily, data.daily);

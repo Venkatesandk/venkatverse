@@ -18,7 +18,7 @@ export function AISuiteProvider() {
 
   if (!activeTool) return null;
 
-  return <AISuiteModal tool={activeTool} onClose={() => setActiveTool(null)} />;
+  return <AISuiteModal key={activeTool} tool={activeTool} onClose={() => setActiveTool(null)} />;
 }
 
 export function openAISuiteTool(slug: AISuiteToolSlug) {

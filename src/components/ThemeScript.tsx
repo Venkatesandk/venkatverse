@@ -1,12 +1,8 @@
-import Script from "next/script";
 import { DEFAULT_THEME_ID, THEME_PRESETS } from "@/lib/themes";
 
 export function ThemeScript() {
   const themeMap = Object.fromEntries(THEME_PRESETS.map((t) => [t.id, t.vars]));
-
-  return (
-    <Script id="theme-init" strategy="beforeInteractive">
-      {`(function(){
+  const scriptBody = `(function(){
   try {
     var id = localStorage.getItem("vv-theme") || "${DEFAULT_THEME_ID}";
     var themes = ${JSON.stringify(themeMap)};
@@ -21,7 +17,7 @@ export function ThemeScript() {
       }
     }
   } catch(e) {}
-})();`}
-    </Script>
-  );
+})();`;
+
+  return <script id="theme-init" dangerouslySetInnerHTML={{ __html: scriptBody }} />;
 }

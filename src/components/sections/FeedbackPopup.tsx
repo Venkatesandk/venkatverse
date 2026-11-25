@@ -186,6 +186,18 @@ export function FeedbackPopup() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        localStorage.setItem(STORAGE_KEY, "1");
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
   const close = (persist = false) => {
     setOpen(false);
     if (persist) localStorage.setItem(STORAGE_KEY, "1");
@@ -221,6 +233,9 @@ export function FeedbackPopup() {
     <AnimatePresence>
       {open && (
         <motion.div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Share your feedback"
           className="fixed inset-0 z-[85] flex items-end justify-center bg-black/55 p-0 sm:items-center sm:p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -295,9 +310,10 @@ export function FeedbackPopup() {
                   <p className="mb-1.5 text-xs font-medium">Photo (optional)</p>
                   <div className="flex items-center gap-3">
                     {photo ? (
+                      // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={photo}
-                        alt="Preview"
+                        alt="Uploaded avatar preview"
                         className="h-12 w-12 rounded-full object-cover ring-2 ring-primary/30"
                       />
                     ) : (
