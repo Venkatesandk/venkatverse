@@ -3,12 +3,13 @@
 import { motion } from "framer-motion";
 import { skillCategories, skills } from "@/data/portfolio";
 import { Stagger, StaggerItem } from "@/components/animations/Motion";
+import type { SkillTier } from "@/types";
 
-const levelLabel = (level: number) => {
-  if (level >= 90) return "Expert";
-  if (level >= 80) return "Advanced";
-  if (level >= 70) return "Intermediate";
-  return "Proficient";
+const TIER_STYLES: Record<SkillTier, string> = {
+  Core: "border-primary/25 bg-primary/10 text-primary",
+  Proficient: "border-emerald-600/20 bg-emerald-500/10 text-emerald-700",
+  Working: "border-amber-600/20 bg-amber-500/10 text-amber-700",
+  Exploring: "border-border bg-surface text-muted",
 };
 
 function SkillRadar() {
@@ -88,22 +89,20 @@ export function SkillsPanel() {
                 <p className="mb-2 text-[10px] font-bold uppercase tracking-wider text-primary">
                   {cat.title}
                 </p>
-                <ul className="space-y-1.5">
-                  {cat.items.map((item) => {
-                    const skill = skills.find(
-                      (s) =>
-                        s.name.toLowerCase().includes(item.split(" ")[0].toLowerCase()) ||
-                        item.toLowerCase().includes(s.name.toLowerCase().split(" ")[0])
-                    );
-                    return (
-                      <li key={item} className="flex items-center justify-between gap-1 text-xs">
-                        <span className="font-medium text-foreground">{item}</span>
-                        {skill && (
-                          <span className="shrink-0 text-[9px] text-muted">{levelLabel(skill.level)}</span>
-                        )}
-                      </li>
-                    );
-                  })}
+                <ul className="space-y-2">
+                  {cat.items.map((item) => (
+                    <li
+                      key={item.name}
+                      className="flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 text-xs"
+                    >
+                      <span className="font-medium text-foreground">{item.name}</span>{" "}
+                      <span
+                        className={`shrink-0 rounded-full border px-1.5 py-0.5 text-[9px] font-semibold ${TIER_STYLES[item.tier]}`}
+                      >
+                        {item.tier}
+                      </span>
+                    </li>
+                  ))}
                 </ul>
               </motion.div>
             </StaggerItem>

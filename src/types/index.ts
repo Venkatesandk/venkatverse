@@ -120,10 +120,25 @@ export interface BlogPost {
   content: string[];
 }
 
+export type SkillTier = "Core" | "Proficient" | "Working" | "Exploring";
+
 export interface Skill {
   name: string;
   level: number;
   category: "backend" | "frontend" | "devops" | "ai" | "database";
+  tier?: SkillTier;
+}
+
+export interface SkillCategoryEntry {
+  name: string;
+  tier: SkillTier;
+  level: number;
+}
+
+export interface SkillCategoryGroup {
+  id: string;
+  title: string;
+  items: SkillCategoryEntry[];
 }
 
 export interface ChatMessage {

@@ -12,7 +12,7 @@ import { LiveExperienceBadge } from "@/components/ui/LiveExperienceBadge";
 import { useLiveExperience } from "@/hooks/useLiveExperience";
 
 export function ExperiencePanel() {
-  const live = useLiveExperience(1000);
+  const live = useLiveExperience(60_000);
 
   return (
     <section id="experience" className="panel">

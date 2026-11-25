@@ -7,11 +7,11 @@ import { ArrowRight, BrainCircuit, Lock, Server, Sparkles } from "lucide-react";
 const highlights = [
   {
     icon: Lock,
-    badge: "On-Premises Privacy",
+    badge: "On-Premises Inference",
     title: "Private Inference with Ollama & vLLM",
     description:
-      "Deployed Ollama for campus/lab model serving and vLLM for concurrent production traffic behind a Python OpenAI-compatible gateway — keeping applicant documents and fee rules off public clouds.",
-    tags: ["Ollama", "vLLM", "Python Gateway", "Zero Cloud Leakage"],
+      "Self-hosted Ollama (campus/lab serving) and vLLM (concurrent throughput) behind a local Python OpenAI-compatible gateway. Applicant documents and ERP fee rules stay on the institutional server without calling public LLM APIs; escalated queries are logged cleanly in ERP.",
+    tags: ["Ollama (Local)", "vLLM (On-Prem)", "Python Gateway", "Self-Hosted Data Path"],
     href: "/projects/admission-ai",
   },
   {
@@ -19,17 +19,17 @@ const highlights = [
     badge: "ERP Grounding",
     title: "Admission AI & Question Generation",
     description:
-      "Connected CodeIgniter ERP course eligibility rules, fee slabs, and document checklists to AI prompts with escalation guardrails, plus Gemini AI workflows for faculty question paper generation.",
+      "Connected CodeIgniter ERP course eligibility rules, fee slabs, and document checklists to grounded prompts with human counsellor escalation, plus optional Gemini API workflows over HTTPS for non-sensitive faculty question paper drafting.",
     tags: ["CodeIgniter ERP", "Gemini API", "Prompt Guardrails", "Counsellor Copilot"],
     href: "/projects/educational-erp",
   },
   {
     icon: Server,
     badge: "Cloud & Infrastructure",
-    title: "AWS EC2 / S3 & Bedrock Familiarity",
+    title: "AWS EC2, S3 & Bedrock Exploration",
     description:
-      "Architected encrypted AWS S3 pre-signed media pipelines for 1,000+ concurrent online exam candidates alongside EC2 production deployments and AWS Bedrock exploration.",
-    tags: ["AWS S3", "AWS EC2", "AWS Bedrock", "Signed URLs"],
+      "Architected encrypted AWS S3 pre-signed media pipelines for 1,000+ concurrent online exam candidates alongside AWS EC2 production deployments, plus hands-on exploration with AWS Bedrock.",
+    tags: ["AWS S3 (Production)", "AWS EC2", "AWS Bedrock (Exploring)", "Signed URLs"],
     href: "/projects/online-examination",
   },
 ];

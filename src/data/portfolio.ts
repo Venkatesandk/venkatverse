@@ -292,20 +292,22 @@ export const faqs: FAQ[] = [
 ];
 
 export const skills: Skill[] = [
-  { name: "PHP 7/8", level: 95, category: "backend" },
-  { name: "CodeIgniter 3/4", level: 92, category: "backend" },
-  { name: "REST API", level: 92, category: "backend" },
-  { name: "MySQL", level: 90, category: "database" },
-  { name: "JavaScript", level: 90, category: "frontend" },
-  { name: "jQuery / AJAX", level: 88, category: "frontend" },
-  { name: "HTML5 / CSS3", level: 90, category: "frontend" },
-  { name: "Git / CI-CD", level: 85, category: "devops" },
-  { name: "AWS EC2 / S3", level: 80, category: "devops" },
-  { name: "React / Next.js", level: 78, category: "frontend" },
-  { name: "Python", level: 78, category: "backend" },
-  { name: "Ollama", level: 74, category: "ai" },
-  { name: "vLLM", level: 70, category: "ai" },
-  { name: "Gemini / Bedrock", level: 72, category: "ai" },
+  { name: "PHP 7/8", level: 95, category: "backend", tier: "Core" },
+  { name: "CodeIgniter 3/4", level: 92, category: "backend", tier: "Core" },
+  { name: "REST API", level: 92, category: "backend", tier: "Core" },
+  { name: "MySQL", level: 90, category: "database", tier: "Core" },
+  { name: "JavaScript", level: 90, category: "frontend", tier: "Core" },
+  { name: "jQuery / AJAX", level: 88, category: "frontend", tier: "Proficient" },
+  { name: "HTML5 / CSS3", level: 90, category: "frontend", tier: "Core" },
+  { name: "Git / GitHub", level: 85, category: "devops", tier: "Proficient" },
+  { name: "AWS EC2 & S3", level: 80, category: "devops", tier: "Proficient" },
+  { name: "React", level: 78, category: "frontend", tier: "Proficient" },
+  { name: "Next.js", level: 78, category: "frontend", tier: "Proficient" },
+  { name: "Python", level: 78, category: "backend", tier: "Proficient" },
+  { name: "Ollama (On-Prem)", level: 74, category: "ai", tier: "Working" },
+  { name: "vLLM", level: 70, category: "ai", tier: "Working" },
+  { name: "Gemini API", level: 76, category: "ai", tier: "Proficient" },
+  { name: "AWS Bedrock", level: 55, category: "ai", tier: "Exploring" },
 ];
 
 export const experienceCompany = {
@@ -539,7 +541,6 @@ export const projects: Project[] = [
     ],
     confidentialityNote:
       "Client institution names, student records, and private ERP URLs are excluded under confidentiality obligations. All screenshots and architecture summaries are anonymized.",
-    githubUrl: "https://github.com/Venkatesandk",
     caseStudyUrl: "/projects/educational-erp",
     featured: true,
   },
@@ -601,7 +602,6 @@ export const projects: Project[] = [
     ],
     confidentialityNote:
       "Institutional LMS endpoints and sample course datasets are anonymized to protect partner privacy.",
-    githubUrl: "https://github.com/Venkatesandk",
     caseStudyUrl: "/projects/lms-integration",
     featured: true,
   },
@@ -664,7 +664,6 @@ export const projects: Project[] = [
     ],
     confidentialityNote:
       "Employee salary records and organizational structures shown in mockups are completely anonymized.",
-    githubUrl: "https://github.com/Venkatesandk",
     caseStudyUrl: "/projects/hrms-payroll",
     featured: true,
   },
@@ -710,23 +709,22 @@ export const projects: Project[] = [
       "ERP rule-lookup endpoints injecting verified institutional context into each session.",
     ],
     securityConsiderations: [
-      "100% on-premise inference — applicant documents and institutional fee rules never leave campus infrastructure.",
-      "System prompt constraints preventing policy fabrication and enforcing human counsellor handoff.",
+      "Self-hosted on-premise inference (Ollama / vLLM): models execute inside institutional hardware/LAN, applicant documents and fee policies are parsed locally, and admission enquiries do not call third-party LLM APIs.",
+      "System prompt constraints prevent policy fabrication, enforce human counsellor escalation, and log escalated queries for ERP audit review.",
     ],
     performanceImprovements: [
       "vLLM continuous batching enabled smooth handling of concurrent admission-season enquiry bursts.",
       "Pre-structured ERP context snippets minimized prompt token overhead and response latency.",
     ],
     impact:
-      "Enabled instant, privacy-preserving enquiry responses and counsellor copilots grounded in verified ERP policies.",
+      "Enabled instant, campus-hosted enquiry responses and counsellor copilots grounded in verified ERP policies.",
     metrics: [
-      "Ollama + vLLM private on-prem inference",
-      "Zero external cloud data exposure for student docs",
-      "ERP-grounded eligibility & fee guidance",
+      "Self-hosted Ollama + vLLM runtime (institutional LAN)",
+      "Local document Q&A — no external LLM API calls",
+      "ERP-grounded eligibility, fee & audit-logged escalations",
     ],
     confidentialityNote:
       "Private campus model endpoints, circulars, and applicant records are strictly omitted.",
-    githubUrl: "https://github.com/Venkatesandk",
     caseStudyUrl: "/projects/admission-ai",
     featured: true,
   },
@@ -787,7 +785,6 @@ export const projects: Project[] = [
     ],
     confidentialityNote:
       "Candidate media, question banks, and institutional exam schedules are excluded for security.",
-    githubUrl: "https://github.com/Venkatesandk",
     caseStudyUrl: "/projects/online-examination",
     featured: false,
   },
@@ -849,7 +846,6 @@ export const projects: Project[] = [
     ],
     confidentialityNote:
       "Hardware serial numbers, branch IPs, and employee biometric IDs are omitted.",
-    githubUrl: "https://github.com/Venkatesandk",
     caseStudyUrl: "/projects/biometric-attendance",
     featured: false,
   },
@@ -907,7 +903,6 @@ export const projects: Project[] = [
     ],
     confidentialityNote:
       "Client organization names, license keys, and support ticket contents are anonymized.",
-    githubUrl: "https://github.com/Venkatesandk",
     caseStudyUrl: "/projects/ticket-management",
     featured: false,
   },
@@ -964,7 +959,6 @@ export const projects: Project[] = [
     ],
     confidentialityNote:
       "Client domain names and editorial content are anonymized.",
-    githubUrl: "https://github.com/Venkatesandk",
     caseStudyUrl: "/projects/website-cms",
     featured: false,
   },
@@ -1004,7 +998,6 @@ export const professionalCerts: ProfessionalCert[] = [
     date: "2024",
     badge: "PHP",
     kind: "Skill Assessment",
-    url: "https://www.hackerrank.com/",
   },
   {
     id: "pc2",
@@ -1013,7 +1006,6 @@ export const professionalCerts: ProfessionalCert[] = [
     date: "2024",
     badge: "JS",
     kind: "Skill Assessment",
-    url: "https://www.hackerrank.com/",
   },
   {
     id: "pc3",
@@ -1022,7 +1014,6 @@ export const professionalCerts: ProfessionalCert[] = [
     date: "2023",
     badge: "SQL",
     kind: "Skill Assessment",
-    url: "https://www.hackerrank.com/",
   },
   {
     id: "pc5",
@@ -1031,7 +1022,6 @@ export const professionalCerts: ProfessionalCert[] = [
     date: "2025",
     badge: "AI",
     kind: "Course Completion",
-    url: "https://ai.google.dev/",
   },
   {
     id: "pc6",
@@ -1040,7 +1030,6 @@ export const professionalCerts: ProfessionalCert[] = [
     date: "2024",
     badge: "PY",
     kind: "Course Completion",
-    url: "https://learn.microsoft.com/",
   },
 ];
 
@@ -1065,66 +1054,113 @@ export const learningActivities: LearningActivity[] = [
 export const githubRepos = [
   {
     name: "venkatverse",
-    desc: "Personal portfolio — Next.js App Router, AI Suite, OTP resume flow & analytics",
+    desc: "Production portfolio — Next.js App Router, AI Suite, OTP resume flow & Upstash Redis analytics",
     lang: "TypeScript",
-    url: "https://github.com/Venkatesandk",
+    url: "https://github.com/Venkatesandk/venkatverse",
   },
   {
-    name: "php-erp-modules",
-    desc: "Modular CodeIgniter ERP service patterns & RBAC helpers",
-    lang: "PHP",
-    url: "https://github.com/Venkatesandk",
+    name: "Website",
+    desc: "Public web portfolio iteration & frontend component experiments",
+    lang: "JavaScript / PHP",
+    url: "https://github.com/Venkatesandk/Website",
   },
   {
-    name: "api-toolkit",
-    desc: "Versioned REST API auth, validation & integration utilities",
-    lang: "PHP",
-    url: "https://github.com/Venkatesandk",
+    name: "Venkatesandk",
+    desc: "GitHub profile overview — stack summary, engineering focus & contact links",
+    lang: "Markdown",
+    url: "https://github.com/Venkatesandk/Venkatesandk",
   },
 ];
 
-export const skillCategories = [
+/** Single canonical source of truth for technical skills, categories & proficiency tiers */
+export const skillCategories: import("@/types").SkillCategoryGroup[] = [
   {
     id: "backend",
     title: "Core Backend (Primary)",
-    items: ["PHP 7/8", "CodeIgniter 3/4", "REST API Design", "Python"],
+    items: [
+      { name: "PHP 7/8", tier: "Core", level: 95 },
+      { name: "CodeIgniter 3/4", tier: "Core", level: 92 },
+      { name: "REST APIs (JWT / RBAC)", tier: "Core", level: 92 },
+      { name: "Python", tier: "Proficient", level: 78 },
+    ],
   },
   {
     id: "architecture",
     title: "Enterprise Architecture",
-    items: ["Modular ERP", "LMS Integration", "HRMS & Payroll", "Biometric Sync", "RBAC & Audit Trails", "API Versioning"],
+    items: [
+      { name: "Modular ERP (20+ Modules)", tier: "Core", level: 94 },
+      { name: "LMS Integration", tier: "Core", level: 90 },
+      { name: "HRMS & Payroll", tier: "Core", level: 90 },
+      { name: "Biometric Sync (.NET)", tier: "Proficient", level: 86 },
+      { name: "RBAC & Audit Trails", tier: "Core", level: 90 },
+    ],
   },
   {
     id: "database",
     title: "Database Engineering",
-    items: ["MySQL", "Schema Normalization", "Composite Indexing", "Query Optimization", "Reporting"],
+    items: [
+      { name: "MySQL & Query Tuning", tier: "Core", level: 90 },
+      { name: "Schema Normalization", tier: "Core", level: 90 },
+      { name: "Composite Indexing", tier: "Proficient", level: 88 },
+      { name: "Academic Reporting", tier: "Proficient", level: 88 },
+    ],
   },
   {
     id: "frontend",
     title: "Modern Frontend",
-    items: ["React", "Next.js", "JavaScript ES6+", "TypeScript", "jQuery / AJAX", "HTML5 / CSS3"],
+    items: [
+      { name: "JavaScript (ES6+)", tier: "Core", level: 90 },
+      { name: "jQuery / AJAX", tier: "Proficient", level: 88 },
+      { name: "React", tier: "Proficient", level: 78 },
+      { name: "Next.js", tier: "Proficient", level: 78 },
+      { name: "TypeScript", tier: "Proficient", level: 78 },
+      { name: "HTML5 / CSS3", tier: "Core", level: 90 },
+    ],
   },
   {
     id: "ai",
     title: "AI Engineering (Additional)",
-    items: ["Ollama (On-Prem)", "vLLM Inference", "Admission AI", "Gemini API", "AWS Bedrock", "Prompt Guardrails"],
+    items: [
+      { name: "Ollama (On-Prem Lab)", tier: "Working", level: 74 },
+      { name: "vLLM (Concurrent Serving)", tier: "Working", level: 70 },
+      { name: "Admission AI Grounding", tier: "Proficient", level: 78 },
+      { name: "Gemini API", tier: "Proficient", level: 76 },
+      { name: "AWS Bedrock", tier: "Exploring", level: 55 },
+      { name: "Prompt Guardrails", tier: "Working", level: 74 },
+    ],
   },
   {
     id: "cloud",
-    title: "Cloud & DevOps",
-    items: ["AWS EC2 / S3", "Vercel", "Git / GitHub", "CI/CD Pipelines", "Zero-Downtime Releases"],
+    title: "Cloud & Delivery",
+    items: [
+      { name: "AWS EC2 & S3", tier: "Proficient", level: 80 },
+      { name: "Vercel", tier: "Proficient", level: 82 },
+      { name: "Git / GitHub", tier: "Proficient", level: 85 },
+      { name: "Zero-Downtime Releases", tier: "Proficient", level: 84 },
+    ],
   },
   {
     id: "frameworks",
     title: "UI & Frameworks",
-    items: ["CodeIgniter 4", "Next.js App Router", "React 19", "Tailwind CSS", "Bootstrap"],
+    items: [
+      { name: "CodeIgniter 4", tier: "Core", level: 92 },
+      { name: "Next.js App Router", tier: "Proficient", level: 78 },
+      { name: "React 19", tier: "Proficient", level: 78 },
+      { name: "Tailwind CSS", tier: "Proficient", level: 84 },
+      { name: "Bootstrap", tier: "Proficient", level: 86 },
+    ],
   },
   {
     id: "leadership",
     title: "Engineering Leadership",
-    items: ["Team Leadership (3+ devs)", "Code Reviews", "Mentoring Juniors", "Stakeholder Estimation"],
+    items: [
+      { name: "Team Lead (3+ Devs)", tier: "Core", level: 88 },
+      { name: "Code Reviews & Standards", tier: "Core", level: 88 },
+      { name: "Mentoring Juniors", tier: "Proficient", level: 86 },
+      { name: "Stakeholder Estimation", tier: "Proficient", level: 85 },
+    ],
   },
-] as const;
+];
 
 export const whyHireMe = [
   {
@@ -1331,7 +1367,7 @@ export const techStack = [
   "Ollama",
   "vLLM",
   "Gemini",
-  "AWS Bedrock",
+  "AWS Bedrock (Exploring)",
   "LMS Integration",
   "Admission AI",
   "JWT",

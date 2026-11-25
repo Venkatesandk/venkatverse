@@ -126,10 +126,14 @@ export function LiveGlobePanel() {
           <p className="truncate text-xs font-bold sm:text-sm">Live Visitor World Map</p>
         </div>
         <div className="flex shrink-0 items-center gap-3 text-[11px] font-semibold">
-          {isLive && (
+          {isLive ? (
             <span className="inline-flex items-center gap-1 text-emerald-700">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
               Live
+            </span>
+          ) : (
+            <span className="text-[10px] font-medium text-muted">
+              {isLoading ? "Syncing" : "Offline"}
             </span>
           )}
           <span className="inline-flex items-center gap-1 text-muted">

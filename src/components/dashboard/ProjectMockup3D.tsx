@@ -73,7 +73,7 @@ function DomainPreview({
           </p>
         </div>
         <div className="flex flex-wrap gap-1.5 text-[9px]">
-          <span className="rounded bg-emerald-500/20 px-1.5 py-0.5 text-emerald-300">No Public Cloud Leakage</span>
+          <span className="rounded bg-emerald-500/20 px-1.5 py-0.5 text-emerald-300">Campus-Hosted Model</span>
           <span className="rounded bg-white/10 px-1.5 py-0.5 text-white/80">Counsellor Escalation</span>
         </div>
       </div>

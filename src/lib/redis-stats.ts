@@ -12,8 +12,10 @@ export interface LiveStatsPayload {
 const TOTAL_VISITS_KEY = "stats:total_visits";
 const RESUME_DOWNLOADS_KEY = "stats:resume_downloads";
 const COUNTRIES_HASH_KEY = "stats:countries";
+const ONLINE_SESSIONS_KEY = "live:sessions";
 const DAILY_TTL_SECONDS = 90 * 24 * 60 * 60; // 90 days
-const LIVE_TTL_SECONDS = 60; // 60 seconds
+const LIVE_WINDOW_MS = 60 * 1000; // 60 seconds active window
+const ONLINE_KEY_TTL_SECONDS = 5 * 60; // safety TTL on the ZSET
 
 let cachedClient: Redis | null | undefined;
 
@@ -85,11 +87,12 @@ export async function recordVisitStats(options: {
 }): Promise<{ ok: boolean; total?: number; today?: number; error?: string }> {
   const redis = getRedisClient();
   if (!redis) {
-    console.warn("[redis-stats] Redis env vars not configured; skipping visit increment.");
+    console.warn("[stats] Redis env vars not configured; skipping visit increment.");
     return { ok: false, error: "Redis not configured" };
   }
 
   try {
+    const nowMs = Date.now();
     const todayKey = dailyVisitsKey();
     const pipe = redis.pipeline();
     pipe.incr(TOTAL_VISITS_KEY);
@@ -100,16 +103,25 @@ export async function recordVisitStats(options: {
       pipe.hincrby(COUNTRIES_HASH_KEY, options.countryCode, 1);
     }
     if (options.sessionId && isValidSessionId(options.sessionId)) {
-      pipe.set(`live:${options.sessionId}`, "1", { ex: LIVE_TTL_SECONDS });
+      pipe.zadd(ONLINE_SESSIONS_KEY, { score: nowMs, member: options.sessionId });
+      pipe.zremrangebyscore(ONLINE_SESSIONS_KEY, 0, nowMs - LIVE_WINDOW_MS);
+      pipe.expire(ONLINE_SESSIONS_KEY, ONLINE_KEY_TTL_SECONDS);
     }
 
     const results = await pipe.exec();
     const total = Number(results[0] ?? 0);
     const today = Number(results[1] ?? 0);
 
+    console.info("[stats] visit recorded", {
+      todayKey,
+      country: options.countryCode ?? "unknown",
+      total,
+      today,
+    });
+
     return { ok: true, total, today };
   } catch (err) {
-    console.error("[redis-stats] recordVisitStats failed:", err);
+    console.error("[stats] recordVisitStats failed:", err);
     return { ok: false, error: "Redis write failed" };
   }
 }
@@ -117,6 +129,7 @@ export async function recordVisitStats(options: {
 export async function refreshHeartbeat(sessionId: string): Promise<{ ok: boolean; error?: string }> {
   const redis = getRedisClient();
   if (!redis) {
+    console.warn("[stats] Redis env vars not configured; skipping heartbeat.");
     return { ok: false, error: "Redis not configured" };
   }
   if (!isValidSessionId(sessionId)) {
@@ -124,10 +137,17 @@ export async function refreshHeartbeat(sessionId: string): Promise<{ ok: boolean
   }
 
   try {
-    await redis.set(`live:${sessionId}`, "1", { ex: LIVE_TTL_SECONDS });
+    const nowMs = Date.now();
+    const pipe = redis.pipeline();
+    pipe.zadd(ONLINE_SESSIONS_KEY, { score: nowMs, member: sessionId });
+    pipe.zremrangebyscore(ONLINE_SESSIONS_KEY, 0, nowMs - LIVE_WINDOW_MS);
+    pipe.expire(ONLINE_SESSIONS_KEY, ONLINE_KEY_TTL_SECONDS);
+    await pipe.exec();
+
+    console.info("[stats] heartbeat refreshed", { zset: ONLINE_SESSIONS_KEY });
     return { ok: true };
   } catch (err) {
-    console.error("[redis-stats] refreshHeartbeat failed:", err);
+    console.error("[stats] refreshHeartbeat failed:", err);
     return { ok: false, error: "Redis heartbeat failed" };
   }
 }
@@ -135,55 +155,45 @@ export async function refreshHeartbeat(sessionId: string): Promise<{ ok: boolean
 export async function incrementResumeDownloadStat(): Promise<number | null> {
   const redis = getRedisClient();
   if (!redis) {
-    console.warn("[redis-stats] Redis not configured; skipping resume download increment.");
+    console.warn("[stats] Redis not configured; skipping resume download increment.");
     return null;
   }
 
   try {
     const next = await redis.incr(RESUME_DOWNLOADS_KEY);
-    return Number(next);
+    const downloads = Number(next);
+    console.info("[stats] resume download incremented", { downloads });
+    return downloads;
   } catch (err) {
-    console.error("[redis-stats] incrementResumeDownloadStat failed:", err);
+    console.error("[stats] incrementResumeDownloadStat failed:", err);
     return null;
   }
-}
-
-async function countOnlineSessions(redis: Redis): Promise<number> {
-  let cursor = "0";
-  const seen = new Set<string>();
-  let iterations = 0;
-
-  do {
-    const [nextCursor, keys] = await redis.scan(cursor, {
-      match: "live:*",
-      count: 100,
-    });
-    for (const k of keys) {
-      seen.add(k);
-    }
-    cursor = String(nextCursor);
-    iterations += 1;
-  } while (cursor !== "0" && iterations < 50);
-
-  return seen.size;
 }
 
 export async function getLiveStatsData(): Promise<LiveStatsPayload | null> {
   const redis = getRedisClient();
   if (!redis) {
-    console.warn("[redis-stats] Redis env vars not configured.");
+    console.warn("[stats] Redis env vars not configured on read.");
     return null;
   }
 
   try {
+    const nowMs = Date.now();
     const todayKey = dailyVisitsKey();
-    const [rawTotal, rawToday, rawDownloads, rawCountries, online] = await Promise.all([
-      redis.get<number | string>(TOTAL_VISITS_KEY),
-      redis.get<number | string>(todayKey),
-      redis.get<number | string>(RESUME_DOWNLOADS_KEY),
-      redis.hgetall<Record<string, number | string>>(COUNTRIES_HASH_KEY),
-      countOnlineSessions(redis),
-    ]);
+    const pipe = redis.pipeline();
+    pipe.get<number | string>(TOTAL_VISITS_KEY);
+    pipe.get<number | string>(todayKey);
+    pipe.get<number | string>(RESUME_DOWNLOADS_KEY);
+    pipe.hgetall<Record<string, number | string>>(COUNTRIES_HASH_KEY);
+    pipe.zremrangebyscore(ONLINE_SESSIONS_KEY, 0, nowMs - LIVE_WINDOW_MS);
+    pipe.zcard(ONLINE_SESSIONS_KEY);
+
+    const results = await pipe.exec();
+    const rawTotal = results[0] as number | string | null;
+    const rawToday = results[1] as number | string | null;
+    const rawDownloads = results[2] as number | string | null;
+    const rawCountries = results[3] as Record<string, number | string> | null;
+    const rawOnline = results[5] as number | string | null;
 
     const countries: Record<string, number> = {};
     if (rawCountries && typeof rawCountries === "object") {
@@ -195,17 +205,27 @@ export async function getLiveStatsData(): Promise<LiveStatsPayload | null> {
       }
     }
 
-    return {
+    const payload: LiveStatsPayload = {
       total: Math.max(0, Number(rawTotal ?? 0) || 0),
       today: Math.max(0, Number(rawToday ?? 0) || 0),
-      online: Math.max(0, online),
+      online: Math.max(0, Number(rawOnline ?? 0) || 0),
       downloads: Math.max(0, Number(rawDownloads ?? 0) || 0),
       countries,
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date(nowMs).toISOString(),
     };
+
+    console.info("[stats] read snapshot", {
+      todayKey,
+      total: payload.total,
+      today: payload.today,
+      online: payload.online,
+      downloads: payload.downloads,
+      countryKeys: Object.keys(countries).length,
+    });
+
+    return payload;
   } catch (err) {
-    console.error("[redis-stats] getLiveStatsData failed:", err);
+    console.error("[stats] getLiveStatsData failed:", err);
     return null;
   }
 }
-

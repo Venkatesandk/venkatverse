@@ -43,7 +43,7 @@ export function CareerGrowthCard() {
         <h3 className="text-lg font-bold leading-tight sm:text-xl" suppressHydrationWarning>
           Junior → Lead in{" "}
           <span className="bg-gradient-to-r from-primary to-cyan-500 bg-clip-text text-transparent">
-            {liveExp.mounted ? liveExp.plusYearsLabel : "5+ Years"}
+            {liveExp.plusYearsLabel}
           </span>
         </h3>
         <p className="mt-2 text-sm leading-relaxed text-foreground-muted">

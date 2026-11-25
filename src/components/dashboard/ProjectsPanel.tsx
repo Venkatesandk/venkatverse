@@ -120,7 +120,8 @@ export function ProjectsPanel() {
         <div>
           <h2 className="panel-title">Enterprise Case Studies</h2>
           <p className="mt-0.5 text-[11px] text-muted">
-            {projects.length} production systems · Problem, architecture, database, APIs, security &amp; ownership
+            {projects.length}{" "}
+            production systems · Problem, architecture, database, APIs, security &amp; ownership
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-1.5" role="tablist" aria-label="Filter case studies">
@@ -222,7 +223,7 @@ export function ProjectsPanel() {
                   >
                     Case Study <ArrowRight size={12} />
                   </Link>
-                  {project.githubUrl && (
+                  {project.githubUrl ? (
                     <a
                       href={project.githubUrl}
                       target="_blank"
@@ -231,6 +232,10 @@ export function ProjectsPanel() {
                     >
                       <GitHubIcon width={11} height={11} /> GitHub
                     </a>
+                  ) : (
+                    <span className="text-[10px] font-medium text-muted">
+                      Private Repo (NDA)
+                    </span>
                   )}
                 </div>
               </div>

@@ -61,7 +61,7 @@ export function GitHubPanel() {
 
         <div>
           <p className="mb-2 text-[10px] font-bold uppercase tracking-wider text-muted">
-            Repositories &amp; Pattern Kits
+            Public GitHub Repositories
           </p>
           <ul className="space-y-2">
             {githubRepos.map((repo) => (

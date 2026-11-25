@@ -2,20 +2,20 @@ import { techStack } from "@/data/portfolio";
 
 const techCategories = [
   {
-    label: "Backend",
-    items: ["PHP", "CodeIgniter", "Python", "MySQL", "REST API", "JWT", "RBAC"],
+    label: "Backend (Primary)",
+    items: ["PHP 7/8", "CodeIgniter 3/4", "Python", "MySQL", "REST API", "JWT", "RBAC"],
   },
   {
     label: "Frontend",
-    items: ["JavaScript", "React", "Next.js", "jQuery", "AJAX", "HTML5", "CSS3", "Bootstrap", "Tailwind CSS"],
+    items: ["JavaScript", "React", "Next.js", "TypeScript", "jQuery", "AJAX", "HTML5", "CSS3", "Bootstrap", "Tailwind CSS"],
   },
   {
     label: "Cloud & Tools",
     items: ["AWS EC2", "AWS S3", "Vercel", "Git", "Postman"],
   },
   {
-    label: "AI & Education",
-    items: ["Ollama", "vLLM", "Gemini", "AWS Bedrock", "LMS Integration", "Admission AI"],
+    label: "AI & EdTech (Additional)",
+    items: ["Ollama", "vLLM", "Gemini", "AWS Bedrock (Exploring)", "LMS Integration", "Admission AI"],
   },
 ] as const;
 

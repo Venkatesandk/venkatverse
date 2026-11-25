@@ -76,7 +76,7 @@ function portfolioKeywordBag(): Map<string, string> {
 
   for (const skill of skills) add(skill.name, skill.name);
   for (const cat of skillCategories) {
-    for (const item of cat.items) add(item, item);
+    for (const item of cat.items) add(item.name, item.name);
   }
   for (const project of projects) {
     add(project.title, project.title, ...project.technologies);
@@ -164,12 +164,12 @@ export function reviewResumeAgainstJd(jobDescription: string): ResumeReviewResul
 
     const display =
       req === "nextjs" ? "Next.js" :
-      req === "codeigniter" ? "CodeIgniter" :
-      req === "rest" ? "REST API" :
-      req === "lms" ? "LMS Integration" :
-      req === "ai" ? "AI / LLM (Ollama, vLLM, Gemini)" :
-      req === "leadership" ? "Team Leadership" :
-      req.charAt(0).toUpperCase() + req.slice(1);
+        req === "codeigniter" ? "CodeIgniter" :
+          req === "rest" ? "REST API" :
+            req === "lms" ? "LMS Integration" :
+              req === "ai" ? "AI / LLM (Ollama, vLLM, Gemini)" :
+                req === "leadership" ? "Team Leadership" :
+                  req.charAt(0).toUpperCase() + req.slice(1);
 
     if (portfolioHas) matchedLabels.add(display);
     else gapLabels.add(display);
@@ -222,10 +222,10 @@ export function reviewResumeAgainstJd(jobDescription: string): ResumeReviewResul
 
   const verdict =
     score >= 90 ? "Excellent Fit" :
-    score >= 80 ? "Strong Fit" :
-    score >= 70 ? "Good Fit" :
-    score >= 55 ? "Partial Fit" :
-    "Weak Fit";
+      score >= 80 ? "Strong Fit" :
+        score >= 70 ? "Good Fit" :
+          score >= 55 ? "Partial Fit" :
+            "Weak Fit";
 
   const summary = `${verdict} (${score}/100) for ${developer.name}. Matched ${matchedLabels.size} key areas against ${getResumeSummary().slice(0, 120)}…`;
 

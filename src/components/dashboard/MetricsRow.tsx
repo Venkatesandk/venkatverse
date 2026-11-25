@@ -46,14 +46,14 @@ interface HighlightDef {
 
 export function MetricsRow() {
   const [showGlobe, setShowGlobe] = useState(false);
-  const exp = useLiveExperience(1000);
+  const exp = useLiveExperience(60_000);
   const { total, isLoading, isError, isLive } = useLiveStats();
 
   const highlights: HighlightDef[] = [
     {
-      label: "Live Tenure",
+      label: "Tenure",
       display: exp.label,
-      sublabel: `Joined Jul 2021 · ${exp.days}d ${exp.clock}`,
+      sublabel: "Joined Jul 2021 · Continuous",
       icon: Briefcase,
       accent: "from-violet-500/12 to-transparent",
     },

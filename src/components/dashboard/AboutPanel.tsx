@@ -138,7 +138,7 @@ export function CertificationsPanel() {
                     {Card}
                   </a>
                 ) : (
-                  Card
+                  <div className="h-full">{Card}</div>
                 )}
               </StaggerItem>
             );
