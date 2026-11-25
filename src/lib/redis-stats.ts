@@ -1,4 +1,7 @@
 import { Redis } from "@upstash/redis";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
+import { getWritableDataDir } from "@/lib/data-path";
 
 export interface LiveStatsPayload {
   total: number;
@@ -18,6 +21,84 @@ const LIVE_WINDOW_MS = 60 * 1000; // 60 seconds active window
 const ONLINE_KEY_TTL_SECONDS = 5 * 60; // safety TTL on the ZSET
 
 let cachedClient: Redis | null | undefined;
+
+interface LocalStatsStore {
+  total: number;
+  daily: Record<string, number>;
+  countries: Record<string, number>;
+  downloads: number;
+  sessions: Record<string, number>;
+}
+
+const LOCAL_STATS_FILE = () => path.join(getWritableDataDir(), "live-stats.json");
+const LEADS_FILE = () => path.join(getWritableDataDir(), "resume-leads.jsonl");
+
+// Serialize local file read-modify-write operations in-process to avoid lost updates
+let localQueue: Promise<unknown> = Promise.resolve();
+
+function withLocalLock<T>(fn: () => Promise<T>): Promise<T> {
+  const next = localQueue.then(fn, fn);
+  localQueue = next.catch(() => {});
+  return next;
+}
+
+async function countVerifiedLeadRecords(): Promise<number> {
+  try {
+    const raw = await readFile(LEADS_FILE(), "utf8");
+    const lines = raw.trim().split("\n").filter(Boolean);
+    return lines.length;
+  } catch {
+    return 0;
+  }
+}
+
+async function readLocalStore(nowMs: number): Promise<LocalStatsStore> {
+  let store: LocalStatsStore | null = null;
+  try {
+    const raw = await readFile(LOCAL_STATS_FILE(), "utf8");
+    const parsed = JSON.parse(raw) as Partial<LocalStatsStore>;
+    store = {
+      total: Math.max(0, Number(parsed.total ?? 0) || 0),
+      daily: parsed.daily && typeof parsed.daily === "object" ? { ...parsed.daily } : {},
+      countries:
+        parsed.countries && typeof parsed.countries === "object" ? { ...parsed.countries } : {},
+      downloads: Math.max(0, Number(parsed.downloads ?? 0) || 0),
+      sessions:
+        parsed.sessions && typeof parsed.sessions === "object" ? { ...parsed.sessions } : {},
+    };
+  } catch {
+    const verifiedLeads = await countVerifiedLeadRecords();
+    store = {
+      total: verifiedLeads,
+      daily: {},
+      countries: {},
+      downloads: verifiedLeads,
+      sessions: {},
+    };
+  }
+
+  // Reconcile downloads floor with real logged OTP-verified leads on disk
+  const verifiedLeads = await countVerifiedLeadRecords();
+  if (verifiedLeads > store.downloads) {
+    store.downloads = verifiedLeads;
+  }
+
+  // Prune expired live sessions (>60s)
+  const cutoff = nowMs - LIVE_WINDOW_MS;
+  for (const [sid, ts] of Object.entries(store.sessions)) {
+    if (!Number.isFinite(ts) || ts < cutoff) {
+      delete store.sessions[sid];
+    }
+  }
+
+  return store;
+}
+
+async function writeLocalStore(store: LocalStatsStore): Promise<void> {
+  const dir = getWritableDataDir();
+  await mkdir(dir, { recursive: true });
+  await writeFile(LOCAL_STATS_FILE(), JSON.stringify(store, null, 2), "utf8");
+}
 
 function getRedisCredentials(): { url: string; token: string } | null {
   const url =
@@ -86,13 +167,37 @@ export async function recordVisitStats(options: {
   sessionId?: string | null;
 }): Promise<{ ok: boolean; total?: number; today?: number; error?: string }> {
   const redis = getRedisClient();
+  const nowMs = Date.now();
+  const istDate = getIstDateKey(new Date(nowMs));
+
   if (!redis) {
-    console.warn("[stats] Redis env vars not configured; skipping visit increment.");
-    return { ok: false, error: "Redis not configured" };
+    return withLocalLock(async () => {
+      try {
+        const store = await readLocalStore(nowMs);
+        store.total += 1;
+        store.daily[istDate] = (store.daily[istDate] ?? 0) + 1;
+        if (options.countryCode) {
+          store.countries[options.countryCode] =
+            (store.countries[options.countryCode] ?? 0) + 1;
+        }
+        if (options.sessionId && isValidSessionId(options.sessionId)) {
+          store.sessions[options.sessionId] = nowMs;
+        }
+        await writeLocalStore(store);
+        console.info("[stats] local visit recorded", {
+          istDate,
+          total: store.total,
+          today: store.daily[istDate],
+        });
+        return { ok: true, total: store.total, today: store.daily[istDate] };
+      } catch (err) {
+        console.error("[stats] local recordVisitStats failed:", err);
+        return { ok: false, error: "Local stats write failed" };
+      }
+    });
   }
 
   try {
-    const nowMs = Date.now();
     const todayKey = dailyVisitsKey();
     const pipe = redis.pipeline();
     pipe.incr(TOTAL_VISITS_KEY);
@@ -127,17 +232,28 @@ export async function recordVisitStats(options: {
 }
 
 export async function refreshHeartbeat(sessionId: string): Promise<{ ok: boolean; error?: string }> {
-  const redis = getRedisClient();
-  if (!redis) {
-    console.warn("[stats] Redis env vars not configured; skipping heartbeat.");
-    return { ok: false, error: "Redis not configured" };
-  }
   if (!isValidSessionId(sessionId)) {
     return { ok: false, error: "Invalid sessionId" };
   }
 
+  const redis = getRedisClient();
+  const nowMs = Date.now();
+
+  if (!redis) {
+    return withLocalLock(async () => {
+      try {
+        const store = await readLocalStore(nowMs);
+        store.sessions[sessionId] = nowMs;
+        await writeLocalStore(store);
+        return { ok: true };
+      } catch (err) {
+        console.error("[stats] local refreshHeartbeat failed:", err);
+        return { ok: false, error: "Local heartbeat failed" };
+      }
+    });
+  }
+
   try {
-    const nowMs = Date.now();
     const pipe = redis.pipeline();
     pipe.zadd(ONLINE_SESSIONS_KEY, { score: nowMs, member: sessionId });
     pipe.zremrangebyscore(ONLINE_SESSIONS_KEY, 0, nowMs - LIVE_WINDOW_MS);
@@ -154,9 +270,21 @@ export async function refreshHeartbeat(sessionId: string): Promise<{ ok: boolean
 
 export async function incrementResumeDownloadStat(): Promise<number | null> {
   const redis = getRedisClient();
+  const nowMs = Date.now();
+
   if (!redis) {
-    console.warn("[stats] Redis not configured; skipping resume download increment.");
-    return null;
+    return withLocalLock(async () => {
+      try {
+        const store = await readLocalStore(nowMs);
+        store.downloads += 1;
+        await writeLocalStore(store);
+        console.info("[stats] local resume download incremented", { downloads: store.downloads });
+        return store.downloads;
+      } catch (err) {
+        console.error("[stats] local incrementResumeDownloadStat failed:", err);
+        return null;
+      }
+    });
   }
 
   try {
@@ -172,13 +300,30 @@ export async function incrementResumeDownloadStat(): Promise<number | null> {
 
 export async function getLiveStatsData(): Promise<LiveStatsPayload | null> {
   const redis = getRedisClient();
+  const nowMs = Date.now();
+  const istDate = getIstDateKey(new Date(nowMs));
+
   if (!redis) {
-    console.warn("[stats] Redis env vars not configured on read.");
-    return null;
+    return withLocalLock(async () => {
+      try {
+        const store = await readLocalStore(nowMs);
+        await writeLocalStore(store);
+        return {
+          total: store.total,
+          today: Math.max(0, Number(store.daily[istDate] ?? 0) || 0),
+          online: Object.keys(store.sessions).length,
+          downloads: store.downloads,
+          countries: store.countries,
+          updatedAt: new Date(nowMs).toISOString(),
+        };
+      } catch (err) {
+        console.error("[stats] local getLiveStatsData failed:", err);
+        return null;
+      }
+    });
   }
 
   try {
-    const nowMs = Date.now();
     const todayKey = dailyVisitsKey();
     const pipe = redis.pipeline();
     pipe.get<number | string>(TOTAL_VISITS_KEY);

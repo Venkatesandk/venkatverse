@@ -150,7 +150,10 @@ export function MetricsRow() {
                   </p>
                 )}
 
-                <p className="mt-1.5 truncate text-[10px] font-medium text-emerald-700" suppressHydrationWarning>
+                <p
+                  className={`mt-1.5 truncate text-[10px] font-medium ${metric.isError ? "text-muted" : "text-emerald-700"}`}
+                  suppressHydrationWarning
+                >
                   {metric.sublabel}
                 </p>
               </motion.div>
