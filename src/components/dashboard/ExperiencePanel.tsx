@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Award, Briefcase, Building2, CheckCircle2, MapPin, Sparkles } from "lucide-react";
 import {
   experienceCompany,
@@ -27,12 +26,7 @@ export function ExperiencePanel() {
       </div>
 
       <div className="panel-body space-y-6">
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="rounded-xl border border-primary/20 bg-gradient-to-br from-primary/10 via-surface-2 to-accent/5 p-4 sm:p-5"
-        >
+        <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-primary/10 via-surface-2 to-accent/5 p-4 sm:p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div className="min-w-0">
               <div className="mb-1 flex items-center gap-2 text-primary">
@@ -58,16 +52,12 @@ export function ExperiencePanel() {
           <div className="mt-3">
             <LiveExperienceBadge variant="panel" />
           </div>
-        </motion.div>
+        </div>
 
         <div className="relative space-y-0">
           {experiences.map((exp, i) => (
-            <motion.div
+            <div
               key={exp.id}
-              initial={{ opacity: 0, x: -10 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.06 }}
               className="relative flex gap-3 pb-6 last:pb-0 sm:gap-4"
             >
               {i < experiences.length - 1 && (
@@ -118,7 +108,7 @@ export function ExperiencePanel() {
                   ))}
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
 
@@ -128,13 +118,9 @@ export function ExperiencePanel() {
             <p className="text-sm font-bold">Major Projects</p>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
-            {majorProjectGroups.map((group, i) => (
-              <motion.div
+            {majorProjectGroups.map((group) => (
+              <div
                 key={group.id}
-                initial={{ opacity: 0, y: 8 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
                 className="rounded-xl border border-border bg-surface p-3 sm:p-4"
               >
                 <p className="mb-2 text-xs font-bold text-primary sm:text-sm">{group.title}</p>
@@ -148,7 +134,7 @@ export function ExperiencePanel() {
                     </li>
                   ))}
                 </ul>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -160,19 +146,15 @@ export function ExperiencePanel() {
           </div>
           <ul className="space-y-2">
             {keyAchievements.map((item, i) => (
-              <motion.li
+              <li
                 key={item}
-                initial={{ opacity: 0, x: 8 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.04 }}
                 className="flex gap-2 rounded-lg border border-border/70 bg-surface-2/50 px-3 py-2.5 text-xs leading-relaxed text-foreground-muted sm:text-[13px]"
               >
                 <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-[10px] font-bold text-primary">
                   {i + 1}
                 </span>
                 <span>{item}</span>
-              </motion.li>
+              </li>
             ))}
           </ul>
         </div>

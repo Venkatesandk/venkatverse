@@ -12,11 +12,11 @@ import { developer } from "@/data/portfolio";
 
 const DESKTOP_NAV = [
   { href: "#home", label: "Home" },
-  { href: "#about", label: "About" },
+  { href: "#about", label: "Overview" },
   { href: "#projects", label: "Projects" },
   { href: "#experience", label: "Experience" },
   { href: "#skills", label: "Skills" },
-  { href: "#ai-highlights", label: "AI Lab" },
+  { href: "#ai-highlights", label: "AI Engineering" },
   { href: "#services", label: "Services" },
   { href: "#resume", label: "Resume", isResume: true },
   { href: "#contact", label: "Contact" },
@@ -90,7 +90,7 @@ export function DashboardHeader({
                 key={item.href}
                 type="button"
                 onClick={openResumeDownload}
-                className="inline-flex min-h-11 items-center rounded-lg px-2.5 text-xs font-semibold text-foreground-muted transition hover:bg-surface-2 hover:text-primary xl:px-3"
+                className="inline-flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-lg px-2 text-xs font-semibold text-foreground-muted transition hover:bg-surface-2 hover:text-primary xl:px-2.5"
               >
                 {item.label}
               </button>
@@ -98,7 +98,7 @@ export function DashboardHeader({
               <a
                 key={item.href}
                 href={item.href}
-                className="inline-flex min-h-11 items-center rounded-lg px-2.5 text-xs font-semibold text-foreground-muted transition hover:bg-surface-2 hover:text-primary xl:px-3"
+                className="inline-flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-lg px-2 text-xs font-semibold text-foreground-muted transition hover:bg-surface-2 hover:text-primary xl:px-2.5"
               >
                 {item.label}
               </a>

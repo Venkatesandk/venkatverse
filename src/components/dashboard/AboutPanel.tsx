@@ -23,13 +23,7 @@ export function AboutPanel() {
       </div>
       <div className="panel-body">
         <div className="grid gap-4 md:grid-cols-3">
-          <motion.div
-            className="md:col-span-2"
-            initial={{ opacity: 0, x: -12 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.45 }}
-          >
+          <div className="md:col-span-2">
             <p className="text-sm leading-relaxed text-foreground-muted">{aboutContent.intro}</p>
             <div className="mt-4">
               <p className="mb-2 text-xs font-bold uppercase tracking-wider text-primary">
@@ -52,15 +46,9 @@ export function AboutPanel() {
               </span>
               <span className="text-muted">{developer.location}</span>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div
-            className="rounded-xl border border-border bg-surface-2 p-4"
-            initial={{ opacity: 0, x: 12 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.45, delay: 0.06 }}
-          >
+          <div className="rounded-xl border border-border bg-surface-2 p-4">
             <p className="mb-3 text-xs font-bold uppercase tracking-wider text-muted">Quick Facts</p>
             <ul className="space-y-2.5 text-sm">
               <li className="break-words">
@@ -88,7 +76,7 @@ export function AboutPanel() {
                 </a>
               </li>
             </ul>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

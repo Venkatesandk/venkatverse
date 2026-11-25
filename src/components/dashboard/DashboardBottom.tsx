@@ -50,8 +50,6 @@ interface ReviewCardData {
   featured?: boolean;
 }
 
-const ease = [0.22, 1, 0.36, 1] as const;
-
 function initials(name: string) {
   return name
     .split(/\s+/)
@@ -114,14 +112,14 @@ function StarRow({ rating, delay = 0 }: { rating: number; delay?: number }) {
 
 function ReviewCard({
   review,
-  index,
+  index = 0,
   isAdmin,
   onEdit,
   onDelete,
   className = "",
 }: {
   review: ReviewCardData;
-  index: number;
+  index?: number;
   isAdmin?: boolean;
   onEdit?: () => void;
   onDelete?: () => void;
@@ -130,10 +128,6 @@ function ReviewCard({
   return (
     <motion.article
       layout
-      initial={{ opacity: 0, x: 20 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.4, delay: index * 0.04, ease }}
       whileHover={{ y: -3 }}
       className={`group relative flex h-full min-h-[230px] flex-col overflow-hidden rounded-2xl border border-border bg-surface p-5 shadow-sm transition-shadow duration-300 hover:border-primary/25 hover:shadow-lg hover:shadow-primary/5 ${
         review.live ? "ring-1 ring-primary/20" : ""
@@ -485,13 +479,9 @@ export function DashboardBottom() {
         </div>
         <div className="panel-body">
           <div className="grid items-start gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {blogPosts.map((post, i) => (
+            {blogPosts.map((post) => (
               <motion.article
                 key={post.id}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
                 whileHover={{ y: -3 }}
                 className="overflow-hidden rounded-xl border border-border bg-surface"
               >
@@ -585,12 +575,7 @@ function ContactPanel() {
   return (
     <section id="contact" className="panel scroll-mt-24">
       <div className="grid lg:grid-cols-2">
-        <motion.div
-          initial={{ opacity: 0, x: -16 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          className="border-b border-border p-4 sm:p-6 lg:border-b-0 lg:border-r"
-        >
+        <div className="border-b border-border p-4 sm:p-6 lg:border-b-0 lg:border-r">
           <h2 className="mb-2 text-xl font-bold sm:text-2xl">Let&apos;s Work Together</h2>
           <p className="mb-2 text-sm text-foreground-muted">
             Hiring for a Lead/Senior PHP &amp; ERP role or planning an enterprise architecture engagement? Reach out directly.
@@ -632,7 +617,7 @@ function ContactPanel() {
               <Phone size={14} className="shrink-0" /> {developer.phone}
             </p>
           </div>
-        </motion.div>
+        </div>
 
         <ClientOnly
           fallback={
@@ -645,11 +630,8 @@ function ContactPanel() {
             </div>
           }
         >
-          <motion.form
+          <form
             onSubmit={handleSubmit}
-            initial={{ opacity: 0, x: 16 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
             className="p-4 sm:p-6"
           >
             {/* Honeypot */}
@@ -757,7 +739,7 @@ function ContactPanel() {
               <Send size={16} />
               {status === "loading" ? "Sending..." : "Send Message"}
             </motion.button>
-          </motion.form>
+          </form>
         </ClientOnly>
       </div>
     </section>

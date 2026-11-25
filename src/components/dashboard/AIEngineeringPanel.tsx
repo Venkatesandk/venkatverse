@@ -51,13 +51,10 @@ export function AIEngineeringPanel() {
       </div>
 
       <div className="panel-body grid gap-3 md:grid-cols-3">
-        {highlights.map((item, i) => (
+        {highlights.map((item) => (
           <motion.article
             key={item.title}
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.06 }}
+            whileHover={{ y: -2 }}
             className="flex flex-col rounded-2xl border border-border bg-surface-2/40 p-4 transition hover:border-primary/35"
           >
             <div className="mb-3 flex items-center justify-between gap-2">

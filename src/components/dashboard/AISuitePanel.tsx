@@ -38,13 +38,7 @@ export function AISuitePanel() {
         <span className="panel-badge">Powered by AI</span>
       </div>
       <div className="panel-body">
-        <motion.div
-          className="grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 sm:grid-cols-4"
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={{ show: { transition: { staggerChildren: 0.06 } } }}
-        >
+        <div className="grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 sm:grid-cols-4">
           {aiSuiteTools.map((tool) => {
             const Icon = iconMap[tool.icon] ?? Bot;
             return (
@@ -52,11 +46,7 @@ export function AISuitePanel() {
                 key={tool.id}
                 type="button"
                 onClick={() => openAISuiteTool(tool.slug)}
-                variants={{
-                  hidden: { opacity: 0, y: 16 },
-                  show: { opacity: 1, y: 0, transition: { duration: 0.4 } },
-                }}
-                whileHover={{ y: -4 }}
+                whileHover={{ y: -3 }}
                 whileTap={{ scale: 0.98 }}
                 className="group rounded-2xl border border-border bg-surface p-3.5 text-left hover:border-primary/40 hover:shadow-[0_12px_30px_-18px_rgba(91,92,230,0.7)]"
               >
@@ -68,7 +58,7 @@ export function AISuitePanel() {
               </motion.button>
             );
           })}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

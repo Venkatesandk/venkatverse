@@ -1,12 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { TrendingUp, Trophy, Rocket, Briefcase } from "lucide-react";
 import { Reveal, Stagger, StaggerItem } from "@/components/animations/Motion";
 import { experiences } from "@/data/portfolio";
 import { useLiveExperience } from "@/hooks/useLiveExperience";
-
-const ease = [0.22, 1, 0.36, 1] as const;
 
 /** Chronological growth: Junior → Lead */
 const growthSteps = [...experiences].reverse().map((e) => {
@@ -30,15 +27,10 @@ export function CareerGrowthCard() {
       />
 
       <div className="relative z-[1]">
-        <motion.div
-          className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-primary"
-          initial={{ opacity: 0, x: -12 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-        >
+        <div className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-primary">
           <TrendingUp size={12} />
           Career Growth
-        </motion.div>
+        </div>
 
         <h3 className="text-lg font-bold leading-tight sm:text-xl" suppressHydrationWarning>
           Junior → Lead in{" "}
@@ -57,13 +49,7 @@ export function CareerGrowthCard() {
 
           {growthSteps.map((step, i) => (
             <StaggerItem key={`${step.year}-${step.role}`}>
-              <motion.div
-                className="relative mb-0 flex gap-3 pb-4 last:pb-0"
-                initial={{ opacity: 0, x: -12 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08, ease }}
-              >
+              <div className="relative mb-0 flex gap-3 pb-4 last:pb-0">
                 <div className="relative z-[1] flex w-11 shrink-0 flex-col items-center">
                   <span
                     className={`flex h-9 w-9 items-center justify-center rounded-full text-[10px] font-bold ${
@@ -93,7 +79,7 @@ export function CareerGrowthCard() {
                     </p>
                   )}
                 </div>
-              </motion.div>
+              </div>
             </StaggerItem>
           ))}
         </Stagger>

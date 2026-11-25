@@ -77,6 +77,7 @@ export function AISuiteModal({ tool, onClose }: AISuiteModalProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return;
     void runTool(form);
   };
 
@@ -129,7 +130,12 @@ export function AISuiteModal({ tool, onClose }: AISuiteModalProps) {
               <p className="text-[11px] text-muted">{toolMeta.description}</p>
             </div>
           </div>
-          <button type="button" onClick={onClose} className="rounded-lg p-1.5 hover:bg-surface-2" aria-label="Close">
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg hover:bg-surface-2"
+            aria-label="Close"
+          >
             <X size={18} />
           </button>
         </div>

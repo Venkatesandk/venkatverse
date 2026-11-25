@@ -22,6 +22,7 @@ export function ResumeReviewerTool() {
   const [result, setResult] = useState<ReviewResponse | null>(null);
 
   const runReview = async () => {
+    if (loading || jobDescription.trim().length < 40) return;
     setLoading(true);
     setError(null);
     try {
@@ -55,26 +56,38 @@ export function ResumeReviewerTool() {
           <p className="text-sm font-bold">AI Resume Reviewer</p>
           <p className="text-[11px] text-muted">Paste a JD → get ATS match score vs Venkat&apos;s profile</p>
         </div>
-        <span className="ml-auto rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold text-emerald-600">
-          Live
+        <span className="ml-auto rounded-full bg-primary/12 px-2 py-0.5 text-[10px] font-bold text-primary">
+          ATS Ready
         </span>
       </div>
 
       <div className="space-y-2.5">
-        <input
-          type="text"
-          value={roleTitle}
-          onChange={(e) => setRoleTitle(e.target.value)}
-          placeholder="Role title (e.g. Lead PHP Developer)"
-          className="input-field !py-2 text-sm"
-        />
-        <textarea
-          value={jobDescription}
-          onChange={(e) => setJobDescription(e.target.value)}
-          rows={5}
-          placeholder="Paste the full job description here…"
-          className="input-field min-h-[120px] resize-y !py-2 text-sm"
-        />
+        <div>
+          <label htmlFor="resume-review-role" className="mb-1 block text-[11px] font-semibold text-muted">
+            Target Role Title
+          </label>
+          <input
+            id="resume-review-role"
+            type="text"
+            value={roleTitle}
+            onChange={(e) => setRoleTitle(e.target.value)}
+            placeholder="Role title (e.g. Lead PHP Developer)"
+            className="input-field !py-2 text-sm"
+          />
+        </div>
+        <div>
+          <label htmlFor="resume-review-jd" className="mb-1 block text-[11px] font-semibold text-muted">
+            Job Description (min 40 characters)
+          </label>
+          <textarea
+            id="resume-review-jd"
+            value={jobDescription}
+            onChange={(e) => setJobDescription(e.target.value)}
+            rows={5}
+            placeholder="Paste the full job description here…"
+            className="input-field min-h-[120px] resize-y !py-2 text-sm"
+          />
+        </div>
         <button
           type="button"
           onClick={runReview}

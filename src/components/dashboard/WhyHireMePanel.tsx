@@ -17,16 +17,11 @@ export function WhyHireMePanel() {
       </div>
       <div className="panel-body">
         <Stagger className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {whyHireMe.map((item, i) => (
+          {whyHireMe.map((item) => (
             <StaggerItem key={item.title}>
               <motion.div
                 className="why-hire-card group relative h-full overflow-hidden rounded-2xl border border-border bg-surface p-4"
-                initial={{ opacity: 0, rotateX: 12, y: 16 }}
-                whileInView={{ opacity: 1, rotateX: 0, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.06, type: "spring", stiffness: 260, damping: 22 }}
-                whileHover={{ y: -6, rotateY: 4, scale: 1.02 }}
-                style={{ transformStyle: "preserve-3d", perspective: 800 }}
+                whileHover={{ y: -4, scale: 1.01 }}
               >
                 <div
                   aria-hidden

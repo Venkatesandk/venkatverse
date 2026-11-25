@@ -64,13 +64,9 @@ export function AdvancedFeaturesPanel() {
 
       <div className="panel-body space-y-4">
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {features.map((feature, index) => {
+          {features.map((feature) => {
             const inner = (
               <motion.article
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.05 }}
                 whileHover={{ y: -3 }}
                 className="flex h-full flex-col rounded-xl border border-border bg-surface p-3.5 text-left transition hover:border-primary/40"
               >

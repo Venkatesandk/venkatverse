@@ -9,18 +9,18 @@ import { LinkedInIcon } from "@/components/ui/SocialIcons";
 export function RecruiterActions({ variant = "header" }: { variant?: "header" | "cta" }) {
   return (
     <>
-      <div className={`flex flex-wrap gap-2 ${variant === "cta" ? "justify-center" : ""}`}>
-        <ResumeDownloadButton className="btn btn-primary !w-auto">
+      <div className={`flex flex-col gap-2 sm:flex-row sm:flex-wrap ${variant === "cta" ? "sm:justify-center" : ""}`}>
+        <ResumeDownloadButton className="btn btn-primary sm:!w-auto">
           <Download size={15} />
           Download Resume
         </ResumeDownloadButton>
-        <RequestInterviewButton className="btn btn-glass !w-auto">
+        <RequestInterviewButton className="btn btn-glass sm:!w-auto">
           <Calendar size={15} />
           Request Interview
         </RequestInterviewButton>
         <a
           href={`mailto:${developer.email}?subject=${encodeURIComponent(`Interview Opportunity — ${developer.name}`)}`}
-          className="btn btn-glass !w-auto"
+          className="btn btn-glass sm:!w-auto"
         >
           <Mail size={15} />
           {variant === "cta" ? "Send Opportunity Email" : `Email ${developer.email}`}
@@ -29,7 +29,7 @@ export function RecruiterActions({ variant = "header" }: { variant?: "header" | 
           href={developer.social.linkedin}
           target="_blank"
           rel="noopener noreferrer"
-          className="btn btn-glass !w-auto"
+          className="btn btn-glass sm:!w-auto"
         >
           <LinkedInIcon width={14} height={14} />
           LinkedIn

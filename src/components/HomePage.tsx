@@ -53,7 +53,7 @@ export function HomePage() {
       </a>
 
       <DashboardShell>
-        <main id="main-content" className="dashboard-grid space-y-5 md:space-y-7">
+        <main id="main-content" className="dashboard-grid gap-4 md:gap-6">
           <DailyGreetingBanner />
 
           {/* 1. Professional Hero */}

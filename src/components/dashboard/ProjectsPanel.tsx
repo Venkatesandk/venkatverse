@@ -171,13 +171,9 @@ export function ProjectsPanel() {
         </motion.article>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {others.map((project, i) => (
+          {others.map((project) => (
             <motion.article
               key={project.id}
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.04 }}
               whileHover={{ y: -3 }}
               className="flex flex-col overflow-hidden rounded-2xl border border-border bg-surface"
             >

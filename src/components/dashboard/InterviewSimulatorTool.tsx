@@ -19,6 +19,7 @@ export function InterviewSimulatorTool() {
   const [content, setContent] = useState<string | null>(null);
 
   const run = async () => {
+    if (loading) return;
     setLoading(true);
     setError(null);
     try {
@@ -53,15 +54,16 @@ export function InterviewSimulatorTool() {
           <p className="text-sm font-bold">AI Interview Simulator</p>
           <p className="text-[11px] text-muted">Domain questions for PHP, ERP, and full-stack roles</p>
         </div>
-        <span className="ml-auto rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold text-emerald-600">
-          Live
+        <span className="ml-auto rounded-full bg-primary/12 px-2 py-0.5 text-[10px] font-bold text-primary">
+          Interactive
         </span>
       </div>
 
       <div className="mb-2.5 grid gap-2 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-[10px] font-semibold uppercase text-muted">Focus</label>
+          <label htmlFor="sim-focus" className="mb-1 block text-[10px] font-semibold uppercase text-muted">Focus</label>
           <select
+            id="sim-focus"
             value={focus}
             onChange={(e) => setFocus(e.target.value)}
             className="input-field !py-2 text-sm"
@@ -74,8 +76,9 @@ export function InterviewSimulatorTool() {
           </select>
         </div>
         <div>
-          <label className="mb-1 block text-[10px] font-semibold uppercase text-muted">Level</label>
+          <label htmlFor="sim-level" className="mb-1 block text-[10px] font-semibold uppercase text-muted">Level</label>
           <select
+            id="sim-level"
             value={level}
             onChange={(e) => setLevel(e.target.value)}
             className="input-field !py-2 text-sm"

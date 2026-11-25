@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Cpu, Layers, ShieldCheck, CheckCircle2 } from "lucide-react";
 import { technicalSpecializations } from "@/data/portfolio";
 
@@ -21,12 +20,7 @@ export function TechnicalSpecializationPanel() {
 
       <div className="panel-body grid gap-4 lg:grid-cols-2">
         {/* Primary Specialization */}
-        <motion.article
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="flex flex-col rounded-2xl border border-primary/25 bg-gradient-to-br from-primary/8 via-surface to-surface-2/40 p-4 sm:p-5"
-        >
+        <article className="flex flex-col rounded-2xl border border-primary/25 bg-gradient-to-br from-primary/8 via-surface to-surface-2/40 p-4 sm:p-5">
           <div className="mb-3 flex items-center justify-between gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
               <Layers size={12} />
@@ -58,16 +52,10 @@ export function TechnicalSpecializationPanel() {
               </div>
             ))}
           </div>
-        </motion.article>
+        </article>
 
         {/* Additional Specialization */}
-        <motion.article
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.06 }}
-          className="flex flex-col rounded-2xl border border-border bg-surface-2/40 p-4 sm:p-5"
-        >
+        <article className="flex flex-col rounded-2xl border border-border bg-surface-2/40 p-4 sm:p-5">
           <div className="mb-3 flex items-center justify-between gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
               <Cpu size={12} />
@@ -97,7 +85,7 @@ export function TechnicalSpecializationPanel() {
               </div>
             ))}
           </div>
-        </motion.article>
+        </article>
       </div>
     </section>
   );
